@@ -1,0 +1,12 @@
+$base-dark-color: #1F1F1F;
+
+@mixin header-menu-text {
+    font-weight: 400;
+    font-size: 20px;
+    color: $base-dark-color;
+}
+
+@mixin flex-align-center {
+    display: flex;
+    align-items: center;
+}
