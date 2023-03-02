@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
-import { Container } from '@mui/system';
+import { Container, useMediaQuery } from '@mui/material';
 
 import BurgerButton from '../BurgerButton/BurgerButton';
 import SearchBar from '../SearchBar/SearchBar';
 import './Header.scss';
 
 const Header = () => {
+    const matches = useMediaQuery('(min-width:650px)');
+
     const handleChangeLocation = (e) => {
         e.preventDefault();
         console.log('open modal to change city');
@@ -22,7 +24,7 @@ const Header = () => {
                     <h1>uevent</h1>
                 </Link>
                 <div className="menu">
-                    <SearchBar />
+                    {matches && <SearchBar className='search'/>}
                     <div className='location' onClick={handleChangeLocation}>
                         <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="LocationOnIcon">
                             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path>

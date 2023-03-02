@@ -11,6 +11,8 @@
 
         .logo {
             @include flex-align-center;
+            text-decoration: none;
+            color: #fff;
             cursor: pointer;
             gap: 15px;
 
@@ -80,6 +82,60 @@
                 img {
                     width: 25px;
                 }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .footer {
+        .upper {
+            flex-direction: column;
+            align-items: center;
+
+            .logo {
+                margin-bottom: 50px;
+            }
+
+            .links {
+                gap: 50px;
+            }
+        }
+        .down {
+            padding: 15px 0;
+        }
+    }
+}
+
+@media screen and (max-width: 850px) {
+    .footer {
+        .upper {
+          display: block;
+          margin: 0 20px;
+            
+            .links {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .down {
+            flex-direction: column-reverse;
+            align-items: center;
+            gap: 20px;
+        }
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .footer {
+        .upper {
+            display: flex;
+            flex-direction: column;
+
+            .links {
+                display: flex;
+                flex-direction: column;
             }
         }
     }

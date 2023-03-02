@@ -1,11 +1,12 @@
 import './styles/App.scss';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Layout from './components/Layout/Layout';
+
+import Main from './pages/Main/Main';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout><div>wdadwadw</div></Layout>
+    element: <Main />
   },
   {
     path: '/login',
