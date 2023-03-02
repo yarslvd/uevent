@@ -1,0 +1,54 @@
+@import '../../styles/mixins.scss';
+
+.containerCards {
+    width: 100%;
+    height: 230px; 
+    display: flex;
+    background-color: $base-lightgray-color;
+    border-radius: 38px;
+
+    .image {
+        width: 230px;
+        height: 230px;
+        background-position: center;
+        background-size: cover;
+        border-radius: 38px;
+    }
+
+    .info {
+        padding: 30px 20px;
+
+        .left {
+            display: flex;
+            flex-direction: column;
+
+            h3 {
+                font-size: 28px;
+                font-weight: 700;
+                margin: 0;
+            }
+            .details {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+
+                .time {
+                    @include flex-align-center;
+                    gap: 6px;
+                    img {
+                        width: 20px;
+                        height: 20px;
+                    }
+                }
+                .location {
+                    @include flex-align-center;
+                    gap: 6px;
+                    svg {
+                        fill: $base-dark-color;
+                        width: 20px;
+                    }
+                }
+            }
+        }
+    }
+}

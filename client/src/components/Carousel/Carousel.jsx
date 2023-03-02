@@ -60,12 +60,12 @@ const Carousel = ({ slides }) => {
             </div>
             <div className='dots-container'>
                 {slides.map((el, index) => (
-                    <motion.div
+                    <div
                         key={index}
                         className='dot'
                         style={index === currentIndex ? { height: '15px', width: '15px', backgroundColor: '#fff' }: {}}
                     >
-                    </motion.div>
+                    </div>
                 ))}
             </div>
         </>

@@ -1,8 +1,8 @@
-import { motion } from 'framer-motion';
 import './Main.scss';
 
 import Layout from '../../components/Layout/Layout';
 import Carousel from '../../components/Carousel/Carousel';
+import WideCard from '../../components/WideCard/WideCard';
 
 const slides = [
     { title: 'Jome', url: 'https://static.tumblr.com/wvzujvn/oF3r5yppc/lot2022.jpg' },
@@ -11,11 +11,28 @@ const slides = [
     { title: 'Lola', url: 'https://storage.concert.ua/JWd/16/RN/6282001ee74da/752f.jpg:31-eventpage-main_banner-desktop' },
 ];
 
+const popularEvents = [
+    { title: 'Harry Styles', location: 'Палац студентів НТУ “ХПІ”', time: '16:00', date: '28 КВІ 2023', price: 400 ,image_url: 'https://media.architecturaldigest.com/photos/623e05e0b06d6c32457e4358/master/pass/FINAL%20%20PFHH-notextwlogo.jpg' },
+    { title: 'The Weeknd', location: 'Палац студентів НТУ “ХПІ”', time: '18:00', date: '29 БЕР 2023', price: 400 ,image_url: 'https://www.livenationentertainment.com/wp-content/uploads/2022/03/TR_NationalAsset_TheWeeknd_SG_1200x628.jpg' },
+    { title: 'Океан Ельзи. Світовий тур 2023', location: 'Стадіон Металіст', time: '18:00', date: '17 ЧЕР 2023', price: 550 ,image_url: 'https://vgorode.ua/img/article/11918/24_main-v1640936452.jpg' },
+]
+
 const Main = () => {
     return (
         <Layout>
             <div className='carousel-container'>
                 <Carousel slides={slides} />
+            </div>
+            <div className='mainEvents'>
+                <div className='title'>
+                    <h2>Популярні<br/>події</h2>
+                    <img src="/assets/popularEvents_illustration.svg" alt="" />
+                </div>
+                <div className='events'>
+                    {popularEvents.map((el, index) => (
+                        <WideCard {...el}/>
+                    ))}
+                </div>
             </div>
         </Layout>
     );
