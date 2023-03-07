@@ -12,6 +12,7 @@ let users = require("./users")(sequelize);
 let events = require("./events")(sequelize);
 let promos = require("./promos")(sequelize);
 let organizers = require("./organizers")(sequelize);
+let tokens = require("./tokens")(sequelize);
 
 promos.belongsTo(events, { as: "event", foreignKey: "event_id"});
 events.hasMany(promos, { as: "promos", foreignKey: "event_id"});
@@ -37,4 +38,5 @@ module.exports = {
   comments : comments,
   promos : promos,
   organizers: organizers,
+  tokens: tokens,
 };

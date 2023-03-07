@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS events;
 DROP TABLE IF EXISTS organizers;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS tokens;
 
 -- DROP INDEX IF EXISTS users_id_idx;
 

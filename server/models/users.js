@@ -18,11 +18,16 @@ module.exports = function(sequelize) {
     },
     birthdate: {
       type: DataTypes.DATEONLY,
-      allowNull: false
+      allowNull: true
     },
     email: {
       type: DataTypes.TEXT,
       allowNull: false
+    },
+    confirmed_email: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
     username: {
       type: DataTypes.TEXT,
