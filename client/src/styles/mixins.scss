@@ -27,3 +27,13 @@ $base-lightgray-color: #F7F7F7;
         color: #fff;
     }
 }
+
+@mixin reset-link-dark {
+    text-decoration: none;
+    color: $base-dark-color;
+}
+
+@mixin reset-link-light {
+    text-decoration: none;
+    color: #fff;
+}

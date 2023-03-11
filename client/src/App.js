@@ -2,6 +2,7 @@ import './styles/App.scss';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import Main from './pages/Main/Main';
+import Layout from './components/Layout/Layout';
 
 const router = createBrowserRouter([
   {
@@ -10,7 +11,15 @@ const router = createBrowserRouter([
   },
   {
     path: '/login',
-    element: <div>login</div>
+    element: <Layout><div>login</div></Layout>
+  },
+  {
+    path: '/popular',
+    element: <Layout><div>popular</div></Layout>
+  },
+  {
+    path: '/closest',
+    element: <Layout><div>closest</div></Layout>
   }
 ])
 

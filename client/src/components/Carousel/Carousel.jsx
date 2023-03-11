@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 import './Carousel.scss';
@@ -22,6 +22,7 @@ const variants = {
 const Carousel = ({ slides }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [direction, setDirection] = useState(0);
+    const timeoutRef = useRef(null);
 
     const nextImg = () => {
         setDirection(1);
@@ -32,6 +33,21 @@ const Carousel = ({ slides }) => {
         setDirection(-1);
         slides[currentIndex - 1] ? setCurrentIndex(currentIndex - 1): setCurrentIndex(slides.length - 1);
     };
+
+    const resetTimeout = () => {
+        if(timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+    }
+
+    useEffect(() => {
+        resetTimeout();
+        timeoutRef.current = setTimeout(() => {
+            setCurrentIndex((prevState) => slides[prevState + 1] ? prevState + 1 : 0);
+        }, 10000)
+
+        return () => resetTimeout();
+    }, [currentIndex]);
 
     return(
         <>
@@ -64,6 +80,7 @@ const Carousel = ({ slides }) => {
                         key={index}
                         className='dot'
                         style={index === currentIndex ? { height: '15px', width: '15px', backgroundColor: '#fff' }: {}}
+                        onClick={() => setCurrentIndex(index)}
                     >
                     </div>
                 ))}
