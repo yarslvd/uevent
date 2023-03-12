@@ -13,6 +13,9 @@
     background-color: #fff;
 
     .header {
+        display: flex;
+        justify-content: space-between;
+
         h2 {
             margin: 0;
             font-size: 36px;
@@ -20,8 +23,43 @@
             text-transform: uppercase;
         }
 
-        svg {
-            width: 30px;
+        .close_btn {
+            width: 40px;
+            cursor: pointer;
+        }
+    }
+
+    .content {
+        margin-top: 20px;
+        table {
+            tbody {
+                td {
+                    width: 300px;
+
+                    label {
+                        font-size: 26px;
+                        width: 100%;
+                        display: inline-block;
+                        padding: 10px;
+                        border-radius: 10px;
+                        cursor: pointer;
+
+                        &:hover {
+                            background-color: $base-dark-color;
+                            color: #fff;
+                        }
+                    }
+
+                    input[type=radio] {
+                        display: none;
+                    }
+    
+                    input[type=radio]:checked + label {
+                        background-color: $base-dark-color;
+                        color: #fff;
+                    }
+                }
+            }
         }
     }
 }
