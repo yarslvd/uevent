@@ -2,6 +2,7 @@ const Sequelize = require('sequelize');
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
   host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
   dialect : 'postgres',
   logging: false,
 });
@@ -29,7 +30,6 @@ organizers.hasMany(organizers, { as: "organizers", foreignKey: "user_id"});
 //     .catch((error) => {
 //         console.log('Some error happend, during creating db: ', error);
 //     })
-
 
 module.exports = { 
   sequelize : sequelize,

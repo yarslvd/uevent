@@ -1,11 +1,11 @@
-import {StatusCodes} from 'http-status-codes';
-import {checkFields} from "../helpers/check-fields";
-import {checkPassword, hashPassword} from "../utils/bcrypt";
-import {decodeToken, generateAccessToken, generateRefreshToken, verifyToken} from "../utils/jwt";
-import {Op} from "sequelize";
-import {getUserByToken} from "../helpers/get-user-by-token";
-import {createToken} from "../helpers/create-token";
-import {users} from "../models/db";
+const {StatusCodes}  = require ('http-status-codes');
+const {checkFields}  = require ("../helpers/check-fields");
+const {checkPassword, hashPassword}  = require ("../utils/bcrypt");
+const {decodeToken, generateAccessToken, generateRefreshToken, verifyToken}  = require( "../utils/jwt");
+const {Op}  = require( "sequelize");
+const {getUserByToken}  = require ("../helpers/get-user-by-token");
+const {createToken}  = require( "../helpers/create-token");
+const {users}  = require( "../models/db");
 
 const db = require('../models/db.js');
 const sendLetter = require('../utils/nodemailer');
@@ -17,7 +17,6 @@ const register = async (req, res) => {
                 error: "Some fields are missed",
             });
         }
-
         //TODO: do we need extra validation (isEmail, isPhoneNumber etc.)?
 
         const [user, isUserCreated] = await db.users.findOrCreate({
@@ -56,6 +55,7 @@ const register = async (req, res) => {
 
         let token = generateRefreshToken(user.dataValues.id, user.dataValues.username, user.dataValues.email);
         const link = `${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}/api/auth/email-confirm/${token}`;
+        console.log("check 3");
 
         let dbToken = await createToken(token, res)
         if (dbToken === null) {
@@ -96,7 +96,7 @@ const login = async (req, res) => {
 
         const user = await users.findOne({
             where: {
-                login : request.login,
+                username : request.username,
                 email : request.email
             }
         });
@@ -118,14 +118,17 @@ const login = async (req, res) => {
         }
 
         const accessToken = generateAccessToken(user.dataValues.id, user.dataValues.login);
-        const refreshToken = generateAccessToken(user.dataValues.id, user.dataValues.login);
+        const refreshToken = generateRefreshToken(user.dataValues.id, user.dataValues.login);
 
         let dbToken = await createToken(refreshToken, res)
         if (dbToken === null) {
             return
         }
 
-        res.header.set("Authorization", `Bearer ${refreshToken}`);
+        res.header("Authorization", `Bearer ${refreshToken}`);
+
+        res.cookie("access_token", accessToken);
+        res.cookie("refresh_token", refreshToken);
 
         return res.status(StatusCodes.OK).json ({
             error : null,
@@ -150,7 +153,7 @@ const refresh = async (req, res) => {
             });
         }
 
-        const user = verifyToken(request.refresh_token)
+        const user = await verifyToken(request.refresh_token)
         if (user === null) {
             return
         }
@@ -162,14 +165,17 @@ const refresh = async (req, res) => {
         });
 
         const accessToken = generateAccessToken(user.dataValues.id, user.dataValues.login);
-        const refreshToken = generateAccessToken(user.dataValues.id, user.dataValues.login);
+        const refreshToken = generateRefreshToken(user.dataValues.id, user.dataValues.login);
 
         let dbToken = await createToken(refreshToken, res)
         if (dbToken === null) {
             return
         }
 
-        res.header.set("Authorization", `Bearer ${refreshToken}`);
+        res.header("Authorization", `Bearer ${refreshToken}`);
+
+        res.cookie("access_token", accessToken);
+        res.cookie("refresh_token", refreshToken);
 
         return res.status(StatusCodes.OK).json ({
             error : null,
@@ -186,19 +192,18 @@ const refresh = async (req, res) => {
 };
 
 const logout = (req, res) => {
-    if (!req.headers.get("Authorization")) {
+    if (!req.get("Authorization")) {
         return res.status(StatusCodes.UNAUTHORIZED).json ({
             error : 'User is not authorized'
         })
     }
 
-    res.header.set("Authorization", "");
+    res.header("Authorization", "");
     res.sendStatus(StatusCodes.NO_CONTENT);
 }
 const emailConfirm = async (req, res) => {
     try {
         const token = req.params.confirm_token;
-
         let user = await getUserByToken(token, res)
         if (user === null) {
             return
@@ -209,12 +214,14 @@ const emailConfirm = async (req, res) => {
                 id: user.dataValues.id,
             }
         });
-
+        
         await db.tokens.destroy({
             where: {
                 token: token,
             }
         });
+        
+        user.confirmedEmail = true;
 
         return res.status(StatusCodes.OK).json ({
             error : null,

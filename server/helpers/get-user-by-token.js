@@ -1,5 +1,6 @@
 const {tokens, users} = require("../models/db");
 const {StatusCodes} = require("http-status-codes");
+const { decodeToken } = require("../utils/jwt");
 
 async function getUserByToken(token, res) {
     const dbToken = await tokens.findByPk(token);
@@ -11,7 +12,7 @@ async function getUserByToken(token, res) {
         return null
     }
 
-    let decodedToken = await decodeToken(dbToken)
+    let decodedToken = await decodeToken(dbToken.token)
 
     let user = users.findByPk(decodedToken.id)
 

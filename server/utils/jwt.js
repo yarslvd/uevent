@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-import {StatusCodes} from 'http-status-codes';
+const {StatusCodes} = require('http-status-codes');
 
 const {users, tokens} = require('../models/db.js');
 
@@ -15,8 +15,8 @@ const generateAccessToken = (id, username, email) => {
 
 const generateRefreshToken = (id, username, email) => {
     const payload = {
-        username,
         id,
+        username,
         email,
     }
 
@@ -27,7 +27,7 @@ const decodeToken = async (token) => {
     return jwt.verify(token, process.env.JWT_SECRET_KEY);
 }
 
-function verifyToken(token) {
+async function verifyToken(token) {
     let user = null
 
     tokens.findByPk(token)
@@ -40,13 +40,17 @@ function verifyToken(token) {
             return null
         })
 
-    jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, decoded) => {
+    user = await new Promise((res, rej) => jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, decoded) => {
         user = await users.findByPk(decoded.id)
-        if (err || user == null) {
-            return null;
-        }
-    })
 
+        if (err || user == null) {
+            rej(null);
+        }
+
+        res(user);
+    }))
+
+    console.log(user);
     return user
 }
 function jwtMiddleware(req, res, next) {
