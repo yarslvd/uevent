@@ -1,0 +1,101 @@
+@import '../../styles/mixins.scss';
+
+.container {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    right: 0;
+    z-index: 999;
+    background-color: #000000be;
+    transform: translateX(-100%);
+    opacity: 0;
+
+    .main {
+        max-width: 650px;
+        width: 100%;
+        height: 100%;
+        padding: 60px 50px;
+        background-color: #fff;
+        overflow-x: hidden;
+        transform: translate(-100%);
+
+        .top {
+            @include flex-justify-between;
+            align-items: center;
+            margin-bottom: 100px;
+    
+            img {
+                width: 60px;
+            }
+    
+            .close_btn {
+                width: 30px;
+                cursor: pointer;
+            }
+        }
+        .content {
+            ul {
+                display: flex;
+                flex-direction: column;
+                gap: 35px;
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+    
+                li {
+                    @include flex-align-center;
+                    justify-content: space-between;
+                    font-size: 40px;
+                    font-weight: 700;
+                    gap: 30px;
+                    cursor: pointer;
+                    position: relative;
+
+                    &::after {
+                        content: '';
+                        position: absolute;
+                        width: 100%;
+                        transform: scaleX(0);
+                        height: 4px;
+                        bottom: -8px;
+                        left: 0;
+                        background-color: $base-dark-color;
+                        transform-origin: bottom right;
+                        transition: transform 0.6s ease-out;
+                    }
+
+                    &:hover::after {
+                        transform: scaleX(1);
+                        transform-origin: bottom left;
+                    }
+    
+                    a {
+                        color: $base-dark-color;
+                        text-decoration: none;
+                    }
+    
+                    svg {
+                        width: 20px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.container.active {
+    transform: translateX(0);
+    overflow: hidden;
+    opacity: 1;
+    transition: opacity ease-in-out 0.3s;
+
+    .main {
+        transform: translate(0%);
+        transition: all ease-in-out 0.3s
+    }
+}
+
+body:has(.container.active){
+    overflow: hidden;
+}

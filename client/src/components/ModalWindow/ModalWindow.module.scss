@@ -11,6 +11,7 @@
     border-radius: 45px;
     padding: 50px 60px;
     background-color: #fff;
+    color: $base-dark-color;
 
     .header {
         display: flex;
@@ -43,6 +44,7 @@
                         padding: 10px;
                         border-radius: 10px;
                         cursor: pointer;
+                        transition: all ease-in-out 0.2s;
 
                         &:hover {
                             background-color: $base-dark-color;

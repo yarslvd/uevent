@@ -2,20 +2,10 @@ import { useState } from 'react';
 import { Modal } from '@mui/material';
 
 import styles from './ModalWindow.module.scss';
-
-const cities = [
-    ['Харків', 'Полтава', 'Одеса'],
-    ['Київ', 'Кропивницький', 'Херсон'],
-    ['Суми', 'Донецьк','Запоріжжя'],
-    ['Маріуполь','Мелітополь', 'Житомир'],
-    ['Львів', 'Івано-Франківськ'],
-    ['Чернівці', 'Миколаїв'],
-    ['Тернопіль', 'Ужгород'],
-    ['Дніпро', 'Чернігів'],
-];
+import { cities } from '../../data/variables';
 
 const ModalWindow = ({ open, handleClose }) => {
-    const [radio, setRadio] = useState(JSON.parse(localStorage.getItem('city')) ||'Харків');
+    const [radio, setRadio] = useState(cities.flat().find(el => el === JSON.parse(localStorage.getItem('city'))) ||'Харків');
     console.log(radio);
 
     const handleChange = (e) => {

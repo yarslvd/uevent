@@ -42,6 +42,32 @@
             cursor: pointer;
             text-decoration: none;
         }
+
+        .burger_btn {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            height: 50px;
+            background: transparent;
+            border: 2px solid $base-dark-color;
+            cursor: pointer;
+            padding: 0;
+            z-index: 10;
+            border-radius: 50%;
+
+            .dash {
+                width: 24px;
+                height: 2px;
+                background-color: $base-dark-color;
+                border-radius: 10px;
+                transition: all 0.3s linear;
+                position: relative;
+                transform-origin: 1px;
+            }
+        }
     }
 }
 

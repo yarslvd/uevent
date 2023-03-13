@@ -17,6 +17,12 @@ $base-lightgray-color: #F7F7F7;
     justify-content: space-between;
 }
 
+@mixin reset-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
 @mixin reset-list-links {
     list-style-type: none;
     margin: 0;

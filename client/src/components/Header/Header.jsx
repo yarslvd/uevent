@@ -2,14 +2,25 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, useMediaQuery } from '@mui/material';
 
-import BurgerButton from '../BurgerButton/BurgerButton';
+import Menu from '../Menu/Menu';
 import SearchBar from '../SearchBar/SearchBar';
 import ModalWindow from '../ModalWindow/ModalWindow';
+import { cities } from '../../data/variables';
+
 import './Header.scss';
 
 const Header = () => {
     const [modalOpen, setModalOpen] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
     const matches = useMediaQuery('(min-width:650px)');
+
+    const items = [
+        {name: 'ВСІ ПОДІЇ', url: '/login'},
+        {name: 'ОСОБИСТИЙ КАБІНЕТ', url: '/cabinet'},
+        {name: 'ПРО НАС', url: '/about'},
+        {name: 'ОПЛАТА', url: '/payment'},
+        {name: 'ПОВЕРНЕННЯ', url: '/refund'},
+    ];
 
     const handleClose = () => {
         setModalOpen(false);
@@ -17,7 +28,7 @@ const Header = () => {
 
     return (
         <Container maxWidth='xl'>
-            <div className='header'>
+            <nav className='header'>
                 <Link to={'/'} className="logo">
                     <svg width="40" height="41" viewBox="0 0 40 41" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M40 20.0385C40 31.1055 31.0457 40.0771 20 40.0771C8.9543 40.0771 0 31.1055 0 20.0385C0 14.9985 1.85709 10.3931 4.92308 6.87176C7.41833 4.00589 10.7143 1.85803 14.4615 0.778275C16.2203 0.271491 18.0785 0 20 0C21.4789 0 22.9203 0.160822 24.3077 0.465964C27.9618 1.26962 31.2416 3.07434 33.8462 5.57864C37.639 9.22544 40 14.3557 40 20.0385Z" fill="#1F1F1F"/>
@@ -31,16 +42,21 @@ const Header = () => {
                         <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="LocationOnIcon">
                             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path>
                         </svg>
-                        <span>{JSON.parse(localStorage.getItem('city') || 'Харків')}</span>
+                        <span>{cities.flat().find(el => el === JSON.parse(localStorage.getItem('city'))) || 'Харків'}</span>
                     </div>
                     <ModalWindow 
                         open={modalOpen}
                         handleClose={handleClose}
                     />
                     <Link to={'login'} className='login'>Увійти</Link>
-                    <BurgerButton className='burger' />
+                    <div className='burger_btn' onClick={() => setMenuOpen(true)}>
+                        <div className="dash"></div>
+                        <div className="dash"></div>
+                        <div className="dash"></div>
+                    </div>
                 </div>
-            </div>
+            </nav>
+            <Menu links={items} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
         </Container>
     );
 };
