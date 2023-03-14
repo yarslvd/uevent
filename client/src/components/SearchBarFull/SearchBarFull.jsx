@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 
-import './SearchBar.scss';
+import './SearchBarFull.scss';
 
 const variants = {
     open: { width: '300px', opacity: 1, transition: { duration: 0.5 }},
     close: { width: '0px', opacity: 0.1, transition: { duration: 0.5}}
 };
 
-const SearchBar = () => {
+const SearchBarFull = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     const handleOpenSearch = (e) => {
@@ -34,4 +34,4 @@ const SearchBar = () => {
     );
 };
 
-export default SearchBar;
+export default SearchBarFull;

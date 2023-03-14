@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Modal } from '@mui/material';
+import { Modal, useMediaQuery } from '@mui/material';
 
 import styles from './ModalWindow.module.scss';
 import { cities } from '../../data/variables';
 
 const ModalWindow = ({ open, handleClose }) => {
     const [radio, setRadio] = useState(cities.flat().find(el => el === JSON.parse(localStorage.getItem('city'))) ||'Харків');
+    const matches = useMediaQuery('(max-width:800px)');
     console.log(radio);
 
     const handleChange = (e) => {
@@ -34,23 +35,40 @@ const ModalWindow = ({ open, handleClose }) => {
                 <div className={styles.content}>
                     <table>
                         <tbody>
-                            {cities.map((el, index) => (
-                                <tr key={index}>
-                                    {el.map((city, index) => (
-                                        <td key={index}>
+                            {matches ?
+                                cities.flat().map((el, index) => (
+                                    <tr key={index}>
+                                        <td>
                                             <input
                                                 type="radio"
                                                 name='city'
-                                                value={city}
-                                                id={city}
-                                                checked={radio === city}
+                                                value={el}
+                                                id={el}
+                                                checked={radio === el}
                                                 onChange={handleChange}
                                             />
-                                            <label htmlFor={city}>{city}</label>
+                                            <label htmlFor={el}>{el}</label>
                                         </td>
-                                    ))}
-                                </tr>   
-                            ))}
+                                    </tr>   
+                                )) :
+                                cities.map((el, index) => (
+                                    <tr key={index}>
+                                        {el.map((city, index) => (
+                                            <td key={index}>
+                                                <input
+                                                    type="radio"
+                                                    name='city'
+                                                    value={city}
+                                                    id={city}
+                                                    checked={radio === city}
+                                                    onChange={handleChange}
+                                                />
+                                                <label htmlFor={city}>{city}</label>
+                                            </td>
+                                        ))}
+                                    </tr>   
+                                ))
+                            }
                         </tbody>
                     </table>
                 </div>

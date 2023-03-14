@@ -33,6 +33,20 @@
                 width: 30px;
                 cursor: pointer;
             }
+
+            .location {
+                @include flex-align-center;
+                cursor: pointer;
+                text-decoration: none;
+    
+                svg {
+                    width: 30px;
+                }
+    
+                span {
+                    @include header-menu-text;
+                }
+            }
         }
         .content {
             ul {
@@ -44,8 +58,6 @@
                 padding: 0;
     
                 li {
-                    @include flex-align-center;
-                    justify-content: space-between;
                     font-size: 40px;
                     font-weight: 700;
                     gap: 30px;
@@ -73,10 +85,26 @@
                     a {
                         color: $base-dark-color;
                         text-decoration: none;
+                        @include flex-align-center;
+                        justify-content: space-between; 
                     }
     
                     svg {
                         width: 20px;
+                    }
+
+                    .location {
+                        @include flex-align-center;
+                        cursor: pointer;
+                        text-decoration: none;
+            
+                        svg {
+                            width: 30px;
+                        }
+            
+                        span {
+                            @include header-menu-text;
+                        }
                     }
                 }
             }
@@ -98,4 +126,31 @@
 
 body:has(.container.active){
     overflow: hidden;
+}
+
+@media screen and (max-width: 1000px) {
+    .container {
+        .main {
+            max-width: 500px;
+            padding: 40px 30px;
+
+            .content {
+                ul {
+                    gap: 20px;
+
+                    li {
+                        font-size: 30px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .container {
+        .main {
+            max-width: 100%;
+        }
+    }
 }

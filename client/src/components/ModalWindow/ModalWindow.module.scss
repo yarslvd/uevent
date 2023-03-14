@@ -65,3 +65,33 @@
         }
     }
 }
+
+
+@media screen and (max-width: 800px) {
+    .container {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        padding: 40px 30px;
+        overflow: auto;
+
+        .header {
+            h2 {
+                font-size: 30px;
+            }
+        }
+
+        .content {
+            table {
+                width: 100%;
+
+                tbody {
+                    td {
+                        width: 100%;
+                    }
+                }
+            }
+        }
+
+    }
+}
