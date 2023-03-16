@@ -1,22 +1,35 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useMediaQuery } from '@mui/material';
+import { useMediaQuery, FormControl, Select, MenuItem } from '@mui/material';
+import { useTranslation } from "react-i18next";
 
 import ModalWindow from '../ModalWindow/ModalWindow';
 import SearchBarSimple from '../SearchBarSimple/SearchBarSimple';
-import { cities } from '../../data/variables';
 
 import styles from './Menu.module.scss';
 
-const BurgerButton = ({ links, menuOpen, setMenuOpen }) => {
+const Menu = ({ menuOpen, setMenuOpen }) => {
+    const { t, i18n } = useTranslation();
     const [modalOpen, setModalOpen] = useState(false);
+    const [language, setLanguage] = useState(JSON.parse(localStorage.getItem('lang')) || 'ua');
     const matches = useMediaQuery('(max-width:1000px)');
     const matchesSearch = useMediaQuery('(max-width:650px)');
-    console.log(matches);
+
+    const menu = t('menu.items', { returnObjects: true });
+    const cities = t('modalWindow.cities', { returnObjects: true });
+
+    const changeLang = (e) => {
+        setLanguage(e.target.value);
+        localStorage.setItem('lang', JSON.stringify(e.target.value));
+    }
 
     const handleClose = () => {
         setModalOpen(false);
     }
+
+    useEffect(() => {
+        i18n.changeLanguage(language);
+    }, [language]);
 
     return(
         <div className={menuOpen ? `${styles.container} ${styles.active}` : styles.container}>
@@ -38,7 +51,7 @@ const BurgerButton = ({ links, menuOpen, setMenuOpen }) => {
                 </div>
                 <div className={styles.content}>
                     <ul>
-                        {links.map((el, index)=> (
+                        {menu.map((el, index)=> (
                             <li key={index}>
                                 <Link to={el.url} onClick={() => setMenuOpen(false)}>
                                     {el.name}
@@ -50,12 +63,28 @@ const BurgerButton = ({ links, menuOpen, setMenuOpen }) => {
                         ))}
                         {matchesSearch && <SearchBarSimple />}
                     </ul>
-                </div>
-                <div className={styles.bottom}>
+                    <div className={styles.bottom}>
+                        {matches && <Link to={'login'} className='login'>{t('menu.login')}</Link>}
+                        <FormControl sx={{ m: 1 }} variant="standard">
+                            <Select
+                                labelId="change-language"
+                                id="demo-customized-select"
+                                value={language}
+                                onChange={changeLang}
+                            >
+                                <MenuItem value={'ua'}>
+                                    <img src="/assets/ukraine-flag-icon.png" alt="Ukranian language" className={styles.flag} width='30px' />
+                                </MenuItem>
+                                <MenuItem value={'en'}>
+                                    <img src="/assets/united-kingdom-flag-icon.png" alt="English language" className={styles.flag} width='30px' />
+                                </MenuItem>
+                            </Select>
+                        </FormControl>
+                    </div>
                 </div>
             </div>
         </div>
     );
 }
 
-export default BurgerButton;
+export default Menu;

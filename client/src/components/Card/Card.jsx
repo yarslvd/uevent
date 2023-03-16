@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import styles from'./Card.module.scss';
 
-const Card = ({ image_url, title, location, time, date, price }) => {
+const Card = ({ image_url, title, date, price }) => {
+    const { t } = useTranslation();
+
     return (
         <div className={styles.container} style={{backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${image_url})`}}>
             <div className={styles.title}>
@@ -10,8 +13,8 @@ const Card = ({ image_url, title, location, time, date, price }) => {
                 <span>{date}</span>
             </div>
             <div className={styles.info}>
-                <Link className={styles.more_link} to={`/events/${title}`}>Більше</Link>
-                <span>Від {price}грн.</span>
+                <Link className={styles.more_link} to={`/events/${title}`}>{t('wideCard.more')}</Link>
+                <span>{`${t('wideCard.price')} ${price} ₴`}</span>
             </div>
         </div>
     );

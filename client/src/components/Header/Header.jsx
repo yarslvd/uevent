@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, useMediaQuery } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import Menu from '../Menu/Menu';
 import SearchBarFull from '../SearchBarFull/SearchBarFull';
 import ModalWindow from '../ModalWindow/ModalWindow';
-import { cities } from '../../data/variables';
 
 import './Header.scss';
 
@@ -14,13 +14,8 @@ const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const matches = useMediaQuery('(min-width:650px)');
 
-    const items = [
-        {name: 'ВСІ ПОДІЇ', url: '/login'},
-        {name: 'ОСОБИСТИЙ КАБІНЕТ', url: '/cabinet'},
-        {name: 'ПРО НАС', url: '/about'},
-        {name: 'ОПЛАТА', url: '/payment'},
-        {name: 'ПОВЕРНЕННЯ', url: '/refund'},
-    ];
+    const { t } = useTranslation();
+    const cities = t('modalWindow.cities', { returnObjects: true });
 
     const handleClose = () => {
         setModalOpen(false);
@@ -42,13 +37,13 @@ const Header = () => {
                         <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="LocationOnIcon">
                             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path>
                         </svg>
-                        <span>{cities.flat().find(el => el === JSON.parse(localStorage.getItem('city'))) || 'Харків'}</span>
+                        <span>{cities.flat().find(el => el === JSON.parse(localStorage.getItem('city'))) || cities[0][0]}</span>
                     </div>
                     <ModalWindow 
                         open={modalOpen}
                         handleClose={handleClose}
                     />
-                    <Link to={'login'} className='login'>Увійти</Link>
+                    <Link to={'login'} className='login'>{t('header.login')}</Link>
                     <div className='burger_btn' onClick={() => setMenuOpen(true)}>
                         <div className="dash"></div>
                         <div className="dash"></div>
@@ -56,7 +51,7 @@ const Header = () => {
                     </div>
                 </div>
             </nav>
-            <Menu links={items} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+            <Menu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
         </Container>
     );
 };

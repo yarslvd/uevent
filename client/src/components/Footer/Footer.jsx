@@ -1,8 +1,16 @@
 import { Container } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
 import './Footer.scss';
 
 const Footer = () => {
+    const { t } = useTranslation();
+    const events = t('footer.events.events', { returnObjects: true });
+    const services = t('footer.services.services', { returnObjects: true });
+    const about = t('footer.about.about', { returnObjects: true });
+    console.log(events);
+
     return(
         <Container maxWidth='xl'>
             <div className='footer'>
@@ -16,37 +24,31 @@ const Footer = () => {
                     </Link>
                     <div className='links'>
                         <div className='column'>
-                            <h4>Події</h4>
+                            <h4>{t('footer.events.title')}</h4>
                             <ul>
-                                <li><Link to={'/'}>Концерти</Link></li>
-                                <li><Link to={'/'}>Театри</Link></li>
-                                <li><Link to={'/'}>Дітям</Link></li>
-                                <li><Link to={'/'}>Стендапи</Link></li>
-                                <li><Link to={'/'}>Тури</Link></li>
+                                {events.map((el, index) => (
+                                    <li key={index}><Link to={el.url}>{el.name}</Link></li>
+                                ))}
                             </ul>
                         </div>
                         <div className='column'>
-                            <h4>Сервіси</h4>
+                            <h4>{t('footer.services.title')}</h4>
                             <ul>
-                                <li><Link to={'/'}>ЄПідтримка</Link></li>
-                                <li><Link to={'/'}>Подарунковий квиток</Link></li>
-                                <li><Link to={'/'}>Врегулювання спорів</Link></li>
-                                <li><Link to={'/'}>Список скасованих та<br/>перенесених заходів</Link></li>
-                                <li><Link to={'/'}>Список кас</Link></li>
-                                <li><Link to={'/'}>Доставка і оплата</Link></li>
+                                {services.map((el, index) => (
+                                    <li key={index}><Link to={el.url}>{el.name}</Link></li>
+                                ))}
                             </ul>
                         </div>
                         <div className='column'>
-                            <h4>Про нас</h4>
+                            <h4>{t('footer.about.title')}</h4>
                             <ul>
-                                <li><Link to={'/'}>Організаторам</Link></li>
-                                <li><Link to={'/'}>Логотип для афіш та ЗМІ</Link></li>
-                                <li><Link to={'/'}>Про компанію</Link></li>
-                                <li><Link to={'/'}>Публічна оферта</Link></li>
+                                {about.map((el, index) => (
+                                    <li key={index}><Link to={el.url}>{el.name}</Link></li>
+                                ))}
                             </ul>
                         </div>
                         <div className='column'>
-                            <h4>Контакти</h4>
+                            <h4>{t('footer.contacts.title')}</h4>
                             <ul>
                                 <li>
                                     <img src="assets/phone_icon.png" alt="Phone" />

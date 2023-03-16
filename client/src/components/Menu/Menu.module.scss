@@ -13,6 +13,7 @@
 
     .main {
         max-width: 650px;
+        overflow: auto;
         width: 100%;
         height: 100%;
         padding: 60px 50px;
@@ -49,6 +50,11 @@
             }
         }
         .content {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: calc(100% - 162px);
+
             ul {
                 display: flex;
                 flex-direction: column;
@@ -108,6 +114,24 @@
                     }
                 }
             }
+            .bottom {
+                font-size: 26px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                a {
+                    display: hidden;
+                    @include header-menu-text;
+                    cursor: pointer;
+                    text-decoration: none;
+                    font-size: 26px;
+                }
+
+                img {
+                    width: 30px;
+                }
+            }
         }
     }
 }
@@ -140,6 +164,12 @@ body:has(.container.active){
 
                     li {
                         font-size: 30px;
+                    }
+                }
+
+                .bottom {
+                    a {
+                        display: block;
                     }
                 }
             }

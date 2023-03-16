@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
 import './WideCard.scss';
 
 const WideCard = ({ image_url, title, location, time, date, price }) => {
+    const { t } = useTranslation();
+
     return(
         <div className="containerWideCard">
             <div className='image' style={{backgroundImage: `url(${image_url})`}}></div>
@@ -20,14 +24,14 @@ const WideCard = ({ image_url, title, location, time, date, price }) => {
                             <span>{time}</span>
                         </div>
                     </div>
-                    <Link to={'/event'}>Більше</Link>
+                    <Link to={'/event'}>{t('wideCard.more')}</Link>
                 </div>
                 <div className="right">
                     <div className="date">
                         {date}&nbsp;
                     </div>
                     <div className="price">
-                        <b>Від {price} грн.</b>
+                        <b>{`${t('wideCard.price')} ${price} ₴`}</b>
                     </div>
                 </div>
             </div>

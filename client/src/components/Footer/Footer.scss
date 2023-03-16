@@ -38,6 +38,7 @@
 
                 ul {
                     @include reset-list-links;
+                    max-width: 180px;
 
                     li {
                         @include flex-align-center;
