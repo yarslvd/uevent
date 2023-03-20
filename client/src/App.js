@@ -2,6 +2,7 @@ import './styles/App.scss';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import Main from './pages/Main/Main';
+import EventPage from './pages/EventPage/EventPage';
 import Layout from './components/Layout/Layout';
 
 const router = createBrowserRouter([
@@ -10,8 +11,8 @@ const router = createBrowserRouter([
     element: <Main />
   },
   {
-    path: '/login',
-    element: <Layout><div>login</div></Layout>
+    path: '/event/:id',
+    element: <EventPage />
   },
   {
     path: '/popular',

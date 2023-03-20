@@ -1,9 +1,12 @@
-import './Main.scss';
+import { useMediaQuery } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 import Layout from '../../components/Layout/Layout';
 import Carousel from '../../components/Carousel/Carousel';
 import WideCard from '../../components/WideCard/WideCard';
 import Card from '../../components/Card/Card';
+
+import './Main.scss';
 
 const slides = [
     { title: 'Jome', url: 'https://static.tumblr.com/wvzujvn/oF3r5yppc/lot2022.jpg' },
@@ -26,6 +29,9 @@ const newEvents = [
 ];
 
 const Main = () => {
+    const matches = useMediaQuery('(max-width:800px)');
+    const { t } = useTranslation();
+
     return (
         <Layout>
             <div className='carousel-container'>
@@ -38,7 +44,9 @@ const Main = () => {
                 </div>
                 <div className='events'>
                     {popularEvents.map((el, index) => (
-                        <WideCard {...el} key={index}/>
+                        matches ?
+                            <Card {...el} key={index}/> :
+                            <WideCard {...el} key={index}/>
                     ))}
                     <a href="/popular" className='more-link'>Більше</a>
                 </div>
@@ -50,7 +58,9 @@ const Main = () => {
                 </div>
                 <div className="events">
                     {popularEvents.map((el, index) => (
-                        <WideCard {...el} key={index}/>
+                        matches ?
+                            <Card {...el} key={index}/> :
+                            <WideCard {...el} key={index}/> 
                     ))}
                     <a href="/closest" className='more-link'>Більше</a>
                 </div>

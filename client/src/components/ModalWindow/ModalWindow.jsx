@@ -8,7 +8,7 @@ const ModalWindow = ({ open, handleClose }) => {
     const { t } = useTranslation();
     const cities = t('modalWindow.cities', { returnObjects: true });
     
-    const [radio, setRadio] = useState(cities.flat().find(el => el === JSON.parse(localStorage.getItem('city'))) ||'Харків');
+    const [radio, setRadio] = useState(cities.flat().find(el => el.id === +JSON.parse(localStorage.getItem('city')))?.id || cities[0][0].id);
     const matches = useMediaQuery('(max-width:800px)');
 
     const handleChange = (e) => {
@@ -44,12 +44,12 @@ const ModalWindow = ({ open, handleClose }) => {
                                             <input
                                                 type="radio"
                                                 name='city'
-                                                value={el}
-                                                id={el}
-                                                checked={radio === el}
+                                                value={el.id}
+                                                id={el.id}
+                                                checked={+radio === el.id}
                                                 onChange={handleChange}
                                             />
-                                            <label htmlFor={el}>{el}</label>
+                                            <label htmlFor={el.id}>{el.city}</label>
                                         </td>
                                     </tr>   
                                 )) :
@@ -60,12 +60,12 @@ const ModalWindow = ({ open, handleClose }) => {
                                                 <input
                                                     type="radio"
                                                     name='city'
-                                                    value={city}
-                                                    id={city}
-                                                    checked={radio === city}
+                                                    value={city.id}
+                                                    id={city.id}
+                                                    checked={+radio === city.id}
                                                     onChange={handleChange}
                                                 />
-                                                <label htmlFor={city}>{city}</label>
+                                                <label htmlFor={city.id}>{city.city}</label>
                                             </td>
                                         ))}
                                     </tr>   

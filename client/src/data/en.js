@@ -7,14 +7,14 @@ const items = [
 ];
 
 const cities = [
-    ['Kharkiv', 'Poltava', 'Odesa'],
-    ['Kyiv', 'Kropyvnytskyi', 'Kherson'],
-    ['Sumy', 'Donetsk','Zaporizhya'],
-    ['Mariupol','Melitopol', 'Zhytomur'],
-    ['Lviv', 'Ivano-Frankivsk'],
-    ['Chernivtsi', 'Mykolaiv'],
-    ['Ternopil', 'Uzhhorod'],
-    ['Dnipro', 'Chernihiv'],
+    [{ id: 1, city: 'Kharkiv'}, { id: 2, city: 'Poltava'}, { id: 3, city: 'Odesa'}],
+    [{ id: 4, city: 'Kyiv'}, { id: 5, city: 'Kropyvnytskyi'}, { id: 6, city: 'Kherson'}],
+    [{ id: 7, city: 'Sumy'}, { id: 8, city: 'Donetsk'}, { id: 9, city: 'Zaporizhya'}],
+    [{ id: 10, city: 'Mariupol'}, { id: 11, city: 'Melitopol'}, { id: 12, city: 'Zhytomur'}],
+    [{ id: 13, city: 'Lviv'}, { id: 14, city: 'Ivano-Frankivsk'}],
+    [{ id: 15, city: 'Chernivtsi'}, { id: 16, city: 'Mykolaiv'}],
+    [{ id: 17, city: 'Ternopil'}, { id: 18, city: 'Uzhhorod'}],
+    [{ id: 19, city: 'Dnipro'}, { id: 20, city: 'Chernihiv'}],
 ];
 
 //FOOTER
