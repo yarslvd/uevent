@@ -75,5 +75,8 @@ export const ua = {
         more: 'Більше',
         price: 'Від'
     },
+    eventPage: {
+        lang: 'uk'
+    },
     welcome: 'Привіт козаче',
 };

@@ -1,0 +1,30 @@
+@import '../../styles/mixins.scss';
+
+.container {
+    width: 100%;
+    background-color: $base-lightgray-color;
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    .top {
+        display: flex;
+        gap: 10px;
+
+        .text {
+            .name {
+                font-weight: 700;
+            }
+            .comment {
+                margin: 0;
+            }
+        }   
+    }
+    .bottom {
+        align-self: flex-end;
+        font-size: 12px;
+        color: #C3C3C3;
+    }
+}

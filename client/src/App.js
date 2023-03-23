@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import Main from './pages/Main/Main';
 import EventPage from './pages/EventPage/EventPage';
+import CreateEventPage from './pages/CreateEventPage/CreateEventPage';
 import Layout from './components/Layout/Layout';
 
 const router = createBrowserRouter([
@@ -15,8 +16,8 @@ const router = createBrowserRouter([
     element: <EventPage />
   },
   {
-    path: '/popular',
-    element: <Layout><div>popular</div></Layout>
+    path: '/event/new',
+    element: <CreateEventPage />
   },
   {
     path: '/closest',

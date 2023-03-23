@@ -1,0 +1,35 @@
+@import '../../styles/mixins.scss';
+
+
+.header {
+    display: grid;
+    grid-template: 1fr 1fr / 2fr 1fr;
+    grid-template-rows: auto;
+    gap: 20px;
+    margin-top: 36px;
+    position: relative;
+
+    .image {
+        width: 100%;
+        height: 100%;
+        background-position: center;
+        background-size: cover;
+        height: 500px;
+        border-radius: 50px;
+        background-color: $base-lightgray-color;
+        text-align: center;
+        position: relative;
+
+        span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+
+            text-transform: uppercase;
+            font-size: 45px;
+            color: #777777;
+            font-weight: 900;
+        }
+    }
+}

@@ -1,0 +1,12 @@
+@import '../../styles/mixins.scss';
+
+.container {
+    @include flex-justify-between;
+    flex-direction: column;
+    width: 100%;
+    min-width: 470px;
+    height: 500px;
+    background-color: $base-lightgray-color;
+    border-radius: 50px;
+    padding: 50px 45px;
+}

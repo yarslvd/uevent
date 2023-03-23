@@ -75,5 +75,8 @@ export const en = {
         more: 'More',
         price: 'From'
     },
+    eventPage: {
+        lang: 'en'
+    },
     welcome: "Welcome to React",
 };
