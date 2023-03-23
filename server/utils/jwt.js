@@ -50,20 +50,20 @@ async function verifyToken(token) {
         res(user);
     }))
 
-    console.log(user);
+    // console.log(user);
     return user
 }
-function jwtMiddleware(req, res, next) {
+async function jwtMiddleware(req, res, next) {
     try {
-        if (!req.headers.get("Authorization")) {
+        if (!req.get("Authorization") && !req.cookies.access_token) {
             return res.status(StatusCodes.UNAUTHORIZED).json ({
                 error : 'User is not authorized'
             })
         }
 
-        const token = req.headers.get("Authorization").split(" ")[1];
+        const token = req.get("Authorization")?.split(" ")[1] || req.cookies.access_token;
 
-        let user = verifyToken(token)
+        let user = await verifyToken(token)
         if (user == null) {
             return res.status(StatusCodes.UNAUTHORIZED).json ({
                 error : 'Token is invalid'
@@ -72,7 +72,8 @@ function jwtMiddleware(req, res, next) {
 
         req.user = user;
         next();
-    } catch {
+    } catch(err) {
+        console.log("jwt middleware", err)
         return res.status(StatusCodes.UNAUTHORIZED).json ({
             error : 'User is not authorized'
         })

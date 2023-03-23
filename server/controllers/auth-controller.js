@@ -9,6 +9,7 @@ const {users}  = require( "../models/db");
 
 const db = require('../models/db.js');
 const sendLetter = require('../utils/nodemailer');
+
 const register = async (req, res) => {
     try {
         const request = checkFields(req.body, ['username', 'email', 'password'])
