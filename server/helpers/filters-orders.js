@@ -1,7 +1,8 @@
 const Sequelize = require('sequelize')
+const {or} = require("sequelize");
 
 
-const byOrganizersName = (name) => {
+const filterOrganizerName = (name) => {
   return {
     attributes : [
       'id', 'user_id', 'name', 'email'
@@ -12,19 +13,11 @@ const byOrganizersName = (name) => {
   }
 }
 
-const byLikes = (model, order) => { //posts DESC ASC
+const filterOrganizerId = (organizerIds) => {
     return {
-        attributes : [
-            'id', 'author', 'title',
-            'publish_date', 'status',
-            'content', 'categories',
-            [Sequelize.literal(`(
-                SELECT IFNULL(SUM(likes.type), 0) 
-                FROM likes 
-                WHERE ${model}.id = likes.post_id 
-            )`), 'likes']
-        ],
-        order : [[Sequelize.literal('likes'), order]]
+        where : {
+            'organizer_id' : JSON.parse(organizerIds)
+        }
     }
 };
 
@@ -40,20 +33,27 @@ const filterDateBetween = (from, to) => { //EXAMPLE '2022-09-24' - '2022-09-25'
     }
     return {
         where : {
-            publish_date :{
+            date :{
                 [Sequelize.Op.between] : [from, to]
             }
         }
     }
 };
 
-const filterStatus = (status) => { //active inactive
+const filterPriceBetween = (from, to) => {
+    if (to > from) {
+        from = [to, to = from][0];
+    }
     return {
         where : {
-            status : status
+            price :{
+                [Sequelize.Op.between] : [from, to]
+            }
         }
     }
 };
+
+
 
 function filterCategory (modelCategory, categoriesArr) {  //EXAMPLE categories [`javascript`, `js`]
     console.log(categoriesArr);
@@ -81,11 +81,10 @@ function filterCategory (modelCategory, categoriesArr) {  //EXAMPLE categories [
 }
 
 module.exports = {
-    byLikes,
     byDate,
-    filterCategory,
-    filterDateBetween,
-    filterStatus,
 
-    byOrganizersName
+    filterDateBetween,
+    filterPriceBetween,
+    filterOrganizerId,
+    filterOrganizerName
 }

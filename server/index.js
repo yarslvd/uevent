@@ -10,9 +10,11 @@ app.use(express.json());
 
 const authRouter = require('./routes/auth-routes');
 const organizersRouter = require('./routes/organizers-routes');
+const eventsRouter = require('./routes/events-routes');
 
 app.use("/api/auth", authRouter);
 app.use("/api/organizers", organizersRouter);
+app.use("/api/events", eventsRouter);
 
 app.listen(process.env.SERVER_PORT, () => {
     console.log(`Server running at http://localhost:${process.env.SERVER_PORT}/`);

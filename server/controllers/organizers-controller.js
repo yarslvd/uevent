@@ -1,9 +1,9 @@
 const {StatusCodes}  = require ('http-status-codes');
-const {checkFields}  = require ("../helpers/check-fields");
+const {checkFields}  = require ("../helpers/object-fields");
 const {organizers}  = require( "../models/db");
 
-const {proccesPagination} = require('../helpers/db-helper')
-const {byOrganizersName} = require("../helpers/filters-orders")
+const {processPagination} = require('../helpers/db-helper')
+const {filterOrganizerName} = require("../helpers/filters-orders")
 const {createUrlParams} = require("../helpers/url-helpers")
 
 const db = require('../models/db.js');
@@ -17,14 +17,16 @@ const getAll = async (req, res) => {
 
     let parametrs = Object.assign({},
         // req.query.byLikes ? { ...byLikes('posts', req.query.byLikes) } : {},
-        req.query.name ? {...byOrganizersName(req.query.name)} : {}
+        req.query.name ? {...filterOrganizerName(req.query.name)} : {}
     );
 
-    const allOrganizers = await proccesPagination(`${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`, req.route.path + createUrlParams(req.query), 
-                                            organizers, limit, page, parametrs);
+    let url = `${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`
+    let path = req.originalUrl.split('?')[0] + createUrlParams(req.query)
+    const organizers = await processPagination(
+        url, path, db.organizers, limit, page, parametrs);
 
     res.json({
-      allOrganizers
+      organizers
     })
   }
   catch(error) {
@@ -95,7 +97,7 @@ const update = async (req, res) => {
 
     const organizer = await db.organizers.findOne({where: {id: organizerId}});
 
-    if (organizer.user_id != req.user.id) {
+    if (organizer.user_id !== req.user.id) {
         return res.status(StatusCodes.FORBIDDEN).json({
           error: "You do not have access to this organizer",
       });

@@ -1,5 +1,5 @@
 const {StatusCodes}  = require ('http-status-codes');
-const {checkFields}  = require ("../helpers/check-fields");
+const {checkFields}  = require ("../helpers/object-fields");
 const {checkPassword, hashPassword}  = require ("../utils/bcrypt");
 const {decodeToken, generateAccessToken, generateRefreshToken, verifyToken}  = require( "../utils/jwt");
 const {Op}  = require( "sequelize");

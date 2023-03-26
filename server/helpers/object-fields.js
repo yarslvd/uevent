@@ -14,6 +14,19 @@
     return result
 }
 
+ function getDesiredFields(source, fields) {
+     let result = {};
+
+     for(let i = 0; i < fields.length; i++){
+         if(source.hasOwnProperty(fields[i])) {
+             result[fields[i]] = source[fields[i]]
+         }
+     }
+
+     return result
+ }
+
 module.exports = {
     checkFields,
+    getDesiredFields,
 }
