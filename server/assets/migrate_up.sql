@@ -60,3 +60,50 @@ CREATE TABLE IF NOT EXISTS promos (
 CREATE TABLE IF NOT EXISTS tokens (
     token text PRIMARY KEY
 );
+
+CREATE TABLE IF NOT EXISTS payments (
+    id BIGSERIAL PRIMARY KEY,
+    signature text NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS tickets (
+    event_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+
+    FOREIGN KEY(event_id) REFERENCES events(id) ON DELETE CASCADE ON UPDATE CASCADE.
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+
+--
+-- WITH nested_comments as (
+--     SELECT
+--         comments.*
+--     FROM comments
+--     GROUP BY comments.id
+--     order by comments.id
+-- ), sub_comments AS (
+--     SELECT
+--         comments.*,
+--         json_agg(questions) as questions
+--     FROM section
+--              LEFT JOIN questions ON questions.section_id = section.id
+--     GROUP BY section.id
+--     order by section.id
+-- )
+-- SELECT row_to_json(sections)
+-- FROM forms;
+--
+-- WITH RECURSIVE nested_comments AS (
+--     SELECT id, event_id, user_id, comment, parent_id
+--     FROM comments
+--     WHERE parent_id IS NULL
+--     UNION ALL
+--     SELECT c.id, c.event_id, c.user_id, c.comment, c.parent_id
+--     FROM comments c
+--              INNER JOIN nested_comments nc ON c.parent_id = nc.id
+-- )
+-- SELECT parent.id, child.* AS children
+-- FROM nested_comments parent
+--          LEFT JOIN nested_comments child ON child.parent_id = parent.id
+-- GROUP BY parent.id;

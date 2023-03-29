@@ -6,8 +6,7 @@ const router = express.Router();
 
 // api/organizers
 router.route('/')
-      // .post(jwtMiddleware, controller.create)
-      .post(controller.create)
+      .post(jwtMiddleware, controller.create)
       .get(controller.getAll)
 router.route('/:id')
       .get(controller.getOne)

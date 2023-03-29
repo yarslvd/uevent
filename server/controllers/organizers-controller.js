@@ -1,6 +1,5 @@
 const {StatusCodes}  = require ('http-status-codes');
 const {checkFields}  = require ("../helpers/object-fields");
-const {organizers}  = require( "../models/db");
 
 const {processPagination} = require('../helpers/db-helper')
 const {filterOrganizerName} = require("../helpers/filters-orders")
