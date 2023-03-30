@@ -13,5 +13,7 @@ router.route('/:id')
     .patch(jwtMiddleware, controller.update)
     .delete(jwtMiddleware, controller.delete);
 
+router.get('/:id/pay-form', controller.getPayForm);
+router.post('/:id/confirm-pay', controller.confirmPay);
 
 module.exports = router;

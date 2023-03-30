@@ -1,5 +1,14 @@
-version: '3.3'
+version: '3.0'
 services:
+  uevent-api:
+    image: kevandee/uevent-api:0.0.1
+    restart: always
+    depends_on:
+      - postgres
+    env_file:
+      - '.env'
+    ports:
+      - '4000:3000'
   postgres:
     image: postgres
     restart: always
@@ -9,3 +18,10 @@ services:
       POSTGRES_PASSWORD: "uevent"
     ports:
       - '5932:5432'
+  webclient:
+    image: kevandee/uevent-web-client:0.0.1
+    restart: always
+    depends_on: 
+      - uevent-api
+    ports:
+      - '81:3000'

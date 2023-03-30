@@ -1,9 +1,16 @@
 require('dotenv').config();
 const express = require('express');
+var cors = require('cors')
 const path = require('path');
 const cookieParser = require("cookie-parser")
 
+var corsOptions = {
+    origin: '*',
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  }
+
 const app = express();
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname,'/')));
 app.use(express.json());
