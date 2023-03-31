@@ -7,6 +7,13 @@ const {filterDateBetween, filterPriceBetween, filterOrganizerId} = require("../h
 const {processPagination} = require("../helpers/db-helper");
 const {createUrlParams} = require("../helpers/url-helpers");
 
+const LiqPay = require("../libs/liqpay/liqpay")
+
+const public_key = "sandbox_i21219449436";
+const private_key = "sandbox_AUXlhjhdWqj9lmS7f4vC3g1OdDaoBlHwIXwxxAad";
+
+const liqpay = new LiqPay(public_key, private_key);
+
 const create = async (req, res) => {
     try {
         const request = checkFields(req.body, [
@@ -183,10 +190,36 @@ const getAll = async (req, res) => {
     }
 }
 
+const getPayForm = (req, res) => {
+    const id = Math.random()*1000000;
+    var html = liqpay.cnb_form({
+        'action'         : 'pay',
+        'amount'         : '1',
+        'currency'       : 'USD',
+        'description'    : 'description text',
+        'order_id'       : 'order_id_' + id,
+        'version'        : '3',
+        'result_url'     : 'http://ec2-54-188-73-116.us-west-2.compute.amazonaws.com/pay',
+        'server_url'     : 'http://http://ec2-54-188-73-116.us-west-2.compute.amazonaws.com:4000/api/events/1/confirm-pay'
+    });
+
+    res.json({html: html.toString()});
+    console.log(html);
+}
+
+const confirmPay = (req, res) => {
+    console.log("Confirm pay");
+    console.log(req.body);
+
+    res.sendStatus(StatusCodes.OK);
+}
+
 module.exports = {
     getAll,
     getOne,
     create,
     update,
-    delete: deleteEvent
+    delete: deleteEvent,
+    getPayForm,
+    confirmPay
 }

@@ -6,6 +6,8 @@ import EventPage from './pages/EventPage/EventPage';
 import CreateEventPage from './pages/CreateEventPage/CreateEventPage';
 import Layout from './components/Layout/Layout';
 
+import Test from './pages/Test/Test'
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -22,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: '/closest',
     element: <Layout><div>closest</div></Layout>
+  },
+  {
+    path: '/pay',
+    element: <Test></Test>
   }
 ])
 
