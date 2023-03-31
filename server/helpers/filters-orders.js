@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize')
-const {or} = require("sequelize");
 
 
 const filterOrganizerName = (name) => {
@@ -12,6 +11,14 @@ const filterOrganizerName = (name) => {
     }
   }
 }
+
+const filterEventId = (eventIds) => {
+    return {
+        where : {
+            'event_id' : JSON.parse(eventIds)
+        }
+    }
+};
 
 const filterOrganizerId = (organizerIds) => {
     return {
@@ -86,5 +93,6 @@ module.exports = {
     filterDateBetween,
     filterPriceBetween,
     filterOrganizerId,
+    filterEventId,
     filterOrganizerName
 }

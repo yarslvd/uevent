@@ -84,7 +84,7 @@ const update = async (req, res) => {
             return
         }
 
-        //we can give abiblity all fields except `organizer_id`
+        //we can give ability all fields except `organizer_id`
         let toUpdate = getDesiredFields(req.body, [
             'title',
             'description',
@@ -136,6 +136,11 @@ const getOne = async (req, res) => {
         const eventId = req.params.id;
 
         const event = await db.events.findByPk(eventId);
+        if (event === null) {
+            return res.status(StatusCodes.NOT_FOUND).json ({
+                error : "No event with id " + eventId,
+            });
+        }
 
         return res.json ({
             event

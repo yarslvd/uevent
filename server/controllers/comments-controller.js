@@ -1,46 +1,27 @@
 const {StatusCodes}  = require ('http-status-codes');
 const {checkFields}  = require ("../helpers/object-fields");
 const {processPagination} = require('../helpers/db-helper')
-const {filterOrganizerName} = require("../helpers/filters-orders")
+const {filterEventId} = require("../helpers/filters-orders")
 const {createUrlParams} = require("../helpers/url-helpers")
 
 const db = require('../models/db.js');
-const {QueryTypes} = require("sequelize");
+const {checkCommentByUser} = require("../helpers/check-coment-creator");
 
 const getAll = async (req, res) => {
     try {
-        // let page = req.query.page ?? 0;
-        // let limit = req.query.limit ?? 15;
-        // page = Number(page);
-        // limit = Number(limit);
-        //
-        // let parametrs = Object.assign({},
-        //     // req.query.byLikes ? { ...byLikes('posts', req.query.byLikes) } : {},
-        //     req.query.name ? {...filterOrganizerName(req.query.name)} : {}
-        // );
-        //
-        // let url = `${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`
-        // let path = req.originalUrl.split('?')[0] + createUrlParams(req.query)
-        // const organizers = await processPagination(
-        //     url, path, db.organizers, limit, page, parametrs);
+        let page = req.query.page ?? 0;
+        let limit = req.query.limit ?? 15;
+        page = Number(page);
+        limit = Number(limit);
 
-        let comments = await db.sequelize.query(`
-            WITH RECURSIVE nested_comments AS (
-                SELECT id, event_id, user_id, comment, parent_id
-                FROM comments
-                WHERE parent_id IS NULL
-                UNION ALL
-                SELECT c.id, c.event_id, c.user_id, c.comment, c.parent_id
-                FROM comments c
-                         INNER JOIN nested_comments nc ON c.parent_id = nc.id
-            )
-            SELECT parent.id, child.* AS children
-            FROM nested_comments parent
-                     LEFT JOIN nested_comments child ON child.parent_id = parent.id
---             GROUP BY parent.id;
-        `,{
-            type: QueryTypes.SELECT,
-        })
+        let parametrs = Object.assign({},
+            req.query.events ? {...filterEventId(req.query.events)} : {}
+        );
+
+        let url = `${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`
+        let path = req.originalUrl.split('?')[0] + createUrlParams(req.query)
+        const comments = await processPagination(
+            url, path, db.comments, limit, page, parametrs);
 
         res.json({
             comments
@@ -54,44 +35,117 @@ const getAll = async (req, res) => {
     }
 }
 
+const getOne = async (req, res) => {
+    try {
+        const eventId = req.params.id;
+
+        const event = await db.events.findOne({
+            where: {
+                id : eventId
+            }
+        });
+
+        return res.json ({
+            event
+        });
+    }
+    catch(error) {
+        console.log("Some error while getting comment: ", error.message);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json ({
+            error : "Some error while getting comment: " + error.message
+        });
+    }
+}
+
+const create = async (req, res) => {
+    try {
+        const request = checkFields(req.body, ['event_id', 'comment'])
+        if (!request) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                error: "Some fields are missed",
+            });
+        }
+
+        let event = db.events.findByPk(request.event_id)
+        if (event === null) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                error: `No event with id '${request.event_id}' to add comment`,
+            });
+        }
+
+        const comment = await db.organizers.create({
+            event_id : request.event_id,
+            user_id : req.user.id,
+            comment : request.comment,
+            parent_id : req.body.parent_id ? req.body.parent_id : null,
+        });
+
+        res.json({
+            comment
+        });
+    }
+    catch(error) {
+        console.log("Some error while creating comment: ", error.message);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json ({
+            error : "Some error while creating comment: " + error.message
+        });
+    }
+}
+
+const update = async (req, res) => {
+    try {
+        const request = checkFields(req.body, ['comment'])
+        if (!request) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                error: "Some fields are missed",
+            });
+        }
+
+        const commentId = req.params.id;
+
+        let comment = checkCommentByUser(res, commentId, req.user.id)
+        if (comment === null) {
+            return null
+        }
+
+
+        await db.comments.update(request, {where: {id: commentId}, plain: true});
+
+        return res.status(StatusCodes.NO_CONTENT).send();
+    }
+    catch(error) {
+        console.log("Some error while updating comment: ", error.message);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json ({
+            error : "Some error while updating comment: " + error.message
+        });
+    }
+}
+
+const deleteComment = async (req, res) => {
+    try {
+        const commentId = req.params.id;
+
+       let comment = checkCommentByUser(res, commentId, req.user.id)
+        if (comment === null) {
+            return null
+        }
+
+        await db.comments.destroy({where: {id: comment.dataValues.id}});
+
+        return res.status(StatusCodes.NO_CONTENT).send();
+    }
+    catch(error) {
+        console.log("Some error while deleting comment: ", error.message);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json ({
+            error : "Some error while deleting comment: " + error.message
+        });
+    }
+}
 
 module.exports = {
     getAll,
-    // getOne,
-    // create,
-    // update,
-    // delete: deleteOrganizer
+    getOne,
+    create,
+    update,
+    delete: deleteComment,
 }
-
-
-
-
-
-
-
-// WITH RECURSIVE nested_comments AS (
-//     SELECT id, event_id, user_id, comment, parent_id
-// FROM comments
-// WHERE parent_id IS NULL
-// UNION ALL
-// SELECT c.id, c.event_id, c.user_id, c.comment, c.parent_id
-// FROM comments c
-// INNER JOIN nested_comments nc ON c.parent_id = nc.id
-// )
-// SELECT *
-// FROM nested_comments
-// ORDER BY id
-// OFFSET 0 LIMIT 10;
-
-// WITH RECURSIVE nested_comments AS (
-//     SELECT id, event_id, user_id, comment, parent_id,
-// FROM comments
-// UNION
-// SELECT nc.id, nc.event_id, nc.user_id, nc.comment, nc.parent_id,
-// FROM
-// nested_comments nc
-// INNER JOIN comments s ON s.parent_id = nested_comments.parent_id
-// ) SELECT
-// *
-// FROM
-// comments;
