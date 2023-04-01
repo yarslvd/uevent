@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const {checkFields, getDesiredFields} = require("../helpers/object-fields");
 const {StatusCodes} = require("http-status-codes");
 const db = require("../models/db");
@@ -7,12 +9,19 @@ const {filterDateBetween, filterPriceBetween, filterOrganizerId} = require("../h
 const {processPagination} = require("../helpers/db-helper");
 const {createUrlParams} = require("../helpers/url-helpers");
 
+const {DataTypes} = require("sequelize");
+
 const LiqPay = require("../libs/liqpay/liqpay")
 
 const public_key = "sandbox_i21219449436";
 const private_key = "sandbox_AUXlhjhdWqj9lmS7f4vC3g1OdDaoBlHwIXwxxAad";
 
 const liqpay = new LiqPay(public_key, private_key);
+
+const { ImgurClient } = require('imgur');
+const { Sequelize } = require('sequelize');
+
+const imgurClient = new ImgurClient({ clientId: process.env.IMGUR_ID });
 
 const create = async (req, res) => {
     try {
@@ -57,6 +66,11 @@ const create = async (req, res) => {
             });
         }
 
+        const point = {
+            type: 'Point',
+            coordinates: request.location, // GeoJson format: [lng, lat]
+        };
+
         const event = await db.events.create({
             poster : req.body.poster,
             title : request.title,
@@ -64,7 +78,7 @@ const create = async (req, res) => {
             price : request.price,
             iso_currency : request.iso_currency,
             address : request.address,
-            location : request.location,
+            location : point,
             date : request.date,
             publish_date : request.publish_date,
             organizer_id : request.organizer_id,
@@ -209,6 +223,32 @@ const confirmPay = (req, res) => {
     res.sendStatus(StatusCodes.OK);
 }
 
+const updatePoster = async (req,res) => {
+    try{
+        console.log(req.file);
+        const tempPath = req.file.path;
+        const targetPath = path.join(__dirname, "../public/posters/" + req.params.id + path.extname(req.file.originalname));
+
+        fs.renameSync(tempPath, targetPath);
+        
+        const response = await imgurClient.upload({
+            image: fs.createReadStream(targetPath),
+            type: 'stream',
+        });
+        console.log(response.data);
+
+        await db.events.update({poster: response.data.link}, {where: { id: req.params.id}, plain: true });
+
+        res.sendStatus(StatusCodes.OK);
+    }
+    catch(error) {
+        console.log("Some error while updating events poster: ", error.message);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json ({
+            error : "Some error while updating events poster: " + error.message
+        });
+    }
+}
+
 module.exports = {
     getAll,
     getOne,
@@ -216,5 +256,6 @@ module.exports = {
     update,
     delete: deleteEvent,
     getPayForm,
-    confirmPay
+    confirmPay,
+    updatePoster
 }

@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS events (
     price NUMERIC(12,2) NOT NULL,
     iso_currency VARCHAR(3) NOT NULL,
     address TEXT NOT NULL,
-    location POINT NOT NULL,
+    location GEOMETRY(POINT) NOT NULL,
     date TIMESTAMP WITH TIME ZONE NOT NULL,
     publish_date TIMESTAMP WITH TIME ZONE NOT NULL,
     organizer_id BIGINT NOT NULL,

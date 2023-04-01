@@ -34,7 +34,7 @@ module.exports = function(sequelize) {
       allowNull: false
     },
     location: {
-      type: "POINT",
+      type: DataTypes.GEOMETRY('POINT'),
       allowNull: false
     },
     date: {
