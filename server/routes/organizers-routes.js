@@ -4,16 +4,13 @@ const {jwtMiddleware} = require("../utils/jwt")
 
 const router = express.Router();
 
+// api/organizers
 router.route('/')
       .post(jwtMiddleware, controller.create)
       .get(controller.getAll)
 router.route('/:id')
       .get(controller.getOne)
       .patch(jwtMiddleware, controller.update)
-      .delete(jwtMiddleware, controller.delete);
-
-// 
-// router.get('/organizers/:id/events')
-// 
+      .delete(jwtMiddleware, controller.delete)
 
 module.exports = router;

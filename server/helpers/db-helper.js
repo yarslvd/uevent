@@ -1,13 +1,11 @@
-async function proccesPagination (url, path, model, limit, page, attr) {
+async function processPagination (url, path, model, limit, page, attr) {
   let all;
-  let links;
   let pages;
 
   const customAttr = { ...attr};
 
-  const { rows } = await model.findAndCountAll(customAttr);
+  const count = await model.count(customAttr);
 
-  count = rows.length;
   pages = Math.ceil(count / limit);
 
   if (count > limit) {
@@ -17,30 +15,35 @@ async function proccesPagination (url, path, model, limit, page, attr) {
 
   all = await model.findAndCountAll(customAttr);
 
-  let prev = page - 1;
-  if (page == 0) {
-      prev = 0;
-  } 
-
-  let next = page + 1;
-  if (page + 1 === pages) {
-      next = page;
-  }
 
 
-  links = {
-      prev: `${url}${path.replace(`page=${page}`,`page=${prev}`)}`,
-      self: `${url}${path.replace(`page=${page}`,`page=${page}`)}`,
-      next: `${url}${path.replace(`page=${page}`,`page=${next}`)}`
-  }
-  
-  all.count = count; //category filter breaks it down (fuck)
-  all.links = links;
+  all.count = count;
+  all.links = getLinks(page, pages, url, path);
   all.pages = pages;
 
   return all;
 }
 
+function getLinks(page, pages, url, path) {
+    let prev = page - 1;
+    if (page === 0) {
+        prev = 0;
+    }
+
+    let next = page + 1;
+    if (page + 1 === pages) {
+        next = page;
+    }
+
+
+    return  {
+        prev: `${url}${path.replace(`page=${page}`,`page=${prev}`)}`,
+        self: `${url}${path.replace(`page=${page}`,`page=${page}`)}`,
+        next: `${url}${path.replace(`page=${page}`,`page=${next}`)}`
+    }
+}
+
+
 module.exports = {
-  proccesPagination
+  processPagination
 }

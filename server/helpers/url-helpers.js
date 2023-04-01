@@ -1,6 +1,6 @@
 function createUrlParams (queryObj) {
   if (!queryObj) {
-      return '?page=0&limit=5';
+      return '?page=0&limit=15';
   }
 
   let url = '?';
@@ -14,9 +14,9 @@ function createUrlParams (queryObj) {
           url += `${queryParam}=${queryObj[queryParam]}&`
       }
   }
-  console.log(queryObj);
+
   if (!Object.hasOwn(queryObj, 'limit')) {
-      url += `limit=5&`
+      url += `limit=15&`
   }
   if (!Object.hasOwn(queryObj, 'page')) {
       url += `page=0&`

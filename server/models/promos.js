@@ -10,6 +10,11 @@ module.exports = function(sequelize) {
         key: 'id'
       }
     },
+    text: {
+      type: DataTypes.STRING(10),
+      allowNull: false,
+      primaryKey: true
+    },
     discount: {
       type: DataTypes.DECIMAL,
       allowNull: false
@@ -22,6 +27,15 @@ module.exports = function(sequelize) {
     sequelize,
     tableName: 'promos',
     schema: 'public',
-    timestamps: false
+    timestamps: false,
+    indexes: [
+      {
+        name: "promos_pkey",
+        unique: true,
+        fields: [
+          { name: "text" },
+        ]
+      },
+    ]
   });
 };
