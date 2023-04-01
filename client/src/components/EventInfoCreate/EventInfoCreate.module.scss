@@ -9,4 +9,57 @@
     background-color: $base-lightgray-color;
     border-radius: 50px;
     padding: 50px 45px;
+
+    .inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .title {
+            border: none;
+            border-bottom: 1px solid #CECECE;
+            outline: none;
+            background-color: transparent;
+            font-size: 26px;
+            font-weight: 700;
+            width: 100%;
+        }
+
+        .title::placeholder {
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        .money {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+
+            .price {
+                width: 100%;
+            }
+
+            .currency {
+                min-width: 100px;
+            }
+        }
+    }
+
+    .buttons {
+        display: flex;
+        gap: 20px;
+
+        .publishBtn {
+            @include default-btn;
+        }
+
+        .saveDraftsBtn {
+            font-size: 16px;
+            font-weight: 700;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid $base-dark-color;
+            color: $base-dark-color;
+        }
+    }
 }

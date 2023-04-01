@@ -51,4 +51,21 @@ $base-lightgray-color: #F7F7F7;
     font-size: 16px;
     border-radius: 8px;
     background-color: $base-dark-color;
+
+    &:hover {
+        background-color: $base-dark-color;
+    }
+}
+
+@mixin center-absolute {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@mixin heading-default {
+    font-size: 48px;
+    margin: 0;
+    margin-bottom: 20px;
 }

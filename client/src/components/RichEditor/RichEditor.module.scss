@@ -1,0 +1,12 @@
+@import '../../styles/mixins.scss';
+
+.container {
+    h3 {
+        @include heading-default;
+    }
+
+    .saveBtn {
+        @include default-btn;
+        margin-top: 10px;
+    }
+}

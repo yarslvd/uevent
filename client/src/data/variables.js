@@ -8,3 +8,20 @@ export const cities = [
     ['Тернопіль', 'Ужгород'],
     ['Дніпро', 'Чернігів'],
 ];
+
+export const currencies = [
+    {
+        value: 'USD',
+        label: '$',
+    },
+    {
+        value: 'EUR',
+        label: '€',
+    },
+    {
+        value: 'UAH',
+        label: '₴',
+    },
+];
+
+export const priceRegExp = /^\d+(\.\d{1,2})?$/;
