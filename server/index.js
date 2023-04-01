@@ -3,6 +3,7 @@ const express = require('express');
 var cors = require('cors')
 const path = require('path');
 const cookieParser = require("cookie-parser")
+const bodyParser = require('body-parser');
 
 var corsOptions = {
     origin: '*',
@@ -14,6 +15,7 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname,'/')));
 app.use(express.json());
+app.use(bodyParser());
 
 const authRouter = require('./routes/auth-routes');
 const organizersRouter = require('./routes/organizers-routes');
