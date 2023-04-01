@@ -90,3 +90,24 @@
         text-transform: uppercase;
     }
 }
+
+@media screen and (max-width: 768px) {
+    .container {
+        .artistContainer {
+            .artistCard {
+                .container {
+                    .left {
+                        img {
+                            width: 70px;
+                            height: 70px;
+                        }
+
+                        span {
+                            font-size: 20px;
+                        }
+                    }
+                }
+            }   
+        }
+    }
+}

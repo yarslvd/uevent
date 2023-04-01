@@ -46,7 +46,7 @@ const EventInfo = () => {
                     <span>Підуть</span>
                     <div className={styles.avatars}>
                         {Array.from({ length: 19 }).map((_, index) => (
-                            <Link to={'/user/efe'}><Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" className={styles.avatar}/></Link>
+                            <Link to={'/user/efe'} key={index}><Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" className={styles.avatar}/></Link>
                         ))}
                         <div onClick={() => console.log('Open modal with users who going to event')} className={styles.moreVisitors}>ще</div>
                     </div>

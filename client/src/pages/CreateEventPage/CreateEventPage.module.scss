@@ -83,3 +83,25 @@
         gap: 40px;
     }
 }
+
+@media screen and (max-width: 1200px) {
+    .header {
+        grid-template-columns: 1fr;
+
+        .info {
+            position: relative;
+        }
+
+        h3 {
+            font-size: 30px;
+        }
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .header {
+        .image {
+            height: 400px;
+        }
+    }
+}

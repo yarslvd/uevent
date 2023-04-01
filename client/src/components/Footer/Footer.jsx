@@ -51,15 +51,15 @@ const Footer = () => {
                             <h4>{t('footer.contacts.title')}</h4>
                             <ul>
                                 <li>
-                                    <img src="assets/phone_icon.png" alt="Phone" />
+                                    <img src="/assets/phone_icon.png" alt="Phone" />
                                     <a href="tel:+380050673382">+380050673382</a>
                                 </li>
                                 <li>
-                                    <img src="assets/email_icon.png" alt="Email" />
+                                    <img src="/assets/email_icon.png" alt="Email" />
                                     <a href="mailto:info@uevent.com">info@uevent.com</a>
                                 </li>
                                 <li>
-                                    <img src="assets/location_icon.png" alt="Location" />
+                                    <img src="/assets/location_icon.png" alt="Location" />
                                     <a href="https://goo.gl/maps/EEiuaRPuVTBtnF85A" target='_blank' rel="noreferrer">Kharkiv, Pushkins’ka 79/1</a>
                                 </li>
                             </ul>
@@ -71,11 +71,11 @@ const Footer = () => {
                         <small>Copyright © 2010-2023. All rights reserved.</small>
                     </div>
                     <div className='right'>
-                        <a href="/"><img src="assets/instagram_icon.png" alt="Instagram" /></a>
-                        <a href="/"><img src="assets/telegram_icon.png" alt="Telegram" /></a>
-                        <a href="/"><img src="assets/facebook_icon.png" alt="Facebook" /></a>
-                        <a href="/"><img src="assets/twitter_icon.png" alt="Twitter" /></a>
-                        <a href="/"><img src="assets/youtube_icon.png" alt="Youtube" /></a>
+                        <a href="/"><img src="/assets/instagram_icon.png" alt="Instagram" /></a>
+                        <a href="/"><img src="/assets/telegram_icon.png" alt="Telegram" /></a>
+                        <a href="/"><img src="/assets/facebook_icon.png" alt="Facebook" /></a>
+                        <a href="/"><img src="/assets/twitter_icon.png" alt="Twitter" /></a>
+                        <a href="/"><img src="/assets/youtube_icon.png" alt="Youtube" /></a>
                     </div>
                 </div>
             </div>

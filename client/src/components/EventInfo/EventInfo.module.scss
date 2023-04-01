@@ -123,3 +123,33 @@
         }
     }
 }
+
+@media screen and (max-width: 1200px) {
+    .container {
+        flex-direction: row;
+        height: 100%;
+        align-items: center;
+    }
+}
+
+@media screen and (max-width: 850px) {
+    .container {
+        flex-direction: column;
+        height: 100%;
+        align-items: start;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .container {
+        min-width: 200px;
+        .bottom {
+            .visitors {
+
+                .avatars {
+                    max-width: 300px;
+                }
+            }
+        }
+    }
+}

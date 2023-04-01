@@ -43,7 +43,7 @@ const Header = () => {
                         open={modalOpen}
                         handleClose={handleClose}
                     />
-                    <Link to={'/event/asd'} className='login'>{t('header.login')}</Link>
+                    <Link to={'/login'} className='login'>{t('header.login')}</Link>
                     <div className='burger_btn' onClick={() => setMenuOpen(true)}>
                         <div className="dash"></div>
                         <div className="dash"></div>

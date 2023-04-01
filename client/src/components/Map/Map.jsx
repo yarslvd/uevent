@@ -63,28 +63,28 @@ const Map = () => {
         <h3 className={styles.heading}>Місце події</h3>
         {isLoaded &&
           <div className={styles.mapContainer}>
-          <GoogleMap
-            mapContainerStyle={{ width: '100%', height: '500px', borderRadius: '10px'}}
-            center={center}
-            zoom={10}
-            onClick={handleMapClick}
-            onLoad={onMapLoad}
-          >
-            {markerPosition && (
-              <Marker position={markerPosition} />
-            )}
-          </GoogleMap>
-          <div>
-          <StandaloneSearchBox
-            onLoad={onSBLoad}
-            onPlacesChanged={onPlacesChanged}
-          >
-            <input type="text" className={styles.input} placeholder='Search...'/>
-          </StandaloneSearchBox>
-          </div>
+            <GoogleMap
+              mapContainerStyle={{ width: '100%', height: '600px', borderRadius: '10px'}}
+              center={center}
+              zoom={10}
+              onClick={handleMapClick}
+              onLoad={onMapLoad}
+            >
+              {markerPosition && (
+                <Marker position={markerPosition} />
+              )}
+            </GoogleMap>
+            <div>
+            <StandaloneSearchBox
+              onLoad={onSBLoad}
+              onPlacesChanged={onPlacesChanged}
+            >
+              <input type="text" className={styles.input} placeholder='Search...'/>
+            </StandaloneSearchBox>
+            </div>
           </div>}
-          <div style={{ height: '20px'}}>
-            {placeName && <span style={{ fontWeight: '600', fontSize: '18px' }}>{placeName}</span>}
+          <div className={styles.pickedLocation}>
+            {placeName && <span>{placeName}</span>}
           </div>
       </div>
     )

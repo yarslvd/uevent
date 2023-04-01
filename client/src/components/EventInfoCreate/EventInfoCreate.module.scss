@@ -32,7 +32,7 @@
 
         .money {
             display: flex;
-            gap: 20px;
+            gap: 10px;
             width: 100%;
 
             .price {
@@ -47,7 +47,7 @@
 
     .buttons {
         display: flex;
-        gap: 20px;
+        gap: 10px;
 
         .publishBtn {
             @include default-btn;
@@ -60,6 +60,20 @@
             border-radius: 8px;
             border: 1px solid $base-dark-color;
             color: $base-dark-color;
+        }
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .container {
+        min-width: 200px;
+        .bottom {
+            .visitors {
+
+                .avatars {
+                    max-width: 300px;
+                }
+            }
         }
     }
 }

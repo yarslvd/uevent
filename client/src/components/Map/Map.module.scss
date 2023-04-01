@@ -25,3 +25,28 @@
 .heading {
     @include heading-default;
 }
+
+.pickedLocation {
+    height: 20px;
+
+    span {
+        font-weight: 600;
+        font-size: 18px;
+    }
+}
+
+@media screen and (max-width: 850px) {
+    .mapContainer {
+        .input {
+            top: auto;
+            bottom: 10px;
+        }
+    }
+
+    .pickedLocation {
+        span {
+            font-weight: 500;
+            font-size: 16px;
+        }
+    }
+}

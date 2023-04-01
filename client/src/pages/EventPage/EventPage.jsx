@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Pagination, Button } from '@mui/material';
+import { Pagination, Button, useMediaQuery } from '@mui/material';
 
 import Layout from '../../components/Layout/Layout';
 import EventInfo from '../../components/EventInfo/EventInfo';
@@ -25,6 +25,7 @@ const newEvents = [
 
 const EventPage = () => {
   const { t } = useTranslation();
+  const matches = useMediaQuery('(max-width:500px)');
 
   const place = 'вулиця Пушкінська, 79/1, Харків, Харківська область, Украина, 61000';
 
@@ -103,7 +104,7 @@ const EventPage = () => {
               width="100%"
               height="352"
               frameBorder="0"
-              allowfullscreen=""
+              allowFullScreen=""
               allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
               loading="lazy"
             ></iframe>
@@ -114,9 +115,9 @@ const EventPage = () => {
               src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyA5pkafPkgGyqmmTjvWR87ER6SbE2xzKqs&q=${place}&language=${t('eventPage.lang')}`}
               width="100%"
               height="450"
-              allowfullscreen=""
+              allowFullScreen=""
               loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
+              referrerPolicy="no-referrer-when-downgrade"
             ></iframe>
           </div>
           <div className={styles.comments}>
@@ -125,7 +126,7 @@ const EventPage = () => {
               {comments.map((el, index) => (
                 <Comment {...el} key={index} />
               ))}
-              <Pagination count={10} size='large'/>
+              <Pagination count={10} size={matches ? 'small' : 'large'} />
             </div>
             <div className={styles.textarea}>
               <textarea name="comment" id="comment" rows="7" placeholder='Твій коментар...'></textarea>
