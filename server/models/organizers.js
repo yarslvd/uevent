@@ -20,7 +20,7 @@ module.exports = function(sequelize) {
       type: DataTypes.BIGINT,
       allowNull: false,
       references: {
-        model: 'organizers',
+        model: 'users',
         key: 'id'
       }
     }

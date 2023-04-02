@@ -11,7 +11,7 @@ module.exports = function(sequelize) {
         signature: {
             type: DataTypes.TEXT,
             allowNull: false
-        },
+        }
     }, {
         sequelize,
         tableName: 'payments',

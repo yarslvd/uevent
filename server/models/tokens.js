@@ -6,7 +6,7 @@ module.exports = function(sequelize) {
             type: DataTypes.TEXT,
             allowNull: false,
             primaryKey: true
-        },
+        }
     }, {
         sequelize,
         tableName: 'tokens',

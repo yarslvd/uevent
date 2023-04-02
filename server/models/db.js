@@ -19,21 +19,21 @@ let payments = require("./payments")(sequelize);
 
 promos.belongsTo(events, { as: "event", foreignKey: "event_id"});
 events.hasMany(promos, { as: "promos", foreignKey: "event_id"});
+tickets.belongsTo(events, { as: "event", foreignKey: "event_id"});
+events.hasMany(tickets, { as: "tickets", foreignKey: "event_id"});
 events.belongsTo(organizers, { as: "organizer", foreignKey: "organizer_id"});
 organizers.hasMany(events, { as: "events", foreignKey: "organizer_id"});
-organizers.belongsTo(organizers, { as: "user", foreignKey: "user_id"});
-organizers.hasMany(organizers, { as: "organizers", foreignKey: "user_id"});
-// users.belongsToMany(events, { through: tickets, foreignKey: 'user_id',  as: 'user_id' });
-// events.belongsToMany(users, { through: tickets, foreignKey: 'event_id', as: 'event_id' });
-
-//TODO: make proper sync to check if db exists
-// sequelize.sync()
-//     .then(() => {
-//         console.log('DB was created');
-//     })
-//     .catch((error) => {
-//         console.log('Some error happend, during creating db: ', error);
-//     })
+organizers.belongsTo(users, { as: "user", foreignKey: "user_id"});
+users.hasMany(organizers, { as: "organizers", foreignKey: "user_id"});
+tickets.belongsTo(users, { as: "user", foreignKey: "user_id"});
+users.hasMany(tickets, { as: "tickets", foreignKey: "user_id"});
+sequelize.sync()
+    .then(() => {
+        console.log('DB was created');
+    })
+    .catch((error) => {
+        console.log('Some error happened, during creating db: ', error);
+    })
 
 module.exports = { 
   sequelize : sequelize,
