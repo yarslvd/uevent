@@ -1,5 +1,7 @@
 CREATE TYPE events_visability_enum AS ENUM ('private', 'public');
 CREATE EXTENSION IF NOT EXISTS postgis;
+CREATE TYPE tx_status_enum AS ENUM('success', 'reverted', 'in progress');
+
 -- TODO: add indexes to fields by which filtering will be done
 
 CREATE TABLE IF NOT EXISTS users (
@@ -27,7 +29,7 @@ CREATE TABLE IF NOT EXISTS comments (
     event_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
     comment TEXT NOT NULL,
-    parent_id BIGINT 
+    parent_id BIGINT
 );
 
 CREATE TABLE IF NOT EXISTS events (
@@ -54,7 +56,7 @@ CREATE TABLE IF NOT EXISTS promos (
     text VARCHAR(10) PRIMARY KEY,
     discount NUMERIC(5,2) NOT NULL,
     valid_till TIMESTAMP NOT NULL,
-    
+
     FOREIGN KEY(event_id) REFERENCES events(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -64,7 +66,11 @@ CREATE TABLE IF NOT EXISTS tokens (
 
 CREATE TABLE IF NOT EXISTS payments (
     id BIGSERIAL PRIMARY KEY,
-    signature text NOT NULL
+    payer_id BIGINT NOT NULL,
+    signature text NOT NULL,
+    status  tx_status_enum NOT NULL DEFAULT 'in progress',
+
+    FOREIGN KEY(payer_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS tickets (

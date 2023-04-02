@@ -1,7 +1,7 @@
 version: '3.0'
 services:
   uevent-api:
-    image: kevandee/uevent-api:0.0.1
+    image: kevandee/uevent-api:0.0.3
     restart: always
     depends_on:
       - postgres
@@ -21,7 +21,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
   webclient:
-    image: kevandee/uevent-web-client:0.0.1
+    image: kevandee/uevent-web-client:0.0.2
     restart: always
     depends_on: 
       - uevent-api

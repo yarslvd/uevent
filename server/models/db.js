@@ -1,4 +1,6 @@
 const Sequelize = require('sequelize');
+const fs = require('fs');
+const path = require('path');
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
   host: process.env.DB_HOST,
@@ -34,6 +36,9 @@ sequelize.sync()
     .catch((error) => {
         console.log('Some error happened, during creating db: ', error);
     })
+
+const initSql = fs.readFileSync(path.resolve(__dirname, "../assets/migrate_up.sql"));
+sequelize.query(initSql.toString());
 
 module.exports = { 
   sequelize : sequelize,
