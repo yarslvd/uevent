@@ -27,7 +27,7 @@ module.exports = function(sequelize) {
     confirmed_email: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: false,
+      defaultValue: false
     },
     username: {
       type: DataTypes.TEXT,
@@ -36,7 +36,7 @@ module.exports = function(sequelize) {
     password: {
       type: DataTypes.STRING(255),
       allowNull: false
-    },
+    }
   }, {
     sequelize,
     tableName: 'users',

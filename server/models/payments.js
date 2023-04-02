@@ -8,9 +8,25 @@ module.exports = function(sequelize) {
             allowNull: false,
             primaryKey: true
         },
+        payer_id: {
+            type: DataTypes.BIGINT,
+            allowNull: false,
+            references: {
+                model: 'users',
+                key: 'id'
+            }
+        },
+        order_id: {
+            type: DataTypes.TEXT,
+            allowNull: false,
+        },
         signature: {
             type: DataTypes.TEXT,
             allowNull: false
+        },
+        status: {
+          type: DataTypes.ENUM('success', 'reverted', 'in progress'),
+          allowNull: false
         },
     }, {
         sequelize,
