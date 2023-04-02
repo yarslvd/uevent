@@ -5,10 +5,14 @@ import { Alert, Button } from "@mui/material";
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from "axios";
 
+import { useLoginUserMutation } from '../../redux/api/authApi';
+
 import styles from './Signin.module.scss';
 
 const Signin = () => {
     const [googleCredentials, setGoogleCredentials] = useState();
+
+    const [loginUser, { isLoading, isError, error, isSuccess }] = useLoginUserMutation();
 
     const { register, handleSubmit } = useForm({
         defaultValues: {
@@ -38,6 +42,7 @@ const Signin = () => {
 
     const onSubmit = async (values) => {
         console.log(values);
+        loginUser(values);
     }
 
     return (

@@ -5,9 +5,10 @@ import Main from './pages/Main/Main';
 import EventPage from './pages/EventPage/EventPage';
 import CreateEventPage from './pages/CreateEventPage/CreateEventPage';
 import Layout from './components/Layout/Layout';
-import Signin from './pages/Signin/Singin';
+import Signin from './pages/Signin/Signin';
 import Signup from './pages/Signup/Signup';
 import ResetPassword from './pages/ResetPassword/ResetPassword';
+import ChangePassword from './pages/ChangePassword/ChangePassword';
 
 import Test from './pages/Test/Test'
 
@@ -43,7 +44,11 @@ const router = createBrowserRouter([
   {
     path: '/reset-password',
     element: <ResetPassword />
-  }
+  },
+  {
+    path: "/reset-password/:token",
+    element: <ChangePassword />,
+  },
 ])
 
 function App() {
