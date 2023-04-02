@@ -23,6 +23,7 @@ router.route('/:id')
 
 
 // endpoints for test
+router.get('/:id/payment', jwtMiddleware, controller.getPayment);
 router.get('/:id/pay-form', jwtMiddleware, controller.getPayForm);
 router.post('/:id/confirm-pay', controller.confirmPay);
 

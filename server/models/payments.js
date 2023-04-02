@@ -12,9 +12,13 @@ module.exports = function(sequelize) {
             type: DataTypes.BIGINT,
             allowNull: false,
             references: {
-                model: 'user',
+                model: 'users',
                 key: 'id'
             }
+        },
+        order_id: {
+            type: DataTypes.TEXT,
+            allowNull: false,
         },
         signature: {
             type: DataTypes.TEXT,

@@ -203,7 +203,7 @@ const getAll = async (req, res) => {
 
 const getPayForm = async (req, res) => {
     const uid_ = uid();
-    const id = req.body.id;
+    const id = req.params.id;
     const payObj = {
         'action'         : 'pay',
         'amount'         : '1',
@@ -218,11 +218,37 @@ const getPayForm = async (req, res) => {
     const signature = liqpay.cnb_signature(payObj);
     await db.payments.create({
         payer_id: req.user.id,
+        order_id: 'order_id_'+uid_,
         signature: signature,
         status: "in progress"
     });
 
     res.json({html: liqpay.cnb_form(payObj).toString()});
+}
+
+const getPayment = async (req, res) => {
+    const uid_ = uid();
+    const id = req.params.id;
+    const paymentOptions = {
+        'action'         : 'pay',
+        'amount'         : '1',
+        'currency'       : 'USD',
+        'description'    : 'description text',
+        'order_id'       : 'order_id_' + uid_,
+        'version'        : '3',
+        'result_url'     : process.env.HOST_URI + '/pay',
+        'server_url'     : process.env.HOST_URI + '/api/events/'+ id +'/confirm-pay'
+    };
+    const paymentObj = liqpay.cnb_object(paymentOptions);
+    
+    await db.payments.create({
+        payer_id: req.user.id,
+        order_id: 'order_id_'+uid_,
+        signature: paymentObj.signature,
+        status: "in progress"
+    });
+
+    res.json(paymentObj);
 }
 
 const confirmPay = (req, res) => {
@@ -238,6 +264,28 @@ const confirmPay = (req, res) => {
     }
 
     res.sendStatus(StatusCodes.OK);
+}
+
+const checkPayment = async (req,res) => {
+    try{
+        const paymentId = req.params.id;
+        const payment = await db.payments.findByPk(paymentId);
+        liqpay.api("request", {
+            "action"   : "status",
+            "version"  : "3",
+            "order_id" : payment.order_id
+        }, (json) => {
+
+            console.log( json );
+            res.json(json);
+        });
+    }
+    catch(error) {
+        console.log("Some error while checking payment: ", error.message);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json ({
+            error : "Some error while checking payment: " + error.message
+        });
+    }
 }
 
 const updatePoster = async (req,res) => {
@@ -274,5 +322,7 @@ module.exports = {
     delete: deleteEvent,
     getPayForm,
     confirmPay,
+    getPayment,
+    checkPayment,
     updatePoster
 }
