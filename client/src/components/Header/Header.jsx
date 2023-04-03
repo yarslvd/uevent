@@ -1,25 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
 import Menu from '../Menu/Menu';
 import SearchBarFull from '../SearchBarFull/SearchBarFull';
 import ModalWindow from '../ModalWindow/ModalWindow';
+import { selectIsAuthMe } from '../../redux/slices/authSlice';
 
 import './Header.scss';
 
 const Header = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [username, setUsername] = useState('');
     const matches = useMediaQuery('(min-width:650px)');
+
+    const { userInfo } = useSelector((state) => state.auth);
+    const isAuth = useSelector(selectIsAuthMe);
 
     const { t } = useTranslation();
     const cities = t('modalWindow.cities', { returnObjects: true });
 
     const handleClose = () => {
         setModalOpen(false);
-    }
+    };
+
+    useEffect(() => {
+        setUsername(userInfo?.username);
+    }, [userInfo]);
 
     return (
         <Container maxWidth='xl'>
@@ -43,7 +53,10 @@ const Header = () => {
                         open={modalOpen}
                         handleClose={handleClose}
                     />
-                    <Link to={'/login'} className='login'>{t('header.login')}</Link>
+                    {isAuth ?
+                        <Link to={'/profile'} className='login'>{username}</Link> :
+                        <Link to={'/login'} className='login'>{t('header.login')}</Link>
+                    }
                     <div className='burger_btn' onClick={() => setMenuOpen(true)}>
                         <div className="dash"></div>
                         <div className="dash"></div>

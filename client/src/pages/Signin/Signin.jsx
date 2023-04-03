@@ -1,22 +1,26 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from "react-hook-form";
 import { Alert, Button } from "@mui/material";
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from "axios";
 
-import { useLoginUserMutation } from '../../redux/api/authApi';
-
 import styles from './Signin.module.scss';
 
-const Signin = () => {
-    const [googleCredentials, setGoogleCredentials] = useState();
+import { fetchLogin } from "../../redux/slices/authSlice";
 
-    const [loginUser, { isLoading, isError, error, isSuccess }] = useLoginUserMutation();
+const Signin = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const { userInfo, error } = useSelector((state) => state.auth);
+
+    const [googleCredentials, setGoogleCredentials] = useState();
 
     const { register, handleSubmit } = useForm({
         defaultValues: {
-          login: "",
+          email: "",
           password: "",
         },
         mode: "onChange",
@@ -42,8 +46,14 @@ const Signin = () => {
 
     const onSubmit = async (values) => {
         console.log(values);
-        loginUser(values);
-    }
+        dispatch(fetchLogin(values));
+    };
+    
+    useEffect(() => {
+        if (userInfo) {
+          navigate("/");
+        }
+    }, [userInfo]);
 
     return (
         <main>
@@ -61,15 +71,6 @@ const Signin = () => {
                         <span>Welcome back! Please enter your<br />credentials</span>
                     </div>
 
-                    {/* <GoogleLogin
-                        onSuccess={credentialResponse => {
-                            console.log(credentialResponse);
-                        }}
-                        onError={() => {
-                            console.log('Login Failed');
-                        }}
-                    /> */}
-
                     <Button onClick={() => login()} className={styles.oauthBtn}>
                         <img src="/assets/google_icon.png" alt="" />
                         <span>Sign in with Google</span>
@@ -81,7 +82,7 @@ const Signin = () => {
                         <div></div>
                     </div>
 
-                    {/* {error && <Alert severity="error">{error}</Alert>} */}
+                    {error && <Alert severity="error">{error}</Alert>}
 
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className={styles.inputs}>
@@ -90,7 +91,7 @@ const Signin = () => {
                                 <div className={styles.field}>
                                 <input
                                     type="text"
-                                    {...register("login", { required: "Input username" })}
+                                    {...register("email", { required: "Input username" })}
                                     placeholder='email@example.com'
                                 />
                                 </div>

@@ -1,5 +1,6 @@
 import { useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
 import Layout from '../../components/Layout/Layout';
 import Carousel from '../../components/Carousel/Carousel';

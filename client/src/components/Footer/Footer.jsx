@@ -9,7 +9,6 @@ const Footer = () => {
     const events = t('footer.events.events', { returnObjects: true });
     const services = t('footer.services.services', { returnObjects: true });
     const about = t('footer.about.about', { returnObjects: true });
-    console.log(events);
 
     return(
         <Container maxWidth='xl'>

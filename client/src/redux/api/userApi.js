@@ -4,14 +4,14 @@ import { setUser } from '../features/userSlice';
 export const userApi = createApi({
     reducerPath: 'userApi',
     baseQuery: fetchBaseQuery({
-      baseUrl: `http://localhost:4000/api/users/`,
+      baseUrl: `http://localhost:4000/api/auth/`,
     }),
     tagTypes: ['User'],
     endpoints: (builder) => ({
       getMe: builder.query({
         query() {
           return {
-            url: 'me',
+            url: 'refresh',
             credentials: 'include',
           };
         },

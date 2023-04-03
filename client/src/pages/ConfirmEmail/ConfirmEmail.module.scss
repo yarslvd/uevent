@@ -1,0 +1,12 @@
+@import '../Signin/Signin.module.scss';
+
+.contentContainer {
+    width: 600px !important;
+
+    .content {
+        margin: 0 auto;
+        h1 {
+            font-size: 40px;
+        }
+    }
+}

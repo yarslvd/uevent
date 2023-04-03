@@ -41,6 +41,7 @@ async function verifyToken(token) {
         })
 
     user = await new Promise((res, rej) => jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, decoded) => {
+        console.log(decoded);
         user = await users.findByPk(decoded.id)
 
         if (err || user == null) {

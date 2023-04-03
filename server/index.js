@@ -5,16 +5,10 @@ const path = require('path');
 const cookieParser = require("cookie-parser")
 const bodyParser = require('body-parser');
 
-var whitelist = ['http://localhost:3000']
+var whitelist = ['http://localhost:3000/login']
 
 var corsOptions = {
-  origin: function(origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: 'http://localhost:3000',
   credentials: true,
   optionsSuccessStatus: 200
 }

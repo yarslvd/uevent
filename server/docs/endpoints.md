@@ -9,7 +9,7 @@ ___
 ```json
 {
   "username": "kevandee",           required
-  "password": "12345678",           required
+  "password": "12345678qqQ",        required
   "email": "achayka95@gmail.com",   required
   "first_name": "Anton",
   "last_name": "Chaika",

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, Link } from "react-router-dom";
 import { Alert, Button } from "@mui/material";
 import { useForm } from "react-hook-form";
@@ -7,8 +8,17 @@ import axios from 'axios';
 
 import styles from './Signup.module.scss';
 
+import { fetchSignup } from '../../redux/slices/authSlice';
+
 const Signup = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+  
+    const { userInfo, error } = useSelector((state) => state.auth);
+    const state = useSelector((state) => state);
+
     const [googleCredentials, setGoogleCredentials] = useState();
+    console.log(error, userInfo, state);
 
     const {
         register,
@@ -17,7 +27,7 @@ const Signup = () => {
         watch,
       } = useForm({
         defaultValues: {
-          login: "",
+          username: "",
           password: "",
           passwordRepeat: "",
           email: "",
@@ -44,6 +54,17 @@ const Signup = () => {
         },
     });
 
+    const onSubmit = (values) => {
+        console.log(values);
+        dispatch(fetchSignup(values));
+    };
+
+    useEffect(() => {
+        if (userInfo) {
+          navigate("/login");
+        }
+    }, [userInfo]);
+
     return (
         <main>
             <section className={styles.background}>
@@ -60,15 +81,6 @@ const Signup = () => {
                         <span>Create your new account</span>
                     </div>
 
-                    {/* <GoogleLogin
-                        onSuccess={credentialResponse => {
-                            console.log(credentialResponse);
-                        }}
-                        onError={() => {
-                            console.log('Login Failed');
-                        }}
-                    /> */}
-
                     <Button onClick={() => login()} className={styles.oauthBtn}>
                         <img src="/assets/google_icon.png" alt="" />
                         <span>Sign up with Google</span>
@@ -80,20 +92,15 @@ const Signup = () => {
                         <div></div>
                     </div>
 
-                    {/* {error && <Alert severity="error">{error}</Alert>} */}
+                    {error && <Alert severity="error">{error}</Alert>}
 
-                    <form>
+                    <form onSubmit={handleSubmit(onSubmit)}>
                         <div className={styles.inputs}>
-                        {/* {!Object.keys(errors).length == 0 && (
+                        {!Object.keys(errors).length == 0 && (
                             <Alert severity="warning" className={styles.errmsg}>
                             {Object.values(errors)[0].message}
                             </Alert>
-                        )} */}
-                        {/* {error && (
-                            <Alert severity="error" className={styles.errmsg}>
-                            {error}
-                            </Alert>
-                        )} */}
+                        )}
                             <div className={styles.form}>
                                 <label htmlFor="username">Username</label>
                                 <div className={styles.field}>
@@ -102,7 +109,7 @@ const Signup = () => {
                                     id="username"
                                     required
                                     minLength={3}
-                                    {...register("login")}
+                                    {...register("username")}
                                     placeholder='Create username'
                                 />
                                 </div>
@@ -115,10 +122,10 @@ const Signup = () => {
                                     id="name"
                                     required
                                     {...register("full_name", {
-                                    pattern: {
-                                        value: /^([\w]{2,})+\s+([\w\s]{2,})+$/i,
-                                        message: "Please, enter your real name",
-                                    },
+                                        pattern: {
+                                            value: /^([\w]{2,})+\s+([\w\s]{2,})+$/i,
+                                            message: "Please, enter your real name",
+                                        },
                                     })}
                                     placeholder='Your name'
                                 />
@@ -132,11 +139,11 @@ const Signup = () => {
                                     id="email"
                                     required
                                     {...register("email", {
-                                    pattern: {
-                                        value:
-                                        /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
-                                        message: "Please, enter a valid email",
-                                    },
+                                        pattern: {
+                                            value:
+                                            /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+                                            message: "Please, enter a valid email",
+                                        },
                                     })}
                                     placeholder='user@example.com'
                                 />
@@ -150,10 +157,10 @@ const Signup = () => {
                                     id="password"
                                     required
                                     {...register("password", {
-                                    pattern: {
-                                        value: /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
-                                        message: "Password is not strong enough",
-                                    },
+                                        pattern: {
+                                            value: /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
+                                            message: "Password is not strong enough",
+                                        },
                                     })}
                                     placeholder='Create password'
                                 />
@@ -167,11 +174,11 @@ const Signup = () => {
                                     id="confirm"
                                     required
                                     {...register("passwordRepeat", {
-                                    validate: (value) => {
-                                        if (watch("password") != value) {
-                                        return "Your passwords do no match";
-                                        }
-                                    },
+                                        validate: (value) => {
+                                            if (watch("password") !== value) {
+                                            return "Your passwords do no match";
+                                            }
+                                        },
                                     })}
                                     placeholder='Repeat password'
                                 />
