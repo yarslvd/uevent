@@ -19,7 +19,6 @@ const Header = () => {
     const { userInfo } = useSelector((state) => state.auth);
     const isAuth = useSelector(selectIsAuthMe);
     const isAuth1 = useSelector(selectIsAuth);
-    console.log(JSON.parse(localStorage.getItem('userInfo')).username);
 
     const { t } = useTranslation();
     const cities = t('modalWindow.cities', { returnObjects: true });
