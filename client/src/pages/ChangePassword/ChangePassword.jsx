@@ -1,12 +1,22 @@
+import { useEffect } from "react";
 import { Button, Alert } from "@mui/material";
 import { useNavigate, Link } from "react-router-dom";
-import { useForm } from "react-hook-form";
-//import { useDispatch, useSelector } from "react-redux";
+import { useForm } from     "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import styles from './ChangePassword.module.scss';
 
+import { fetchChangePassword } from "../../redux/slices/authSlice";
+import { fetchCheckToken } from "../../redux/slices/authSlice";
+
 const ChangePassword = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { token } = useParams();
+  
+    const { userInfo, error } = useSelector((state) => state.auth);
+
     const {
         register,
         handleSubmit,
@@ -17,12 +27,18 @@ const ChangePassword = () => {
           password: "",
           confirmPassword: "",
         },
-        mode: "onChange",
+        mode: "onSubmit",
     });
 
     const onSubmit = async (values) => {
         console.log(values);
+        dispatch(fetchChangePassword({ token, values }));
+        navigate("/login");
     };
+    
+    useEffect(() => {
+        dispatch(fetchCheckToken(token));
+    }, []);
 
     return (
         <main>
@@ -35,19 +51,23 @@ const ChangePassword = () => {
                         </svg>
                         <h2>uevent</h2>
                     </Link>
-                    <div className={styles.heading}>
+                    {error ? 
+                        <h1>Error</h1>
+                        :
+                        <>
+                            <div className={styles.heading}>
                         <h1>Change Password</h1>
                         <span>
                             Your new password must be different from previous
                         </span>
                     </div>
 
-                    {/* {error && <Alert severity="error">{error}</Alert>}
+                    {error && <Alert severity="error">{error}</Alert>}
                     {!Object.keys(errors).length == 0 && (
                         <Alert severity="warning" className={styles.errmsg}>
                         {Object.values(errors)[0].message}
                         </Alert>
-                    )} */}
+                    )}
 
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className={styles.inputs}>
@@ -95,6 +115,9 @@ const ChangePassword = () => {
                         </Button>
                         </div>
                     </form>
+                        </>
+
+                    }
                 </div>
                 <div className={styles.image}>
                     <div className={styles.text}>

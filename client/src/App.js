@@ -5,7 +5,7 @@ import './styles/App.scss';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { fetchAuthMe, selectIsAuthMe } from "./redux/slices/authSlice";
+import { fetchAuthMe, selectIsAuthMe, selectIsAuth } from "./redux/slices/authSlice";
 
 import Main from './pages/Main/Main';
 import EventPage from './pages/EventPage/EventPage';
@@ -68,7 +68,8 @@ function App() {
   const dispatch = useDispatch();
 
   const isAuth = useSelector(selectIsAuthMe);
-  console.log("isAuth", isAuth);
+  const isAuth1 = useSelector(selectIsAuth);
+  console.log("isAuth", isAuth, isAuth1);
 
   useEffect(() => {
     if (userToken) {

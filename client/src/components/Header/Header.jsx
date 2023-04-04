@@ -7,18 +7,19 @@ import { useSelector } from 'react-redux';
 import Menu from '../Menu/Menu';
 import SearchBarFull from '../SearchBarFull/SearchBarFull';
 import ModalWindow from '../ModalWindow/ModalWindow';
-import { selectIsAuthMe } from '../../redux/slices/authSlice';
+import { selectIsAuthMe, selectIsAuth } from '../../redux/slices/authSlice';
 
 import './Header.scss';
 
 const Header = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
-    const [username, setUsername] = useState('');
     const matches = useMediaQuery('(min-width:650px)');
 
     const { userInfo } = useSelector((state) => state.auth);
     const isAuth = useSelector(selectIsAuthMe);
+    const isAuth1 = useSelector(selectIsAuth);
+    console.log(JSON.parse(localStorage.userInfo)?.username);
 
     const { t } = useTranslation();
     const cities = t('modalWindow.cities', { returnObjects: true });
@@ -28,8 +29,10 @@ const Header = () => {
     };
 
     useEffect(() => {
-        setUsername(userInfo?.username);
-    }, [userInfo]);
+        if(userInfo) {
+            console.log('ds');
+        }
+    },[userInfo]);
 
     return (
         <Container maxWidth='xl'>
@@ -53,10 +56,10 @@ const Header = () => {
                         open={modalOpen}
                         handleClose={handleClose}
                     />
-                    {isAuth ?
-                        <Link to={'/profile'} className='login'>{username}</Link> :
-                        <Link to={'/login'} className='login'>{t('header.login')}</Link>
-                    }
+                    {/* {isAuth1 ? <Link to={'/profile'} className='login'>{userInfo?.username}</Link> : localStorage.userInfo.username}
+                    {!isAuth && <Link to={'/login'} className='login'>{t('header.login')}</Link>} */}
+                    {<Link to={'/profile'} className='login'>{JSON.parse(localStorage.userInfo)?.username}</Link>}
+
                     <div className='burger_btn' onClick={() => setMenuOpen(true)}>
                         <div className="dash"></div>
                         <div className="dash"></div>

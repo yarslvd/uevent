@@ -4,6 +4,7 @@ const { decodeToken } = require("../utils/jwt");
 
 async function getUserByToken(token, res) {
     const dbToken = await tokens.findByPk(token);
+    console.log(dbToken);
 
     if (dbToken === null) {
         res.status(StatusCodes.NOT_FOUND).json({

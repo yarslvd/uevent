@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from "react-hook-form";
@@ -14,7 +14,7 @@ const Signin = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const { userInfo, error } = useSelector((state) => state.auth);
+    let { userInfo, error } = useSelector((state) => state.auth);
 
     const [googleCredentials, setGoogleCredentials] = useState();
 
@@ -51,7 +51,8 @@ const Signin = () => {
     
     useEffect(() => {
         if (userInfo) {
-          navigate("/");
+            localStorage.setItem('userInfo', JSON.stringify(userInfo));
+            navigate('/');
         }
     }, [userInfo]);
 
@@ -82,7 +83,7 @@ const Signin = () => {
                         <div></div>
                     </div>
 
-                    {error && <Alert severity="error">{error}</Alert>}
+                    {error && <Alert severity="error" style={{ borderRadius: '10px'}}>{error}</Alert>}
 
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className={styles.inputs}>
@@ -90,9 +91,16 @@ const Signin = () => {
                                 <label>Email</label>
                                 <div className={styles.field}>
                                 <input
-                                    type="text"
-                                    {...register("email", { required: "Input username" })}
-                                    placeholder='email@example.com'
+                                    type="email"
+                                    id="email"
+                                    {...register("email", {
+                                    pattern: {
+                                        value:
+                                        /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+                                        message: "Please, enter a valid email",
+                                    },
+                                    })}
+                                    placeholder='user@example.com'
                                 />
                                 </div>
                             </div>

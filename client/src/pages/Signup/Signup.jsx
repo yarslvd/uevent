@@ -33,7 +33,7 @@ const Signup = () => {
           email: "",
           full_name: "",
         },
-        mode: "onChange",
+        mode: "onSubmit",
     });
 
     const login = useGoogleLogin({
@@ -92,13 +92,13 @@ const Signup = () => {
                         <div></div>
                     </div>
 
-                    {error && <Alert severity="error">{error}</Alert>}
+                    {error && <Alert severity="error" style={{ borderRadius: '10px'}}>{error}</Alert>}
 
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className={styles.inputs}>
                         {!Object.keys(errors).length == 0 && (
-                            <Alert severity="warning" className={styles.errmsg}>
-                            {Object.values(errors)[0].message}
+                            <Alert severity="warning" style={{ borderRadius: '10px'}}>
+                                {Object.values(errors)[0].message}
                             </Alert>
                         )}
                             <div className={styles.form}>

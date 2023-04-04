@@ -26,7 +26,6 @@ export const fetchLogin = createAsyncThunk(
     async (params, { rejectWithValue }) => {
       try {
         const { data } = await authAxios.post("/api/auth/login", params);
-        console.log(data);
         return data;
       } catch (error) {
         console.log(error);
@@ -61,11 +60,68 @@ export const fetchSignup = createAsyncThunk(
     }
 );
 
+export const fetchResetPassword = createAsyncThunk(
+  "auth/fetchResetPassword",
+    async (params, { rejectWithValue }) => {
+      try {
+        const { data } = await authAxios.post("/api/auth/password-reset/", params);
+        console.log(data);
+        return data;
+      } catch (error) {
+        console.log(error);
+        return rejectWithValue(error.response.data.error);
+      }
+    }
+);
+
+export const fetchConfirmEmail = createAsyncThunk(
+  "auth/fetchConfirmEmail",
+    async (params, { rejectWithValue }) => {
+      try {
+        console.log(params);
+        const { data } = await authAxios.get(`/api/auth/email-confirm/${params}`);
+        return data;
+      } catch (error) {
+        return rejectWithValue(error.response.data.error);
+      }
+    }
+);
+
+export const fetchChangePassword = createAsyncThunk(
+  "auth/fetchChangePassword",
+    async (info, { rejectWithValue }) => {
+      try {
+        const { token, values } = info;
+        const { data } = await authAxios.post(
+          `/api/auth/password-reset/${token}`,
+          values
+        );
+        return data;
+      } catch (error) {
+        console.log(error);
+        return rejectWithValue(error.response.data.error);
+      }
+    }
+);
+
+export const fetchCheckToken = createAsyncThunk(
+  "auth/fetchCheckToken",
+    async (params, { rejectWithValue }) => {
+      try {
+        const { data } = await authAxios.post(`/api/auth/checkToken/${params}`);
+        return data;
+      } catch (error) {
+        console.log(error);
+        return rejectWithValue(error.response.data);
+      }
+    }
+);
+
 const initialState = {
-    userInfo: null,
-    userToken,
-    error: null,
-    status: "loading",
+  userInfo: null,
+  userToken,
+  error: null,
+  status: "loading",
 };
 
 const authSlice = createSlice({
@@ -121,7 +177,68 @@ const authSlice = createSlice({
                 state.error = action.payload;
                 state.status = "rejected";
             })
-    }
+
+            //RESET PASSWORD (SEND LINK)
+            .addCase(fetchResetPassword.pending, (state) => {
+              state.userInfo = null;
+              state.status = "loading";
+            })
+            .addCase(fetchResetPassword.fulfilled, (state, action) => {
+                state.userInfo = action.payload;
+                state.status = "resolved";
+            })
+            .addCase(fetchResetPassword.rejected, (state, action) => {
+                state.userInfo = null;
+                console.log(action.payload);
+                state.error = action.payload;
+                state.status = "rejected";
+            })
+
+            //CONFIRM EMAIL
+            .addCase(fetchConfirmEmail.pending, (state) => {
+              state.userInfo = null;
+              state.status = "loading";
+            })
+            .addCase(fetchConfirmEmail.fulfilled, (state, action) => {
+                state.userInfo = action.payload;
+                state.status = "resolved";
+            })
+            .addCase(fetchConfirmEmail.rejected, (state, action) => {
+                state.userInfo = null;
+                state.error = action.payload;
+                state.status = "rejected";
+            })
+
+            //CHANGE PASSWORD
+            .addCase(fetchChangePassword.pending, (state) => {
+              state.userInfo = null;
+              state.status = "loading";
+            })
+            .addCase(fetchChangePassword.fulfilled, (state, action) => {
+                state.userInfo = action.payload;
+                state.status = "resolved";
+            })
+            .addCase(fetchChangePassword.rejected, (state, action) => {
+                state.userInfo = null;
+                state.error = action.payload;
+                state.status = "rejected";
+            })
+
+            //CHECK TOKEN
+            .addCase(fetchCheckToken.pending, (state) => {
+              state.userInfo = null;
+              state.status = "loading";
+            })
+            .addCase(fetchCheckToken.fulfilled, (state, action) => {
+                state.userInfo = action.payload;
+                state.status = "resolved";
+            })
+            .addCase(fetchCheckToken.rejected, (state, action) => {
+                state.userInfo = null;
+                state.error = action.payload;
+                state.status = "rejected";
+            })
+    },
 });
 
 export const selectIsAuth = (state) => Boolean(state.auth.userToken);

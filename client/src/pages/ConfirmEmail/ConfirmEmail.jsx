@@ -1,8 +1,22 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { useParams } from "react-router-dom";
 
 import styles from './ConfirmEmail.module.scss';
 
+import { fetchConfirmEmail } from '../../redux/slices/authSlice';
+
 const ConfirmEmail = () => {
+    const dispatch = useDispatch();
+
+    const { userInfo, error } = useSelector((state) => state.auth);
+    const { token } = useParams();
+
+    useEffect(() => {
+        dispatch(fetchConfirmEmail(token));
+    }, []);
+
     return (
         <main>
             <section className={styles.background}>
@@ -15,8 +29,18 @@ const ConfirmEmail = () => {
                         <h2>uevent</h2>
                     </Link>
                     <div className={styles.content}>
-                        <h1>Email successfully confirmed</h1>
+                        {error && (
+                            <>
+                                <h1>{error}</h1>
+                            </>
+                        )}
+                        {userInfo && (
+                            <>
+                                <h1>Email successfully confirmed</h1>
+                            </>
+                        )}
                     </div>
+
                 </div>
                 <div className={styles.image}>
                     <div className={styles.text}>

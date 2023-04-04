@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import { Alert, Button } from "@mui/material";
-import { useGoogleLogin } from '@react-oauth/google';
-import axios from "axios";
+import { useDispatch } from 'react-redux';
 
 import styles from './ResetPassword.module.scss';
 
+import { fetchResetPassword } from '../../redux/slices/authSlice';
+
 const ResetPassword = () => {
+    const dispatch = useDispatch();
     const [sent, setSent] = useState(false);
 
     const {
@@ -18,13 +20,12 @@ const ResetPassword = () => {
       defaultValues: {
         email: "",
       },
-      mode: "onChange",
+      mode: "onSubmit",
     });
   
     const onSubmit = async (values) => {
-      console.log(values);
-    //   dispatch(fetchResetPassword(values));
-    //   setSent(true);
+      dispatch(fetchResetPassword(values));
+      setSent(true);
     };
 
     return (
@@ -47,14 +48,14 @@ const ResetPassword = () => {
                         </span>
                     </div>
                     {!Object.keys(errors).length == 0 && (
-                        <Alert severity="warning" className={styles.errmsg}>
-                        {Object.values(errors)[0].message}
+                        <Alert severity="warning" style={{ borderRadius: '10px'}}>
+                            {Object.values(errors)[0].message}
                         </Alert>
                     )}
                     {sent && (
-                        <Alert severity="success" className={styles.errmsg}>
-                        If there is an account associated with this email, we have sent an
-                        instructions
+                        <Alert severity="success" style={{ borderRadius: '10px'}}>
+                            If there is an account associated with this email, we have sent an
+                            instructions
                         </Alert>
                     )}
                     <form onSubmit={handleSubmit(onSubmit)}>
@@ -73,6 +74,7 @@ const ResetPassword = () => {
                                 },
                                 })}
                                 placeholder='user@example.com'
+                                onChange={() => setSent(false)}
                             />
                             </div>
                         </div>
