@@ -19,7 +19,7 @@ const Header = () => {
     const { userInfo } = useSelector((state) => state.auth);
     const isAuth = useSelector(selectIsAuthMe);
     const isAuth1 = useSelector(selectIsAuth);
-    console.log(JSON.parse(localStorage.userInfo)?.username);
+    console.log(JSON.parse(localStorage.getItem('userInfo')).username);
 
     const { t } = useTranslation();
     const cities = t('modalWindow.cities', { returnObjects: true });
@@ -56,9 +56,10 @@ const Header = () => {
                         open={modalOpen}
                         handleClose={handleClose}
                     />
-                    {/* {isAuth1 ? <Link to={'/profile'} className='login'>{userInfo?.username}</Link> : localStorage.userInfo.username}
-                    {!isAuth && <Link to={'/login'} className='login'>{t('header.login')}</Link>} */}
-                    {<Link to={'/profile'} className='login'>{JSON.parse(localStorage.userInfo)?.username}</Link>}
+                    {isAuth && <Link to={'/profile'} className='login'>{userInfo?.username}</Link>}
+                    {!isAuth && <Link to={'/login'} className='login'>{t('header.login')}</Link>}
+                    {/* {(isAuth || isAuth1) && <Link to={'/profile'} className='login'>{userInfo?.username || (localStorage.userInfo && JSON.parse(localStorage.getItem('userdInfo'))).username}</Link>}
+                    {!isAuth && !isAuth1 && <Link to={'/login'} className='login'>{t('header.login')}</Link>} */}
 
                     <div className='burger_btn' onClick={() => setMenuOpen(true)}>
                         <div className="dash"></div>
