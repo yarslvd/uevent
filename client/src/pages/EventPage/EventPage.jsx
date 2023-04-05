@@ -1,10 +1,16 @@
 import { useTranslation } from 'react-i18next';
 import { Pagination, Button, useMediaQuery } from '@mui/material';
+import { Link, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import Layout from '../../components/Layout/Layout';
 import EventInfo from '../../components/EventInfo/EventInfo';
 import Comment from '../../components/Comment/Comment';
 import Card from '../../components/Card/Card';
+import { selectIsAuthMe } from '../../redux/slices/authSlice';
+import { useGetEventInfoQuery } from '../../redux/api/fetchEventsApi';
+import { useGetEventCommentsQuery } from '../../redux/api/fetchCommentsApi';
+import { useGetTicketsQuery } from '../../redux/api/fetchTicketsApi';
 
 import styles from './EventPage.module.scss';
 
@@ -25,9 +31,15 @@ const newEvents = [
 
 const EventPage = () => {
   const { t } = useTranslation();
+  const { id } = useParams();
+  const isAuth = useSelector(selectIsAuthMe);
   const matches = useMediaQuery('(max-width:500px)');
+  console.log(isAuth);
 
-  const place = 'вулиця Пушкінська, 79/1, Харків, Харківська область, Украина, 61000';
+  const { isLoading: isLoadingInfo, data: dataInfo, error: errorInfo } = useGetEventInfoQuery(id);
+  const { isLoading: isLoadingComments, data: dataComments, error: errorComments } = useGetEventCommentsQuery(id);
+  // const { isLoading: isLoadingTickets, data: dataTickets, error: errorTickets } = useGetTicketsQuery(id);
+  // console.log('comm', dataTickets);
 
   return (
     <Layout>
@@ -36,65 +48,17 @@ const EventPage = () => {
           className={styles.image}
           style={{
             backgroundImage:
-              "url(https://images.squarespace-cdn.com/content/v1/5c213a383c3a53bf091b1c36/3f825ca8-72ac-4c5d-b485-035b9ddb5364/h.jpeg)",
+              `url(${!isLoadingInfo && !errorInfo && dataInfo.event?.poster})`,
           }}
         ></div>
         <div className={styles.info}>
-          <EventInfo />
+          <EventInfo {...dataInfo?.event} isLoading={isLoadingInfo} error={errorInfo} />
         </div>
         <div className={styles.content}>
           <div className={styles.description}>
             <h2>Про подію</h2>
             <div className={styles.text}>
-              Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-              diam nonumy eirmod tempor invidunt ut labore et dolore magna
-              aliquyam erat, sed diam voluptua. At vero eos et accusam et
-              justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-              takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
-              dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-              eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-              sed diam voluptua. At vero eos et accusam et justo duo dolores
-              et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus
-              est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet,
-              consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-              invidunt ut labore et dolore magna aliquyam erat, sed diam
-              voluptua. At vero eos et accusam et justo duo dolores et ea
-              rebum. Stet clita kasd gubergren, no sea takimata sanctus est
-              Lorem ipsum dolor sit amet. Duis autem vel eum iriure dolor in
-              hendrerit in vulputate velit esse molestie consequat, vel illum
-              dolore eu feugiat nulla facilisis at vero eros et accumsan et
-              iusto odio dignissim qui blandit praesent luptatum zzril delenit
-              augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor
-              sit amet, consectetuer adipiscing elit, sed diam nonummy nibh
-              euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-              Ut wisi enim ad minim veniam, quis nostrud exerci tation
-              ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo
-              consequat. Duis autem vel eum iriure dolor in hendrerit in
-              vulputate velit esse molestie consequat, vel illum dolore eu
-              feugiat nulla facilisis at vero eros et accumsan et iusto odio
-              dignissim qui blandit praesent luptatum zzril delenit augue duis
-              dolore te feugait nulla facilisi. Nam liber tempor cum soluta
-              nobis eleifend option congue nihil imperdiet doming id quod
-              mazim placerat facer possim assum. Lorem ipsum dolor sit amet,
-              consectetuer adipiscing elit, sed diam nonummy nibh euismod
-              tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi
-              enim ad minim veniam, quis nostrud exerci tation ullamcorper
-              suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis
-              autem vel eum iriure dolor in hendrerit in vulputate velit esse
-              molestie consequat, vel illum dolore eu feugiat nulla facilisis.
-              At vero eos et accusam et justo duo dolores et ea rebum. Stet
-              clita kasd gubergren, no sea takimata sanctus est Lorem ipsum
-              dolor sit amet. Lorem ipsum dolor sit amet, consetetur
-              sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-              labore et dolore magna aliquyam erat, sed diam voluptua. At vero
-              eos et accusam et justo duo dolores et ea rebum. Stet clita kasd
-              gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
-              amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
-              At accusam aliquyam diam diam dolore dolores duo eirmod eos
-              erat, et nonumy sed tempor et et invidunt justo labore Stet
-              clita ea et gubergren, kasd magna no rebum. sanctus sea sed
-              takimata ut vero voluptua. est Lorem ipsum dolor sit amet. Lorem
-              ipsum dolor sit amet, consetetur
+              {!isLoadingInfo && !errorInfo && dataInfo.event?.description}
             </div>
           </div>
           <div className={styles.embed}>
@@ -112,7 +76,7 @@ const EventPage = () => {
             <iframe
               title='map'
               style={{ border: 0, borderRadius: '10px', marginTop: '6px' }}
-              src={`https://www.google.com/maps/embed/v1/place?key=${process.env.REACT_APP_GOOGLEMAPS_API_KEY}&q=${place}&language=${t('eventPage.lang')}`}
+              src={`https://www.google.com/maps/embed/v1/place?key=${process.env.REACT_APP_GOOGLEMAPS_API_KEY}&q=${!isLoadingInfo && !errorInfo && dataInfo.event?.address}&language=${t('eventPage.lang')}`}
               width="100%"
               height="450"
               allowFullScreen=""
@@ -123,15 +87,22 @@ const EventPage = () => {
           <div className={styles.comments}>
             <h2>Коментарі</h2>
             <div className={styles.wrapper}>
-              {comments.map((el, index) => (
-                <Comment {...el} key={index} />
-              ))}
-              <Pagination count={10} size={matches ? 'small' : 'large'} />
+              {!isLoadingComments && !errorComments && dataComments?.event !== null ? <>
+                {dataComments?.event.map((el, index) => (
+                  <Comment {...el} key={index} />
+                ))}
+                <Pagination count={10} size={matches ? 'small' : 'large'} />
+              </> :
+                <span>Поки що немає коментарів</span>
+              }
             </div>
-            <div className={styles.textarea}>
-              <textarea name="comment" id="comment" rows="7" placeholder='Твій коментар...'></textarea>
-              <Button variant='contained'>Опубліковати</Button>
-            </div>
+            {
+              isAuth &&
+              <div className={styles.textarea}>
+                <textarea name="comment" id="comment" rows="7" placeholder='Твій коментар...'></textarea>
+                <Button variant='contained'>Опубліковати</Button>
+              </div>
+            }
           </div>
         </div>
       </div>

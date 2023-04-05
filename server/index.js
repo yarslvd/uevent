@@ -32,6 +32,7 @@ app.use("/api/organizers", organizersRouter);
 app.use("/api/events", eventsRouter);
 app.use("/api/comments", commentsRouter);
 app.use("/api/promos", promosRouter);
+app.use("/api/tickets", promosRouter);
 
 app.get("/api/payments/:id", checkPayment);
 

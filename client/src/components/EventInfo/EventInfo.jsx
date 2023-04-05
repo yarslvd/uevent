@@ -6,38 +6,54 @@ import { Avatar, Button } from '@mui/material';
 import styles from './EventInfo.module.scss';
 
 // Implement follow/unfollow
+const dateOptions = { 
+    day: 'numeric', 
+    month: 'short',
+    year: 'numeric',  
+};
 
-const EventInfo = () => {
+const timeOptions = {
+    hour: '2-digit',
+    minute: '2-digit',
+}
+
+const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, ticket_amount, isLoading, error }) => {
     const [isLikeActive, setIsLikeActive] = useState(false);
+    const parsedDate = !isLoading && new Date(date);
+
+    //fetch data of organization by id;
 
     return (
         <div className={styles.container}>
             <div className={styles.top}>
                 <div className={styles.time}>
                     <div className={styles.date}>
-                        12 БЕР 2023
+                        {/* //{parsedDate.getDate()} */}
+                        {!isLoading && !error && parsedDate.toLocaleString('uk-UK', dateOptions).toUpperCase().slice(0, -3)}
                     </div>
                     <div className={styles.clock}>
                         <img src="/assets/clock_icon.png" alt="Time" />
-                        <span>18:00</span>
+                        <span>
+                            {!isLoading && !error && parsedDate.toLocaleString('uk-UK', timeOptions)}
+                        </span>
                     </div>
                 </div>
                 <div className={styles.title}>
-                    <h1>Harry Styles</h1>
-                    <div onClick={() => console.log('Implement follow/unfollow')}><img src="/assets/follow_icon.png" alt="Follow event" /></div>
+                    <h1>{!isLoading && !error && title}</h1>
+                    {/* <div onClick={() => console.log('Implement follow/unfollow')}><img src="/assets/follow_icon.png" alt="Follow event" /></div> */}
                 </div>
                 <div className={styles.details}>
                     <div className={styles.item}>
                         <img src="/assets/location_black_icon.png" alt="Location" />
-                        <a href='https://www.google.com/maps/place/Students+Palace+of+NTU+KhPI/@50.0067693,36.2481787,17.75z/data=!4m6!3m5!1s0x4127a0db465c2141:0xc08366351bcbc4a6!8m2!3d50.0067437!4d36.2490521!16s%2Fg%2F11r91b2l1' target='_blank' rel="noreferrer">Палац студентів НТУ “ХПІ”</a>
+                        <span>{!isLoading && !error && location.coordinates}</span>
                     </div>
                     <div className={styles.item}>
                         <img src="/assets/user_black_icon.png" alt="Company" />
-                        <Link>FIRST Concert Agency</Link>
+                        <Link>Fetch data</Link>
                     </div>
                     <div className={styles.item}>
                         <img src="/assets/price_black_icon.png" alt="Location" />
-                        <span>Від 450 грн.</span>
+                        <span>Від {!isLoading && !error && `${price} ${iso_currency}`}</span>
                     </div>
                 </div>
             </div>

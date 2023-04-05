@@ -39,7 +39,7 @@ const getOne = async (req, res) => {
     try {
         const eventId = req.params.id;
 
-        const event = await db.events.findOne({
+        const event = await db.comments.findOne({
             where: {
                 id : eventId
             }
@@ -73,7 +73,7 @@ const create = async (req, res) => {
             });
         }
 
-        const comment = await db.organizers.create({
+        const comment = await db.comments.create({
             event_id : request.event_id,
             user_id : req.user.id,
             comment : request.comment,
