@@ -1,11 +1,11 @@
-import { useState, memo, useRef } from 'react';
+import { useState, memo, useRef, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader, StandaloneSearchBox, Marker } from '@react-google-maps/api';
 
 import styles from './Map.module.scss';
 
 const libraries = ['places'];
 
-const Map = () => {
+const Map = ({ register, control, setValue }) => {
     const [placeName, setPlaceName] = useState('');
     const [markerPosition, setMarkerPosition] = useState(null);
     const [center, setCenter] = useState({  lat: 49.9935, lng: 36.2304 });
@@ -21,6 +21,10 @@ const Map = () => {
       libraries,
       language: 'en',
     });
+
+    useEffect(() => {
+      setValue("address", placeName);
+    }, [placeName, setValue]);
 
     const handleMapClick = event => {
       const geocoder = new window.google.maps.Geocoder();
@@ -74,17 +78,27 @@ const Map = () => {
                 <Marker position={markerPosition} />
               )}
             </GoogleMap>
-            <div>
-            <StandaloneSearchBox
-              onLoad={onSBLoad}
-              onPlacesChanged={onPlacesChanged}
-            >
-              <input type="text" className={styles.input} placeholder='Search...'/>
-            </StandaloneSearchBox>
-            </div>
+              <StandaloneSearchBox
+                onLoad={onSBLoad}
+                onPlacesChanged={onPlacesChanged}
+              >
+                <input
+                  type="text"
+                  className={styles.input}
+                  placeholder='Search...'
+                />
+              </StandaloneSearchBox>
           </div>}
           <div className={styles.pickedLocation}>
-            {placeName && <span>{placeName}</span>}
+            <input
+              type="text"
+              name='address'
+              className={styles.input}
+              placeholder='Choose location...'
+              value={placeName}
+              disabled
+              {...register('address', {required: true})}
+            />
           </div>
       </div>
     )

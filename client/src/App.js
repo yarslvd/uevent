@@ -68,8 +68,7 @@ function App() {
   const dispatch = useDispatch();
 
   const isAuth = useSelector(selectIsAuthMe);
-  const isAuth1 = useSelector(selectIsAuth);
-  console.log("isAuth", isAuth, isAuth1);
+  console.log("isAuth", isAuth);
 
   useEffect(() => {
     if (userToken) {

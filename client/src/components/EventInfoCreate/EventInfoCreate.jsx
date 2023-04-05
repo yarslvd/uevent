@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { MobileTimePicker  } from '@mui/x-date-pickers/MobileTimePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { TimePicker  } from '@mui/x-date-pickers/TimePicker';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TextField, MenuItem, Button } from '@mui/material';
-
+import { Controller } from 'react-hook-form';
+import { isFuture } from "date-fns";
 import { currencies, priceRegExp } from '../../data/variables';
 
 import styles from './EventInfoCreate.module.scss';
 
-const EventInfoCreate = () => {
+const EventInfoCreate = ({ register, control }) => {
     const [price, setPrice] = useState();
     const [currency, setCurrency] = useState('UAH');
     const [combinedPrice, setCombinedPrice] = useState('');
@@ -35,7 +36,7 @@ const EventInfoCreate = () => {
         <div className={styles.container}>
             <div className={styles.inputs}>
                 <div>
-                    <input type="text" className={styles.title} placeholder='НАЗВА ПОДІЇ' required={true} />
+                    <input type="text" className={styles.title} placeholder='НАЗВА ПОДІЇ' {...register('title', { required: true, minLength: 5 })}/>
                 </div>
                 <div className={styles.money}>
                     <TextField
@@ -45,8 +46,8 @@ const EventInfoCreate = () => {
                         className={styles.price}
                         onChange={handlePriceChange}
                         error={!valid}
-                        required={true}
                         type='number'
+                        {...register('price')}
                     />
                     <TextField
                         id="select-currency"
@@ -55,6 +56,7 @@ const EventInfoCreate = () => {
                         defaultValue="UAH"
                         className={styles.currency}
                         onChange={handleCurrencyChange}
+                        {...register('currency', { required: true })}
                     >
                         {currencies.map((option) => (
                             <MenuItem key={option.value} value={option.value}>
@@ -63,13 +65,71 @@ const EventInfoCreate = () => {
                         ))}
                     </TextField>
                 </div>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <MobileTimePicker  label="Select Time" required={true} ampm={false} onChange={(e) => console.log(e.$H + ':' + e.$m)}/>
-                    <DatePicker label="Select Date" onChange={(e) => console.log(Date.parse(e.$d))}/>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <Controller
+                        control={control}
+                        name="date"
+                        rules={{
+                            validate: {
+                                min: (date) => isFuture(date) || "Please, enter a future date"
+                            },
+                            required: true
+                        }}
+                        render={({ field: { ref, onBlur, name, ...field }, fieldState }) => (
+                            <DatePicker
+                                {...field}
+                                inputRef={ref}
+                                required={true}
+                                label="Choose Date"
+                                textField={(inputProps) => (
+                                    <TextField
+                                        {...inputProps}
+                                        onBlur={onBlur}
+                                        name={name}
+                                        error={!!fieldState.error}
+                                        helperText={fieldState.error?.message}
+                                    />
+                                )}
+                            />
+                        )}
+                    />
+                    <Controller
+                        control={control}
+                        name="time"
+                        rules={{
+                            required: true
+                        }}
+                        render={({ field: { ref, onBlur, name, ...field }, fieldState }) => (
+                            <TimePicker
+                                {...field}
+                                inputRef={ref}
+                                label="Choose Time"
+                                ampm={false}
+                                textField={(inputProps) => (
+                                    <TextField
+                                        {...inputProps}
+                                        onBlur={onBlur}
+                                        name={name}
+                                        error={!!fieldState.error}
+                                        helperText={fieldState.error?.message}
+                                    />
+                                )}
+                            />
+                        )}
+                    />
+                    {/* <DatePicker
+                        name='date'
+                        label="Select Date"
+                        renderInput={(params) =>
+                        <TextField
+                            {...params}
+                            {...register("date")}
+                        />}
+                    /> */}
                 </LocalizationProvider>
             </div>
             <div className={styles.buttons}>
-                <Button variant='outlined' className={styles.saveDraftsBtn}>Save to Drafts</Button>
+                <Button variant='outlined' className={styles.saveDraftsBtn} type="submit">Save to Drafts</Button>
                 <Button variant='contained' className={styles.publishBtn}>Publish</Button>
             </div>
         </div>

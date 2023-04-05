@@ -28,11 +28,15 @@
             align-self: flex-start;
             font-weight: 700;
             border-radius: 35px;
+            min-width: 170px;
+            justify-content: center;
+            height: 40px;
         }
 
         .clock {
             @include flex-align-center;
             gap: 5px;
+            min-width: 50px;
         }
     }
 
@@ -43,8 +47,9 @@
 
         h1 {
             margin: 0;
-            font-weight: 900;
-            font-size: 36px;
+            font-weight: 700;
+            font-size: 32px;
+            min-height: 43px;
         }
     }
 
