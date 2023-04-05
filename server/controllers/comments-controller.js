@@ -37,16 +37,20 @@ const getAll = async (req, res) => {
 
 const getOne = async (req, res) => {
     try {
-        const eventId = req.params.id;
+        const commentId = req.params.id;
 
+<<<<<<< HEAD
         const event = await db.comments.findOne({
+=======
+        const comment = await db.comments.findOne({
+>>>>>>> 04e0897892c1a813eb0618f20a4aa245eb0d7ef1
             where: {
-                id : eventId
+                id : commentId
             }
         });
 
         return res.json ({
-            event
+            comment
         });
     }
     catch(error) {

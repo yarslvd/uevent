@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = function(sequelize) {
-    return sequelize.define('tickets', {
+    return sequelize.define('subscriptions', {
         event_id: {
             type: DataTypes.BIGINT,
             allowNull: false,
@@ -17,15 +17,10 @@ module.exports = function(sequelize) {
                 model: 'users',
                 key: 'id'
             }
-        },
-        can_show: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-            defaultValue: true,
         }
     }, {
         sequelize,
-        tableName: 'tickets',
+        tableName: 'subscriptions',
         schema: 'public',
         timestamps: false
     });

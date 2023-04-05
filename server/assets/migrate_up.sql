@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS organizers (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
     email TEXT NOT NULL,
     user_id BIGINT NOT NULL,
 
@@ -40,12 +41,13 @@ CREATE TABLE IF NOT EXISTS events (
     price NUMERIC(12,2) NOT NULL,
     iso_currency VARCHAR(3) NOT NULL,
     address TEXT NOT NULL,
-    location GEOMETRY(POINT) NOT NULL,
+    location VARCHAR(255) NOT NULL,
     date TIMESTAMP WITH TIME ZONE NOT NULL,
     publish_date TIMESTAMP WITH TIME ZONE NOT NULL,
     organizer_id BIGINT NOT NULL,
     ticket_amount INTEGER NOT NULL,
     visability events_visability_enum NOT NULL,
+   spotify_id VARCHAR(255),
     -- notifications we need to think about notifications
 
     FOREIGN KEY(organizer_id) REFERENCES organizers(id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -74,6 +76,23 @@ CREATE TABLE IF NOT EXISTS payments (
 );
 
 CREATE TABLE IF NOT EXISTS tickets (
+    event_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+    can_show BOOL NOT NULL DEFAULT TRUE,
+
+    FOREIGN KEY(event_id) REFERENCES events(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS subscriptions (
+    event_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+
+    FOREIGN KEY(event_id) REFERENCES events(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS favorites (
     event_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
 

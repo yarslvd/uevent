@@ -34,7 +34,7 @@ module.exports = function(sequelize) {
       allowNull: false
     },
     location: {
-      type: DataTypes.GEOMETRY('POINT'),
+      type: DataTypes.STRING(255),
       allowNull: false
     },
     date: {
@@ -60,7 +60,11 @@ module.exports = function(sequelize) {
     visability: {
       type: DataTypes.ENUM("private","public"),
       allowNull: false
-    }
+    },
+    spotify_id: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
   }, {
     sequelize,
     tableName: 'events',

@@ -6,6 +6,10 @@ module.exports = function(sequelize) {
             type: DataTypes.TEXT,
             allowNull: false,
             primaryKey: true
+        },
+        valid_till: {
+            type: DataTypes.DATE,
+            allowNull: false,
         }
     }, {
         sequelize,
