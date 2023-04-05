@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS subscriptions;
+DROP TABLE IF EXISTS favorites;
 DROP TABLE IF EXISTS tickets;
 DROP TABLE IF EXISTS payments;
 DROP TABLE IF EXISTS tokens;

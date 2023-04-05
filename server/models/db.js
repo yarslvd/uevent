@@ -17,18 +17,23 @@ let promos = require("./promos")(sequelize);
 let tokens = require("./tokens")(sequelize);
 let tickets = require("./tickets")(sequelize);
 let payments = require("./payments")(sequelize);
+let subscriptions = require("./subscriptions")(sequelize);
+let favorites = require("./favorites")(sequelize);
 
 promos.belongsTo(events, { as: "event", foreignKey: "event_id"});
 events.hasMany(promos, { as: "promos", foreignKey: "event_id"});
 tickets.belongsTo(events, { as: "event", foreignKey: "event_id"});
 events.hasMany(tickets, { as: "tickets", foreignKey: "event_id"});
+events.hasMany(favorites, { as: "favorites", foreignKey: "event_id"});
+events.hasMany(subscriptions, { as: "subscriptions", foreignKey: "event_id"});
 events.belongsTo(organizers, { as: "organizer", foreignKey: "organizer_id"});
 organizers.hasMany(events, { as: "events", foreignKey: "organizer_id"});
 organizers.belongsTo(users, { as: "user", foreignKey: "user_id"});
 users.hasMany(organizers, { as: "organizers", foreignKey: "user_id"});
 tickets.belongsTo(users, { as: "user", foreignKey: "user_id"});
 users.hasMany(tickets, { as: "tickets", foreignKey: "user_id"});
-
+users.hasMany(favorites, { as: "favorites", foreignKey: "user_id"});
+users.hasMany(subscriptions, { as: "subscriptions", foreignKey: "user_id"});
 users.hasMany(payments, { as: "payments", foreignKey: "payer_id"});
 payments.belongsTo(users, { as: "user", foreignKey: "payer_id"});
 
@@ -50,5 +55,7 @@ module.exports = {
   organizers: organizers,
   tokens: tokens,
   tickets: tickets,
+  favorites: favorites,
+  subscriptions: subscriptions,
   payments: payments,
 };
