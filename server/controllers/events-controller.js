@@ -33,7 +33,7 @@ const create = async (req, res) => {
             'publish_date',
             'organizer_id',
             'ticket_amount',
-            'visability'
+            'visibility'
         ])
         if (!request) {
             return res.status(StatusCodes.BAD_REQUEST).json({
@@ -57,16 +57,11 @@ const create = async (req, res) => {
             });
         }
 
-        if (request.visability !== 'private' && request.visability !== 'public') {
+        if (request.visibility !== 'private' && request.visibility !== 'public') {
             return res.status(StatusCodes.BAD_REQUEST).json({
-                error: "Wrong visability (only `private` or `public`)",
+                error: "Wrong visibility (only `private` or `public`)",
             });
         }
-
-        const point = {
-            type: 'Point',
-            coordinates: request.location, // GeoJson format: [lng, lat]
-        };
 
         const event = await db.events.create({
             poster : req.body.poster,
@@ -75,12 +70,13 @@ const create = async (req, res) => {
             price : request.price,
             iso_currency : request.iso_currency,
             address : request.address,
-            location : point,
+            location : request.location,
             date : request.date,
             publish_date : request.publish_date,
             organizer_id : request.organizer_id,
             ticket_amount : request.ticket_amount,
-            visability : request.visability,
+            visibility : request.visibility,
+            spotify_id : req.body.spotify_id ? req.body.spotify_id : null,
         });
 
         res.json({event});
@@ -113,7 +109,7 @@ const update = async (req, res) => {
             'date',
             'publish_date',
             'ticket_amount',
-            'visability'
+            'visibility'
         ])
 
         await db.events.update(toUpdate, {where: { id: event.dataValues.id}, plain: true });

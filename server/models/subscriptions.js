@@ -2,11 +2,11 @@ const { DataTypes } = require('sequelize');
 
 module.exports = function(sequelize) {
     return sequelize.define('subscriptions', {
-        event_id: {
+        organizer_id: {
             type: DataTypes.BIGINT,
             allowNull: false,
             references: {
-                model: 'events',
+                model: 'organizers',
                 key: 'id'
             }
         },

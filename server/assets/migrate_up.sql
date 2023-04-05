@@ -1,5 +1,4 @@
-CREATE TYPE events_visability_enum AS ENUM ('private', 'public');
-CREATE EXTENSION IF NOT EXISTS postgis;
+CREATE TYPE events_visibility_enum AS ENUM ('private', 'public');
 CREATE TYPE tx_status_enum AS ENUM('success', 'reverted', 'in progress');
 
 -- TODO: add indexes to fields by which filtering will be done
@@ -46,8 +45,8 @@ CREATE TABLE IF NOT EXISTS events (
     publish_date TIMESTAMP WITH TIME ZONE NOT NULL,
     organizer_id BIGINT NOT NULL,
     ticket_amount INTEGER NOT NULL,
-    visability events_visability_enum NOT NULL,
-   spotify_id VARCHAR(255),
+    visibility events_visibility_enum NOT NULL,
+    spotify_id VARCHAR(255),
     -- notifications we need to think about notifications
 
     FOREIGN KEY(organizer_id) REFERENCES organizers(id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -85,10 +84,10 @@ CREATE TABLE IF NOT EXISTS tickets (
 );
 
 CREATE TABLE IF NOT EXISTS subscriptions (
-    event_id BIGINT NOT NULL,
+    organizer_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
 
-    FOREIGN KEY(event_id) REFERENCES events(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(organizer_id) REFERENCES organizers(id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 

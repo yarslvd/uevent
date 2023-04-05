@@ -1,6 +1,5 @@
 const express = require('express');
 const auth = require('../controllers/auth-controller');
-const {jwtMiddleware} = require("../utils/jwt");
 
 const router = express.Router();
 

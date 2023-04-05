@@ -102,7 +102,7 @@ ___
   "publish_date": "",
   "organizer_id": "",
   "ticket_amount": "",
-  "visability": "",
+  "visibility": "",
   "poster": ""         not required)
 }
 ```
@@ -124,7 +124,7 @@ ___
   "publish_date": "",
   "organizer_id": "",
   "ticket_amount": "",
-  "visability": "",
+  "visibility": "",
 }
 ```
 ___

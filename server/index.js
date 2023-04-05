@@ -25,6 +25,8 @@ const organizersRouter = require('./routes/organizers-routes');
 const eventsRouter = require('./routes/events-routes');
 const commentsRouter = require('./routes/comments-routes');
 const promosRouter = require('./routes/promos-routes');
+const ticketsRouter = require('./routes/tickets-routes');
+const subscriptionsRouter = require('./routes/subscriptions-routes');
 const { checkPayment } = require('./controllers/events-controller');
 
 app.use("/api/auth", authRouter);
@@ -32,6 +34,8 @@ app.use("/api/organizers", organizersRouter);
 app.use("/api/events", eventsRouter);
 app.use("/api/comments", commentsRouter);
 app.use("/api/promos", promosRouter);
+app.use("/api/tickets", ticketsRouter);
+app.use("/api/subscriptions", subscriptionsRouter);
 
 app.get("/api/payments/:id", checkPayment);
 

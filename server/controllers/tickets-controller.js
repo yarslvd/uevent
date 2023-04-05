@@ -2,6 +2,7 @@ const {checkFields} = require("../helpers/object-fields");
 const {StatusCodes} = require("http-status-codes");
 const db = require("../models/db");
 const {Op} = require("sequelize");
+const {checkUserAndEvent} = require("../helpers/check-user-event");
 
 //TODO: We need to add payment information here, maybe to save payment sig?
 const create = async (req, res) => {
@@ -16,17 +17,14 @@ const create = async (req, res) => {
             });
         }
 
-        const user = await db.organizers.findByPk(req.user.id);
-        if (user === null) {
-            return res.status(StatusCodes.NOT_FOUND).json({
-                error : "No user with such id"
-            })
+        let result = await checkUserAndEvent(res, req.user.id, request.event_id)
+        if (result === null) {
+            return
         }
 
-        const event = await db.events.findByPk(request.event_id)
-        if (event === null) {
-            return res.status(StatusCodes.NOT_FOUND).json({
-                error : "No event with such id"
+        if (result.event.dataValues.ticket_amount <= 0) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                error : "Tickets are out of stock"
             })
         }
 
@@ -35,11 +33,13 @@ const create = async (req, res) => {
             user_id : req.user.id,
         });
 
+        await db.events.update({ ticket_amount : result.event.dataValues.ticket_amount-1 })
+
         await db.payments.create({
             signature : request.signature,
         });
 
-        res.json({
+        return res.status(StatusCodes.CREATED).json({
             ticket
         });
     }
@@ -66,7 +66,7 @@ const get = async (req, res) => {
             });
         }
 
-        if (event.dataValues.visability === 'private') {
+        if (event.dataValues.visibility === 'private') {
             if (req.query.user_id === null) {
                 return res.status(StatusCodes.BAD_REQUEST).json({
                     error: "You are not allowed to see tickets",
@@ -98,7 +98,10 @@ const get = async (req, res) => {
 
         //TODO: test this govno
         let tickets = await db.tickets.findAll({
-                where: { event_id: req.query.event_id },
+                where: {
+                    event_id: req.query.event_id,
+                    can_show : true,
+                },
                 include: [ db.users ]
         })
 

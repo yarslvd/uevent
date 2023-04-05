@@ -23,7 +23,7 @@ const getAll = async (req, res) => {
         const comments = await processPagination(
             url, path, db.comments, limit, page, parametrs);
 
-        res.json({
+        return res.status(StatusCodes.OK).json({
             comments
         })
     }
