@@ -1,12 +1,16 @@
 const {tokens} = require("../models/db");
 const {StatusCodes} = require("http-status-codes");
+const { decodeToken } = require("../utils/jwt");
 
 
 async function createToken(token, res) {
+    const {exp} = await decodeToken(token);
+
     const [, isTokenCreated] = await tokens.findOrCreate({
         where: { token:token },
         defaults : {
             token: token,
+            valid_till: exp * 1000
         },
     })
 
