@@ -27,7 +27,7 @@ const commentsRouter = require('./routes/comments-routes');
 const promosRouter = require('./routes/promos-routes');
 const ticketsRouter = require('./routes/tickets-routes');
 const subscriptionsRouter = require('./routes/subscriptions-routes');
-const { checkPayment } = require('./controllers/events-controller');
+const paymentsRouter = require('./routes/payments-routes');
 
 app.use("/api/auth", authRouter);
 app.use("/api/organizers", organizersRouter);
@@ -36,8 +36,7 @@ app.use("/api/comments", commentsRouter);
 app.use("/api/promos", promosRouter);
 app.use("/api/tickets", ticketsRouter);
 app.use("/api/subscriptions", subscriptionsRouter);
-
-app.get("/api/payments/:id", checkPayment);
+app.use("/api/payments", paymentsRouter);
 
 app.listen(process.env.SERVER_PORT, () => {
     console.log(`Server running at http://localhost:${process.env.SERVER_PORT}/`);

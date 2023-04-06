@@ -22,6 +22,14 @@ module.exports = function(sequelize) {
             type: DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: true,
+        },
+        payment_id: {
+            type: DataTypes.BIGINT,
+            allowNull: true,
+            references: {
+                model: 'payments',
+                key: 'id'
+            }
         }
     }, {
         sequelize,

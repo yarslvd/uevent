@@ -15,7 +15,7 @@ const getAll = async (req, res) => {
         limit = Number(limit);
 
         let parametrs = Object.assign({},
-            req.query.events ? {...filterEventId(req.query.events)} : {}
+            req.query.event_id ? {...filterEventId(req.query.event_id)} : {}
         );
 
         let url = `${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`
@@ -39,11 +39,7 @@ const getOne = async (req, res) => {
     try {
         const commentId = req.params.id;
 
-<<<<<<< HEAD
-        const event = await db.comments.findOne({
-=======
         const comment = await db.comments.findOne({
->>>>>>> 04e0897892c1a813eb0618f20a4aa245eb0d7ef1
             where: {
                 id : commentId
             }
@@ -107,7 +103,7 @@ const update = async (req, res) => {
 
         const commentId = req.params.id;
 
-        let comment = checkCommentByUser(res, commentId, req.user.id)
+        let comment = await checkCommentByUser(res, commentId, req.user.id)
         if (comment === null) {
             return null
         }
@@ -129,12 +125,12 @@ const deleteComment = async (req, res) => {
     try {
         const commentId = req.params.id;
 
-       let comment = checkCommentByUser(res, commentId, req.user.id)
+       let comment = await checkCommentByUser(res, commentId, req.user.id)
         if (comment === null) {
             return null
         }
 
-        await db.comments.destroy({where: {id: comment.dataValues.id}});
+        await db.comments.destroy({where: {id: commentId}});
 
         return res.status(StatusCodes.NO_CONTENT).send();
     }

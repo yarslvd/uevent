@@ -21,12 +21,6 @@ router.route('/:id')
     .patch(jwtMiddleware, controller.update)
     .delete(jwtMiddleware, controller.delete);
 
-
-// endpoints for test
-router.get('/:id/payment', jwtMiddleware, controller.getPayment);
-router.get('/:id/pay-form', jwtMiddleware, controller.getPayForm);
-router.post('/:id/confirm-pay', controller.confirmPay);
-
 router.post('/:id/poster', upload.single("poster"), controller.updatePoster);
 
 module.exports = router;

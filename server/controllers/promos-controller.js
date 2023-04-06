@@ -16,7 +16,7 @@ const getAll = async (req, res) => {
             });
         }
 
-        let promos = db.promos.findAndCountAll({
+        let promos = await db.promos.findAndCountAll({
             where : {
                 event_id : req.query.event_id,
             }
@@ -38,7 +38,7 @@ const getOne = async (req, res) => {
     try {
         const promoText = req.params.text;
 
-        const promo = await db.promos.findByPk({promoText});
+        const promo = await db.promos.findByPk(promoText);
 
         return res.json ({
             promo
@@ -118,12 +118,12 @@ const deletePromo = async (req, res) => {
     try {
         const promoText = req.params.text;
 
-        let promo = checkPromoByUser(res, promoText, req.user.id)
+        let promo = await checkPromoByUser(res, promoText, req.user.id)
         if (promo === null) {
             return null
         }
-
-        await db.promos.destroy({where: {id: promo.dataValues.id}});
+        
+        await db.promos.destroy({where: {text: promoText}});
 
         return res.status(StatusCodes.NO_CONTENT).send();
     }

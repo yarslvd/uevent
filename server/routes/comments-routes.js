@@ -6,7 +6,7 @@ const router = express.Router();
 
 // api/comments
 router.route('/')
-    .post(controller.create)
+    .post(jwtMiddleware, controller.create)
     .get(controller.getAll)
 router.route('/:id')
     .get(controller.getOne)
