@@ -2,11 +2,15 @@ import { useState, useEffect } from 'react';
 
 import styles from './SpotifySearch.module.scss';
 
-const SpotifySearch = () => {
+const SpotifySearch = ({ register, setValue }) => {
     const [query, setQuery] = useState('');
     const [artist, setArtist] = useState([]);
     const [token, setToken] = useState(null);
     const [radio, setRadio] = useState('');
+
+    useEffect(() => {
+        setValue('spotify_id', radio);
+    },[radio, setValue]);
     
     useEffect(() => {
         (async () => {
@@ -106,6 +110,7 @@ const SpotifySearch = () => {
                                 checked={radio === el.id}
                                 onClick={handleRadio}
                                 onChange={handleRadio}
+                                {...register('spotify_id')}
                             />
                             <label htmlFor={el.id} className={styles.artistCard}>
                                 <div className={styles.container}>

@@ -30,7 +30,7 @@ const RichEditor = ({ name, control, defaultValue, formState }) => {
     }
 
     const validateText = (value) => {
-        return value.length > 300 || "Text must contain more than 300 characters";
+        return value.length > 100 || "Text must contain more than 100 characters";
       };
 
     return (

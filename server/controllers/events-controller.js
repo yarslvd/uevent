@@ -192,7 +192,7 @@ const getAll = async (req, res) => {
 
 const updatePoster = async (req,res) => {
     try{
-        console.log(req.file);
+        console.log(req);
         const tempPath = req.file.path;
         const targetPath = path.join(__dirname, "../public/posters/" + req.params.id + path.extname(req.file.originalname));
 

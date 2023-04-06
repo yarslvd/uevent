@@ -11,9 +11,18 @@ export const fetchEventsApi = createApi({
         getEventInfo: build.query({
             query: (id) => `/${+id}`,
         }),
+        uploadPoster: build.mutation({
+            query: ({file, id}) => ({
+                url: `/${id}/poster`,
+                method: 'POST',
+                body: file
+            })
+        }),
+        
     })
 });
 
 export const {
-    useGetEventInfoQuery
+    useGetEventInfoQuery,
+    useUploadPosterMutation
 } = fetchEventsApi;
