@@ -2,13 +2,15 @@ const {checkFields} = require("../helpers/object-fields");
 const {StatusCodes} = require("http-status-codes");
 const db = require("../models/db");
 const {Op} = require("sequelize");
+const {checkUserAndEvent} = require("../helpers/check-user-event");
+const { createPayment } = require("../helpers/create-payment");
 
 //TODO: We need to add payment information here, maybe to save payment sig?
 const create = async (req, res) => {
     try {
         const request = checkFields(req.body, [
             'event_id',
-            'signature',
+            'count'
         ])
         if (!request) {
             return res.status(StatusCodes.BAD_REQUEST).json({
@@ -16,32 +18,38 @@ const create = async (req, res) => {
             });
         }
 
-        const user = await db.organizers.findByPk(req.user.id);
-        if (user === null) {
-            return res.status(StatusCodes.NOT_FOUND).json({
-                error : "No user with such id"
+        let result = await checkUserAndEvent(res, req.user.id, request.event_id)
+        if (result === null) {
+            return
+        }
+
+        if (result.event.dataValues.ticket_amount <= 0) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                error : "Tickets are out of stock"
             })
         }
 
-        const event = await db.events.findByPk(request.event_id)
-        if (event === null) {
-            return res.status(StatusCodes.NOT_FOUND).json({
-                error : "No event with such id"
+        let event = await db.events.findByPk(request.event_id);
+        if (event.dataValues.ticket_amount - request.count < 0) {
+            return res.status(StatusCodes.FORBIDDEN).json({
+                error : "Not enough tickets on sale"
             })
         }
+        
+        event.dataValues.ticket_amount -= request.count;
+        await db.events.update(event.dataValues, {where: {id: event.dataValues.id}, plain: true})
 
-        const ticket = await db.tickets.create({
-            event_id : request.event_id,
-            user_id : req.user.id,
-        });
+        const paymentObj = await createPayment(event, req.user.id, request.count);
 
-        await db.payments.create({
-            signature : request.signature,
-        });
+        for (let i = 0; i < request.count; i++) {
+            await db.tickets.create({
+                event_id : request.event_id,
+                user_id : req.user.id,
+                payment_id: paymentObj.paymentId
+            });
+        }
 
-        res.json({
-            ticket
-        });
+        res.json(paymentObj);
     }
     catch(error) {
         console.log("Some error while creating ticket: ", error.message);
@@ -66,7 +74,7 @@ const get = async (req, res) => {
             });
         }
 
-        if (event.dataValues.visability === 'private') {
+        if (event.dataValues.visibility === 'private') {
             if (req.query.user_id === null) {
                 return res.status(StatusCodes.BAD_REQUEST).json({
                     error: "You are not allowed to see tickets",
@@ -83,8 +91,8 @@ const get = async (req, res) => {
             let ticket = await db.tickets.findOne({
                 where : {
                     [Op.and]: [
-                        { event_id: event.dataValues.id },
-                        { user_id: user.dataValues.id },
+                        { event_id: event.id },
+                        { user_id: user.id },
                     ]
                 }
             })
@@ -96,10 +104,12 @@ const get = async (req, res) => {
             }
         }
 
-        //TODO: test this govno
         let tickets = await db.tickets.findAll({
                 where: { event_id: req.query.event_id },
-                include: [ db.users ]
+                include: [ {
+                    model:db.users,
+                    as: 'user'
+                } ]
         })
 
         return res.json ({
@@ -112,6 +122,10 @@ const get = async (req, res) => {
             error : "Some error while getting tickets: " + error.message
         });
     }
+}
+
+const getTicketsByPayment = async (req, res) => {
+    // return pdf
 }
 
 module.exports = {

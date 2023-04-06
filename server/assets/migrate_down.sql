@@ -9,5 +9,4 @@ DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS organizers;
 DROP TABLE IF EXISTS users;
 
-DROP EXTENSION IF EXISTS postgis;
-DROP TYPE IF EXISTS events_visability_enum;
+DROP TYPE IF EXISTS events_visibility_enum;

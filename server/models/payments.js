@@ -25,7 +25,7 @@ module.exports = function(sequelize) {
             allowNull: false
         },
         status: {
-          type: DataTypes.ENUM('success', 'reverted', 'in progress'),
+          type: DataTypes.ENUM('success', 'reverted', 'pending'),
           allowNull: false
         },
     }, {

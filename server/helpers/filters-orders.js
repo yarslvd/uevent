@@ -20,6 +20,13 @@ const filterEventId = (eventIds) => {
     }
 };
 
+const filterUserId = (userId) => {
+    return {
+        where : {
+            'user_id' : userId
+        }
+    }
+};
 const filterOrganizerId = (organizerIds) => {
     return {
         where : {
@@ -94,5 +101,6 @@ module.exports = {
     filterPriceBetween,
     filterOrganizerId,
     filterEventId,
+    filterUserId,
     filterOrganizerName
 }

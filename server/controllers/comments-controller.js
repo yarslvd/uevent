@@ -15,7 +15,7 @@ const getAll = async (req, res) => {
         limit = Number(limit);
 
         let parametrs = Object.assign({},
-            req.query.events ? {...filterEventId(req.query.events)} : {}
+            req.query.event_id ? {...filterEventId(req.query.event_id)} : {}
         );
 
         let url = `${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`
@@ -23,7 +23,7 @@ const getAll = async (req, res) => {
         const comments = await processPagination(
             url, path, db.comments, limit, page, parametrs);
 
-        res.json({
+        return res.status(StatusCodes.OK).json({
             comments
         })
     }
@@ -103,7 +103,7 @@ const update = async (req, res) => {
 
         const commentId = req.params.id;
 
-        let comment = checkCommentByUser(res, commentId, req.user.id)
+        let comment = await checkCommentByUser(res, commentId, req.user.id)
         if (comment === null) {
             return null
         }
@@ -125,12 +125,12 @@ const deleteComment = async (req, res) => {
     try {
         const commentId = req.params.id;
 
-       let comment = checkCommentByUser(res, commentId, req.user.id)
+       let comment = await checkCommentByUser(res, commentId, req.user.id)
         if (comment === null) {
             return null
         }
 
-        await db.comments.destroy({where: {id: comment.dataValues.id}});
+        await db.comments.destroy({where: {id: commentId}});
 
         return res.status(StatusCodes.NO_CONTENT).send();
     }

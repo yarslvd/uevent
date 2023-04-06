@@ -4,7 +4,7 @@ const { decodeToken } = require("../utils/jwt");
 
 
 async function createToken(token, res) {
-    const {exp} = await decodeToken(token);
+    const {exp} = decodeToken(token).decoded;
 
     const [, isTokenCreated] = await tokens.findOrCreate({
         where: { token:token },

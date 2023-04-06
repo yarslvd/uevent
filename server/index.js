@@ -25,16 +25,18 @@ const organizersRouter = require('./routes/organizers-routes');
 const eventsRouter = require('./routes/events-routes');
 const commentsRouter = require('./routes/comments-routes');
 const promosRouter = require('./routes/promos-routes');
-const { checkPayment } = require('./controllers/events-controller');
+const ticketsRouter = require('./routes/tickets-routes');
+const subscriptionsRouter = require('./routes/subscriptions-routes');
+const paymentsRouter = require('./routes/payments-routes');
 
 app.use("/api/auth", authRouter);
 app.use("/api/organizers", organizersRouter);
 app.use("/api/events", eventsRouter);
 app.use("/api/comments", commentsRouter);
 app.use("/api/promos", promosRouter);
-app.use("/api/tickets", promosRouter);
-
-app.get("/api/payments/:id", checkPayment);
+app.use("/api/tickets", ticketsRouter);
+app.use("/api/subscriptions", subscriptionsRouter);
+app.use("/api/payments", paymentsRouter);
 
 app.listen(process.env.SERVER_PORT, () => {
     console.log(`Server running at http://localhost:${process.env.SERVER_PORT}/`);

@@ -60,7 +60,7 @@ const getOne = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const request = checkFields(req.body, ['name', 'email'])
+    const request = checkFields(req.body, ['name', 'email', 'description'])
     if (!request) {
         return res.status(StatusCodes.BAD_REQUEST).json({
             error: "Some fields are missed",
@@ -68,9 +68,10 @@ const create = async (req, res) => {
     }
 
     const organizer = await db.organizers.create({
-          name : request.name,
-          email : request.email,
-          user_id: req.user.id
+        name : request.name,
+        email : request.email,
+        user_id: req.user.id,
+        description : request.description,
     });
 
     res.json({organizer});

@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 const {StatusCodes} = require('http-status-codes');
 
 const {users, tokens} = require('../models/db.js');
-const {createToken} = require("../helpers/create-token");
 
 const generateAccessToken = (id, username, email) => {
     const payload = {

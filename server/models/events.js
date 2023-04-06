@@ -57,7 +57,7 @@ module.exports = function(sequelize) {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    visability: {
+    visibility: {
       type: DataTypes.ENUM("private","public"),
       allowNull: false
     },

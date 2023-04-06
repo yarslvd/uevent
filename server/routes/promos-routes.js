@@ -7,8 +7,8 @@ const router = express.Router();
 //  api/promos/
 router.route('/')
     .post(jwtMiddleware, controller.create)
-    .post(controller.validate)
     .get(controller.getAll)
+router.post('/validate', controller.validate)
 router.route('/:text')
     .get(controller.getOne)
     .patch(jwtMiddleware, controller.update)
