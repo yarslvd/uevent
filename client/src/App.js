@@ -16,6 +16,7 @@ import Signup from './pages/Signup/Signup';
 import ResetPassword from './pages/ResetPassword/ResetPassword';
 import ChangePassword from './pages/ChangePassword/ChangePassword';
 import ConfirmEmail from './pages/ConfirmEmail/ConfirmEmail';
+import AllEvents from './pages/AllEvents/AllEvents';
 
 import Test from './pages/Test/Test'
 
@@ -59,6 +60,10 @@ const router = createBrowserRouter([
   {
     path: "/confirm/:token",
     element: <ConfirmEmail />
+  },
+  {
+    path: '/events',
+    element: <AllEvents />
   }
 ]);
 

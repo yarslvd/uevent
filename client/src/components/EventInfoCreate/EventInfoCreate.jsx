@@ -65,72 +65,161 @@ const EventInfoCreate = ({ register, control }) => {
                         ))}
                     </TextField>
                 </div>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <Controller
-                        control={control}
-                        name="date"
-                        rules={{
-                            validate: {
-                                min: (date) => isFuture(date) || "Please, enter a future date"
-                            },
-                            required: true
-                        }}
-                        render={({ field: { ref, onBlur, name, ...field }, fieldState }) => (
-                            <DatePicker
-                                {...field}
-                                inputRef={ref}
-                                required={true}
-                                label="Choose Date"
-                                textField={(inputProps) => (
-                                    <TextField
-                                        {...inputProps}
-                                        onBlur={onBlur}
-                                        name={name}
-                                        error={!!fieldState.error}
-                                        helperText={fieldState.error?.message}
-                                    />
-                                )}
-                            />
-                        )}
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <Controller
+                            control={control}
+                            name="event_date"
+                            rules={{
+                                validate: {
+                                    min: (date) => isFuture(date) || "Please, enter a future date"
+                                },
+                                required: true
+                            }}
+                            render={({ field: { ref, onBlur, name, ...field }, fieldState }) => (
+                                <DatePicker
+                                    {...field}
+                                    inputRef={ref}
+                                    required={true}
+                                    label="Event Date"
+                                    textField={(inputProps) => (
+                                        <TextField
+                                            {...inputProps}
+                                            onBlur={onBlur}
+                                            name={name}
+                                            error={!!fieldState.error}
+                                            helperText={fieldState.error?.message}
+                                        />
+                                    )}
+                                />
+                            )}
+                        />
+                        <Controller
+                            control={control}
+                            name="event_time"
+                            rules={{
+                                required: true
+                            }}
+                            render={({ field: { ref, onBlur, name, ...field }, fieldState }) => (
+                                <TimePicker
+                                    {...field}
+                                    inputRef={ref}
+                                    label="Event Time"
+                                    ampm={false}
+                                    textField={(inputProps) => (
+                                        <TextField
+                                            {...inputProps}
+                                            onBlur={onBlur}
+                                            name={name}
+                                            error={!!fieldState.error}
+                                            helperText={fieldState.error?.message}
+                                        />
+                                    )}
+                                />
+                            )}
+                        />
+                        {/* <DatePicker
+                            name='date'
+                            label="Select Date"
+                            renderInput={(params) =>
+                            <TextField
+                                {...params}
+                                {...register("date")}
+                            />}
+                        /> */}
+                    </LocalizationProvider>
+                </div>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <Controller
+                            control={control}
+                            name="publish_date"
+                            rules={{
+                                validate: {
+                                    min: (date) => isFuture(date) || "Please, enter a future date"
+                                },
+                                required: true
+                            }}
+                            render={({ field: { ref, onBlur, name, ...field }, fieldState }) => (
+                                <DatePicker
+                                    {...field}
+                                    inputRef={ref}
+                                    required={true}
+                                    label="Publish Date"
+                                    textField={(inputProps) => (
+                                        <TextField
+                                            {...inputProps}
+                                            onBlur={onBlur}
+                                            name={name}
+                                            error={!!fieldState.error}
+                                            helperText={fieldState.error?.message}
+                                        />
+                                    )}
+                                />
+                            )}
+                        />
+                        <Controller
+                            control={control}
+                            name="publish_time"
+                            rules={{
+                                required: true
+                            }}
+                            render={({ field: { ref, onBlur, name, ...field }, fieldState }) => (
+                                <TimePicker
+                                    {...field}
+                                    inputRef={ref}
+                                    label="Publish Time"
+                                    ampm={false}
+                                    textField={(inputProps) => (
+                                        <TextField
+                                            {...inputProps}
+                                            onBlur={onBlur}
+                                            name={name}
+                                            error={!!fieldState.error}
+                                            helperText={fieldState.error?.message}
+                                        />
+                                    )}
+                                />
+                            )}
+                        />
+                        {/* <DatePicker
+                            name='date'
+                            label="Select Date"
+                            renderInput={(params) =>
+                            <TextField
+                                {...params}
+                                {...register("date")}
+                            />}
+                        /> */}
+                    </LocalizationProvider>
+                </div>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <TextField
+                        id="location"
+                        label="Place name"
+                        variant="outlined"
+                        className={styles.price}
+                        onChange={handlePriceChange}
+                        error={!valid}
+                        type='text'
+                        {...register('location', {required: true})}
+                        style={{ width: '100%'}}
                     />
-                    <Controller
-                        control={control}
-                        name="time"
-                        rules={{
-                            required: true
-                        }}
-                        render={({ field: { ref, onBlur, name, ...field }, fieldState }) => (
-                            <TimePicker
-                                {...field}
-                                inputRef={ref}
-                                label="Choose Time"
-                                ampm={false}
-                                textField={(inputProps) => (
-                                    <TextField
-                                        {...inputProps}
-                                        onBlur={onBlur}
-                                        name={name}
-                                        error={!!fieldState.error}
-                                        helperText={fieldState.error?.message}
-                                    />
-                                )}
-                            />
-                        )}
+                    <TextField
+                        id="tickets"
+                        label="Tickets Amount"
+                        variant="outlined"
+                        className={styles.price}
+                        onChange={handlePriceChange}
+                        error={!valid}
+                        type='number'
+                        {...register('ticket_amount', {required: true})}
                     />
-                    {/* <DatePicker
-                        name='date'
-                        label="Select Date"
-                        renderInput={(params) =>
-                        <TextField
-                            {...params}
-                            {...register("date")}
-                        />}
-                    /> */}
-                </LocalizationProvider>
+                </div>
             </div>
             <div className={styles.buttons}>
                 <Button variant='outlined' className={styles.saveDraftsBtn} type="submit">Save to Drafts</Button>
-                <Button variant='contained' className={styles.publishBtn}>Publish</Button>
+                <Button variant='contained' className={styles.publishBtn} type="submit">Publish</Button>
             </div>
         </div>
     ) 

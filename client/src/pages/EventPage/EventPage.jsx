@@ -34,12 +34,11 @@ const EventPage = () => {
   const { id } = useParams();
   const isAuth = useSelector(selectIsAuthMe);
   const matches = useMediaQuery('(max-width:500px)');
-  console.log(isAuth);
 
   const { isLoading: isLoadingInfo, data: dataInfo, error: errorInfo } = useGetEventInfoQuery(id);
   const { isLoading: isLoadingComments, data: dataComments, error: errorComments } = useGetEventCommentsQuery(id);
   // const { isLoading: isLoadingTickets, data: dataTickets, error: errorTickets } = useGetTicketsQuery(id);
-  // console.log('comm', dataTickets);
+  console.log('comm', isLoadingInfo, id);
 
   return (
     <Layout>

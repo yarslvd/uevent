@@ -13,7 +13,7 @@ const Card = ({ image_url, title, date, price }) => {
                 <span>{date}</span>
             </div>
             <div className={styles.info}>
-                <Link className={styles.more_link} to={`/events/${title}`}>{t('wideCard.more')}</Link>
+                <Link className={styles.more_link} to={`/event/${title}`}>{t('wideCard.more')}</Link>
                 <span>{`${t('wideCard.price')} ${price} ₴`}</span>
             </div>
         </div>

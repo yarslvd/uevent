@@ -1,11 +1,6 @@
-<<<<<<< HEAD
-CREATE TYPE events_visibility_enum AS ENUM ('private', 'public');
-CREATE TYPE tx_status_enum AS ENUM('success', 'reverted', 'in progress');
-=======
 CREATE TYPE events_visability_enum AS ENUM ('private', 'public');
 CREATE EXTENSION IF NOT EXISTS postgis;
 CREATE TYPE tx_status_enum AS ENUM('success', 'reverted', 'pending');
->>>>>>> 7fc645d (fixed tickets, payments, promos, comments, added endpoints to docs)
 
 -- TODO: add indexes to fields by which filtering will be done
 

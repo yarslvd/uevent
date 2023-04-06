@@ -5,10 +5,10 @@ import styles from './Map.module.scss';
 
 const libraries = ['places'];
 
-const Map = ({ register, control, setValue }) => {
+const Map = ({ register, setValue }) => {
     const [placeName, setPlaceName] = useState('');
     const [markerPosition, setMarkerPosition] = useState(null);
-    const [center, setCenter] = useState({  lat: 49.9935, lng: 36.2304 });
+    const [center, setCenter] = useState({ lat: 49.9935, lng: 36.2304 });
     const [map, setMap] = useState(null);
     const searchBox = useRef(null);
 

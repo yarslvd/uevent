@@ -1,8 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { formatISO } from 'date-fns';
 
 import Layout from '../../components/Layout/Layout';
 import EventInfoCreate from '../../components/EventInfoCreate/EventInfoCreate';
@@ -10,34 +9,58 @@ import RichEditor from '../../components/RichEditor/RichEditor';
 import Map from '../../components/Map/Map';
 import SpotifySearch from '../../components/SpotifySearch/SpotifySearch';
 import { selectIsAuth } from '../../redux/slices/authSlice';
+import { useUploadPosterMutation } from '../../redux/api/fetchEventsApi';
 
 import styles from './CreateEventPage.module.scss';
 
 const CreateEventPage = () => {
     const auth = useSelector(selectIsAuth);
-    const { id } = useParams();
     const navigate = useNavigate();
     console.log(auth);
 
     const { userInfo } = useSelector((state) => state.auth);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [imageUrl, setImageUrl] = useState(null);
+    const [uploadPoster, { isLoading: isUpdating}] = useUploadPosterMutation();
+    console.log(selectedImage);
 
     const { register, handleSubmit, formState, control, setValue } = useForm({
         mode: 'onChange'
     });
 
+    useEffect(() => {
+        if (selectedImage) {
+          setImageUrl(URL.createObjectURL(selectedImage));
+          console.log(imageUrl);
+        }
+    }, [selectedImage]);
+
+    useEffect(() => {
+        if(!auth) {
+            navigate('/login');
+        }
+    }, [])
+
     const handleImageUpload = (e) => {
+        e.preventDefault();
         const formData = new FormData();
         const file = e.target.files[0];
-        console.log(file);
+        formData.append('poster', file);
+        console.log(formData);
+        uploadPoster({file});
+    }
+
+    const getFullTime = (date, time) => {
+        const dateNew = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+        const timeNew = `${time.getHours()}:${time.getMinutes()}`;
+        return `${dateNew} ${timeNew}:00+00`
     }
 
     const onSubmit = (values) => {
         console.log(values);
-        const date = `${values.date.getFullYear()}-${values.date.getMonth() + 1}-${values.date.getDate()}`;
-        const time = `${values.time.getHours()}:${values.time.getMinutes()}`;
-        const fullTime = `${date} ${time}:00+00`
-
-        console.log(fullTime);
+        const date = getFullTime(values.event_date, values.event_time);
+        const publish_date = getFullTime(values.publish_date, values.publish_time)
+        console.log(date, publish_date);
     }
 
     useEffect(() => {
@@ -53,7 +76,7 @@ const CreateEventPage = () => {
                     className={styles.image}
                     style={{
                         backgroundImage:
-                        "url(https://images.squarespace-scdn.com/content/v1/5c213a383c3a53bf091b1c36/3f825ca8-72ac-4c5d-b485-035b9ddb5364/h.jpeg)",
+                        `url(${imageUrl})`,
                     }}
                 >
                     <span>No Image</span>
@@ -66,7 +89,8 @@ const CreateEventPage = () => {
                         type="file"
                         id='img'
                         accept="image/png, image/jpg, image/jpeg"
-                        onChange={handleImageUpload}
+                        onChange={(e) => console.log(e.target.files[0])}
+                        {...register('image')}
                     />
                 </div>
                 <div className={styles.info}>
@@ -74,8 +98,8 @@ const CreateEventPage = () => {
                 </div>
                 <div className={styles.content}>
                     <RichEditor name="description" control={control} defaultValue="" formState={formState}/>
-                    <Map register={register} control={control} setValue={setValue}/>
-                    <SpotifySearch register={register} control={control}/>
+                    <Map register={register} setValue={setValue}/>
+                    <SpotifySearch register={register} setValue={setValue}/>
                 </div>
             </form>
         </Layout>
