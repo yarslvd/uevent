@@ -68,17 +68,10 @@ const create = async (req, res) => {
     }
 
     const organizer = await db.organizers.create({
-<<<<<<< HEAD
         name : request.name,
         email : request.email,
         user_id: req.user.id,
         description : request.description,
-=======
-          name : request.name,
-          description : request.description,
-          email : request.email,
-          user_id: req.user.id
->>>>>>> 7fc645d (fixed tickets, payments, promos, comments, added endpoints to docs)
     });
 
     res.json({organizer});
