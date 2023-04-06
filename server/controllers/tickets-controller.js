@@ -4,8 +4,8 @@ const db = require("../models/db");
 const {Op} = require("sequelize");
 const {checkUserAndEvent} = require("../helpers/check-user-event");
 const { createPayment } = require("../helpers/create-payment");
+const {waitTx} = require("../helpers/wait-tx");
 
-//TODO: We need to add payment information here, maybe to save payment sig?
 const create = async (req, res) => {
     try {
         const request = checkFields(req.body, [
@@ -35,11 +35,18 @@ const create = async (req, res) => {
                 error : "Not enough tickets on sale"
             })
         }
-        
-        event.dataValues.ticket_amount -= request.count;
-        await db.events.update(event.dataValues, {where: {id: event.dataValues.id}, plain: true})
 
         const paymentObj = await createPayment(event, req.user.id, request.count);
+
+        const paymentStatus = await waitTx("pending", paymentObj.orderId)
+        if (paymentStatus === "reverted") {
+            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                error : "Failed to make transaction"
+            })
+        }
+
+        event.dataValues.ticket_amount -= request.count;
+        await db.events.update(event.dataValues, {where: {id: event.dataValues.id}, plain: true})
 
         for (let i = 0; i < request.count; i++) {
             await db.tickets.create({

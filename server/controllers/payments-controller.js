@@ -49,7 +49,7 @@ const checkPayment = async (req,res) => {
   try{
       const paymentId = req.params.id;
       const payment = await db.payments.findByPk(paymentId);
-      if(payment.status == 'success') {
+      if(payment.status === 'success') {
         return res.status(StatusCodes.OK).json({
           status: payment.status,
           error: ""
