@@ -43,6 +43,9 @@ users.hasMany(subscriptions, { as: "subscriptions", foreignKey: "user_id"});
 tickets.belongsTo(users, { as: "user", foreignKey: "user_id"});
 users.hasMany(tickets, { as: "tickets", foreignKey: "user_id"});
 
+comments.belongsTo(users, { as: 'user', foreignKey: 'user_id' });
+users.hasMany(comments, { as: "comments", foreignKey: "user_id"});
+
 (async () => {await sequelize.sync()
     .then(() => {
         console.log('DB was created');

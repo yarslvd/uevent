@@ -143,7 +143,14 @@ const getOne = async (req, res) => {
     try {
         const eventId = req.params.id;
 
-        const event = await db.events.findByPk(eventId);
+        const event = await db.events.findByPk(eventId, {
+            include: [
+                {
+                    model: db.organizers,
+                    as: 'organizer'
+                }
+            ]
+        });
         if (event === null) {
             return res.status(StatusCodes.NOT_FOUND).json ({
                 error : "No event with id " + eventId,
@@ -174,6 +181,13 @@ const getAll = async (req, res) => {
             req.query.date_between ? {...filterDateBetween(req.query.date_between.from, req.query.date_between.to)} : {},
             req.query.price_between ? {...filterPriceBetween(req.query.price_between.from, req.query.price_between.to)} : {},
         );
+
+        parameters.include = [
+            {
+                model: db.organizers,
+                as: 'organizer'
+            }
+        ]
 
         let url = `${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`
         let path = req.originalUrl.split('?')[0] + createUrlParams(req.query)

@@ -89,9 +89,11 @@ const CreateEventPage = () => {
             addPromo({ text: el.promocode, discount: el.percentage, event_id: res.event.id, valid_till: date });
         })
         
-        const formData = new FormData();
-        formData.append('poster', values.image[0]);
-        await uploadPoster({file: formData, id: res.event.id});
+        if(values.image[0]) {
+            const formData = new FormData();
+            formData.append('poster', values.image[0]);
+            await uploadPoster({file: formData, id: res.event.id});
+        }
     }
 
     const handleDeletePromo = (chipIdToDelete) => {
