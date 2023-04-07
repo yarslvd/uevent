@@ -65,6 +65,12 @@ module.exports = function(sequelize) {
       type: DataTypes.STRING(255),
       allowNull: true
     },
+    format: {
+      type: DataTypes.TEXT
+    },
+    theme: {
+      type: DataTypes.TEXT
+    },
   }, {
     sequelize,
     tableName: 'events',

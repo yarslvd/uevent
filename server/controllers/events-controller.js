@@ -4,7 +4,7 @@ const {checkFields, getDesiredFields} = require("../helpers/object-fields");
 const {StatusCodes} = require("http-status-codes");
 const db = require("../models/db"); 
 const {checkEventByUser} = require("../helpers/check-event-organizer");
-const {filterDateBetween, filterPriceBetween, filterOrganizerId} = require("../helpers/filters-orders");
+const {filterDateBetween, filterPriceBetween, filterOrganizerId, filterTitle, filterColumn, filterValue, filterStringIncludes, filterColumnValue} = require("../helpers/filters-orders");
 const {processPagination} = require("../helpers/db-helper");
 const {createUrlParams} = require("../helpers/url-helpers");
 const {uid} = require('uid');
@@ -177,11 +177,17 @@ const getAll = async (req, res) => {
         page = Number(page);
         limit = Number(limit);
         console.log("organizers:", req.query.organizers);
-        let parameters = Object.assign({},
-            req.query.organizers ? {...filterOrganizerId(req.query.organizers)} : {},
-            req.query.date_between ? {...filterDateBetween(req.query.date_between.from, req.query.date_between.to)} : {},
-            req.query.price_between ? {...filterPriceBetween(req.query.price_between.from, req.query.price_between.to)} : {},
-        );
+        let parameters = {
+            where: {
+                ...Object.assign({},
+                req.query.organizers ? {...filterOrganizerId(req.query.organizers)} : {},
+                req.query.date_between ? {...filterDateBetween(req.query.date_between.from, req.query.date_between.to)} : {},
+                req.query.price_between ? {...filterPriceBetween(req.query.price_between.from, req.query.price_between.to)} : {},
+                req.query.title ? {...filterStringIncludes('title', req.query.title)} : {},
+                req.query.theme ? {...filterColumnValue('theme', req.query.theme)} : {},
+                req.query.format ? {...filterColumnValue('format', req.query.format)} : {},
+            )}
+        }
 
         parameters.include = [
             {

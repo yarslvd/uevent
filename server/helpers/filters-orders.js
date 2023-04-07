@@ -29,9 +29,7 @@ const filterUserId = (userId) => {
 };
 const filterOrganizerId = (organizerIds) => {
     return {
-        where : {
             'organizer_id' : JSON.parse(organizerIds)
-        }
     }
 };
 
@@ -42,14 +40,12 @@ const byDate = (order) => { //DESC ASC
 };
 
 const filterDateBetween = (from, to) => { //EXAMPLE '2022-09-24' - '2022-09-25'
-    if (Date.parse(to) > Date.parse(from)) {
+    if (Date.parse(from) > Date.parse(to)) {
         from = [to, to = from][0];
     }
     return {
-        where : {
-            date :{
-                [Sequelize.Op.between] : [from, to]
-            }
+        date :{
+            [Sequelize.Op.between] : [from, to]
         }
     }
 };
@@ -59,15 +55,11 @@ const filterPriceBetween = (from, to) => {
         from = [to, to = from][0];
     }
     return {
-        where : {
-            price :{
-                [Sequelize.Op.between] : [from, to]
-            }
+        price :{
+            [Sequelize.Op.between] : [from, to]
         }
     }
 };
-
-
 
 function filterCategory (modelCategory, categoriesArr) {  //EXAMPLE categories [`javascript`, `js`]
     console.log(categoriesArr);
@@ -94,6 +86,20 @@ function filterCategory (modelCategory, categoriesArr) {  //EXAMPLE categories [
     }
 }
 
+function filterColumnValue(columnName, value) {
+    return {
+        [columnName]: value
+    }
+}
+
+function filterStringIncludes(columnName, str) {
+    return {
+        [columnName]: {
+            [Sequelize.Op.like]: `%${str}%`
+        }
+    }
+}
+
 module.exports = {
     byDate,
 
@@ -102,5 +108,7 @@ module.exports = {
     filterOrganizerId,
     filterEventId,
     filterUserId,
-    filterOrganizerName
+    filterOrganizerName,
+    filterColumnValue,
+    filterStringIncludes
 }
