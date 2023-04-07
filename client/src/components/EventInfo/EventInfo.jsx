@@ -45,7 +45,7 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                 <div className={styles.details}>
                     <div className={styles.item}>
                         <img src="/assets/location_black_icon.png" alt="Location" />
-                        <span>{!isLoading && !error && location.coordinates}</span>
+                        <span>{!isLoading && !error && location}</span>
                     </div>
                     <div className={styles.item}>
                         <img src="/assets/user_black_icon.png" alt="Company" />

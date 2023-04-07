@@ -1,9 +1,10 @@
-import db from "../models/db";
-import {StatusCodes} from "http-status-codes";
-import LiqPay from "../libs/liqpay/liqpay";
+const db = require("../models/db");
+const {StatusCodes} = require('http-status-codes');
+const LiqPay = require("../libs/liqpay/liqpay");
 
 const liqpay = new LiqPay(process.env.LIQPAY_PUB, process.env.LIQPAY_PRIV);
-export function waitTx(status, orderId) {
+
+module.exports = function waitTx(status, orderId) {
     return new Promise((resolve, reject) => {
         let txStatus = status
         while (txStatus === status) {

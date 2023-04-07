@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { Chip, Stack, TextField, Button, Select, FormControl, MenuItem, InputLabel } from '@mui/material';
 
 import Layout from '../../components/Layout/Layout';
 import EventInfoCreate from '../../components/EventInfoCreate/EventInfoCreate';
@@ -13,44 +14,49 @@ import { useUploadPosterMutation, useCreateEventMutation } from '../../redux/api
 
 import styles from './CreateEventPage.module.scss';
 
+const themes = [
+  'Business',
+  'Psychology',
+  'Politics',
+  'Programming',
+  'Sports',
+  'Science'
+];
+
+const formats = [
+  'Conferences',
+  'Lectures',
+  'Workshops',
+  'Fests',
+  'Parties',
+  'Concerts'
+];
+
 const CreateEventPage = () => {
     const auth = useSelector(selectIsAuth);
     const navigate = useNavigate();
-    console.log(auth);
 
-    const { userInfo } = useSelector((state) => state.auth);
+    //States
     const [selectedImage, setSelectedImage] = useState(null);
     const [imageUrl, setImageUrl] = useState(null);
+    const [percentage, setPercentage] = useState(1);
+    const [promocode, setPromocode] = useState("");
+    const [promoLabel, setPromoLabel] = useState("");
+    const [theme, setTheme] = useState('');
+    const [format, setFormat] = useState('');
+    const [promocodeList, setPromocodeList] = useState([]);
+
+    //Mutations
     const [uploadPoster, { isLoading: isUpdating}] = useUploadPosterMutation();
     const [createEvent, {isLoading: isCreating}] = useCreateEventMutation();
 
-    console.log(selectedImage);
 
+    console.log(promocodeList);
+
+    //Form
     const { register, handleSubmit, formState, control, setValue } = useForm({
         mode: 'onChange'
     });
-
-    useEffect(() => {
-        if (selectedImage) {
-          setImageUrl(URL.createObjectURL(selectedImage));
-          console.log(imageUrl);
-        }
-    }, [selectedImage]);
-
-    useEffect(() => {
-        if(!auth) {
-            navigate('/login');
-        }
-    }, [])
-
-    // const handleImageUpload = (e) => {
-    //     e.preventDefault();
-    //     const formData = new FormData();
-    //     const file = e.target.files[0];
-    //     formData.append('poster', file);
-    //     console.log(formData);
-    //     uploadPoster({file});
-    // }
 
     const getFullTime = (date, time) => {
         const dateNew = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
@@ -79,11 +85,27 @@ const CreateEventPage = () => {
             values.spotify_id ? {"spotify_id" : values.spotify_id} : {}
         )
         console.log({event});
-        let res = await createEvent(event).unwrap();
+        //let res = await createEvent(event).unwrap();
         
-        const formData = new FormData();
-        formData.append('poster', values.image[0]);
-        await uploadPoster({file: formData, id: res.event.id});
+        //const formData = new FormData();
+        //formData.append('poster', values.image[0]);
+        //await uploadPoster({file: formData, id: res.event.id});
+    }
+
+    const handleDeletePromo = (chipIdToDelete) => {
+        setPromocodeList((prevChips) =>
+            prevChips.filter((chip) => chip.promoLabel !== chipIdToDelete)
+        );
+    };
+
+    const handleAddPromo = () => {
+        //console.log(!promocodeList.includes({ promo: `${promocode} (-${percentage}%)`}));
+        if(promocode !== '' && percentage > 0 && !promocodeList.includes({ promo: `${promocode} (-${percentage}%)`})) {
+            const promoLabel = `${promocode} (-${percentage}%)`
+            setPromocodeList(current => [...current, { promoLabel, percentage: +percentage, promocode }]);
+            setPromocode('');
+            setPercentage(0);
+        }
     }
 
     useEffect(() => {
@@ -91,6 +113,19 @@ const CreateEventPage = () => {
             navigate('/login');
         }
     }, []);
+
+    useEffect(() => {
+        if (selectedImage) {
+          setImageUrl(URL.createObjectURL(selectedImage));
+          console.log(imageUrl);
+        }
+    }, [selectedImage]);
+
+    useEffect(() => {
+        if(!auth) {
+            navigate('/login');
+        }
+    }, [])
 
     return (
         <Layout>
@@ -121,6 +156,73 @@ const CreateEventPage = () => {
                     <EventInfoCreate register={register} control={control}/>
                 </div>
                 <div className={styles.content}>
+                    <div className={styles.details}>
+                        <h3>Деталі</h3>
+                        <div className={styles.all_details}>
+                            <div className={styles.content_details}>
+                                <div className={styles.promoCreator}>
+                                    <div className={styles.inputs}>
+                                        <TextField
+                                            id="promocode"
+                                            label="Promocode"
+                                            variant="standard"
+                                            value={promocode}
+                                            onChange={(e) => setPromocode(e.target.value)}
+                                        />
+                                        <TextField
+                                            label="%"
+                                            value={percentage}
+                                            onChange={(e) => setPercentage(e.target.value)}
+                                            type="number"
+                                            variant="standard"
+                                            inputProps={{
+                                                min: 0,
+                                                max: 100,
+                                                step: 1,
+                                            }}
+                                        />
+                                        <Button variant='contained' className={styles.add_btn} onClick={handleAddPromo}>Add</Button>
+                                    </div>
+                                </div>
+                                <Stack direction="row" spacing={1} sx={{ maxWidth: '920px', overflowX: 'auto', padding: '10px' }}>
+                                    {promocodeList.map((el, index) => (
+                                        <Chip label={el.promoLabel} color="default" onDelete={() => handleDeletePromo(el.promoLabel)} key={index} />
+                                    ))}
+                                </Stack>
+                            </div>
+                            <FormControl sx={{width: '100%', maxWidth: '300px'}}>
+                                <InputLabel id="Theme">Theme</InputLabel>
+                                <Select
+                                    labelId="Theme"
+                                    id="Theme"
+                                    value={theme}
+                                    label="Theme"
+                                    sx={{ marginRight: '20px' }}
+                                    {...register('theme', { required: true })}
+                                    onChange={(e) => setTheme(e.target.value)}
+                                >
+                                    {themes.map((el, index) => (
+                                        <MenuItem value={el} key={index}>{el}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            <FormControl sx={{width: '100%', maxWidth: '300px'}}>
+                                <InputLabel id="Format">Format</InputLabel>
+                                <Select
+                                    labelId="Format"
+                                    id="Format"
+                                    value={format}
+                                    label="Format"
+                                    {...register('format', { required: true })}
+                                    onChange={(e) => setFormat(e.target.value)}
+                                >
+                                    {formats.map((el, index) => (
+                                        <MenuItem value={el} key={index}>{el}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </div>
+                    </div>
                     <RichEditor name="description" control={control} defaultValue="" formState={formState}/>
                     <Map register={register} setValue={setValue}/>
                     <SpotifySearch register={register} setValue={setValue}/>

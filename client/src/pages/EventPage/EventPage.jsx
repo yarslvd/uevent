@@ -13,7 +13,6 @@ import { selectIsAuthMe } from '../../redux/slices/authSlice';
 import { useGetEventInfoQuery } from '../../redux/api/fetchEventsApi';
 import { useGetEventCommentsQuery, useAddEventCommentMutation } from '../../redux/api/fetchCommentsApi';
 import { useGetTicketsQuery } from '../../redux/api/fetchTicketsApi';
-import { fetchCommentsApi } from '../../redux/api/fetchCommentsApi';
 
 import styles from './EventPage.module.scss';
 
@@ -34,7 +33,6 @@ const EventPage = () => {
 
   const [page, setPage] = useState(0);
   const [commentInput, setCommentInput] = useState('');
-  console.log(commentInput);
 
   const { register, handleSubmit } = useForm({
     defaultValues: {
@@ -45,10 +43,8 @@ const EventPage = () => {
 
   const { isLoading: isLoadingInfo, data: dataInfo, error: errorInfo } = useGetEventInfoQuery(id);
   const { isLoading: isLoadingComments, data: dataComments, error: errorComments, refetch } = useGetEventCommentsQuery({id, page});
-  const [ trigger, { data } ] = fetchCommentsApi.endpoints.getEventComments.useLazyQuery();
   // const { isLoading: isLoadingTickets, data: dataTickets, error: errorTickets } = useGetTicketsQuery(id);
-  console.log('comm', dataComments, id);
-
+  console.log('comm', dataInfo, id);
 
   const onSubmit = (values) => {
     setCommentInput('');
@@ -89,16 +85,18 @@ const EventPage = () => {
             </div>
           </div>
           <div className={styles.embed}>
-            <iframe
+            { !isLoadingInfo && !errorInfo && dataInfo.event.spotify_id !== null &&
+              <iframe
               title="spotify"
-              src="https://open.spotify.com/embed/artist/5RqIkHQnXRZlm1ozfSS1IO?utm_source=generator"
+              src={`https://open.spotify.com/embed/artist/${dataInfo.event.spotify_id}?utm_source=generator`}
               width="100%"
               height="352"
               frameBorder="0"
               allowFullScreen=""
               allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
               loading="lazy"
-            ></iframe>
+              ></iframe>
+            }
 
             <iframe
               title='map'
@@ -114,7 +112,7 @@ const EventPage = () => {
           <div className={styles.comments}>
             <h2>Коментарі</h2>
             <div className={styles.wrapper}>
-              {!isLoadingComments && !errorComments && dataComments?.comments.rows !== null ? <>
+              {!isLoadingComments && !errorComments && dataComments?.comments.rows != 0 ? <>
                 {dataComments?.comments.rows.map((el, index) => (
                   <Comment {...el} key={index} />
                 ))}
