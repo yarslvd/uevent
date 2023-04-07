@@ -26,6 +26,13 @@ export const fetchEventsApi = createApi({
                 body: event
             })
         }),
+        updateEvent: build.mutation({
+            query: (event) => ({
+                url: `/`, 
+                method:"PATCH",
+                body: event
+            })
+        }),
         uploadPoster: build.mutation({
             query: ({file, id}) => ({
                 url: `/${id}/poster`,
@@ -34,7 +41,15 @@ export const fetchEventsApi = createApi({
             })
         }),
         getEvents: build.query({
-            query: ({ page }) => `?limit=6&page=${page}`
+            query: ({ limit = '8', page, id }) => ({
+                url: '/',
+                method: 'GET',
+                params: {
+                    limit: limit,
+                    page: page,
+                    organizers: id
+                }
+            })
         })
     })
 });
@@ -43,5 +58,6 @@ export const {
     useGetEventInfoQuery,
     useUploadPosterMutation,
     useCreateEventMutation,
-    useGetEventsQuery
+    useGetEventsQuery,
+    useUpdateEventMutation
 } = fetchEventsApi;

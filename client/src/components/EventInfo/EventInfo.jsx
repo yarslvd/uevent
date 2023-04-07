@@ -49,7 +49,7 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                     </div>
                     <div className={styles.item}>
                         <img src="/assets/user_black_icon.png" alt="Company" />
-                        <Link to={`/organizers/id`}>{organizer.name}</Link>
+                        <Link to={`/organizers/id`}>{!isLoading && !error && organizer?.name}</Link>
                     </div>
                     <div className={styles.item}>
                         <img src="/assets/price_black_icon.png" alt="Location" />

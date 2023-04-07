@@ -5,9 +5,10 @@ import { Alert } from '@mui/material';
 
 import styles from './RichEditor.module.scss';
 
-const RichEditor = ({ name, control, defaultValue, formState }) => {
+const RichEditor = ({ name, control, defaultValue, formState, description }) => {
     const editorRef = useRef(null);
     const [value, setValue] = useState('');
+    const [editor, setEditor] = useState(null);
 
     useEffect(() => {
         const savedValue = sessionStorage.getItem('myEditorValue');
@@ -17,9 +18,15 @@ const RichEditor = ({ name, control, defaultValue, formState }) => {
 
     }, []);
 
+    useEffect(() => {
+        if (description) {
+            console.log(editorRef.current.setContent(description));
+        }
+    }, [editorRef.current]);
+
     const validateText = (value) => {
         return value.length > 100 || "Text must contain more than 100 characters";
-      };
+    };
 
     return (
         <div className={styles.container}>
@@ -44,13 +51,16 @@ const RichEditor = ({ name, control, defaultValue, formState }) => {
                                 'advlist autolink lists link image charmap print preview anchor',
                                 'searchreplace visualblocks code fullscreen',
                                 'insertdatetime media table paste code help wordcount'
-                        ],
-                        toolbar: 'undo redo | formatselect | ' +
-                        'bold italic backcolor | alignleft aligncenter ' +
-                        'alignright alignjustify | bullist numlist outdent indent | ' +
-                        'removeformat' +
-                        '| h4 |',
-                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:18px }'
+                            ],
+                            toolbar: 'undo redo | formatselect | ' +
+                            'bold italic backcolor | alignleft aligncenter ' +
+                            'alignright alignjustify | bullist numlist outdent indent | ' +
+                            'removeformat' +
+                            '| h4 |',
+                            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:18px }',
+                            init_instance_callback: (editor) => {
+                                setEditor(editor);
+                            }
                         }}
                         value={value}
                         onEditorChange={onChange}

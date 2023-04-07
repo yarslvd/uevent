@@ -54,12 +54,13 @@
 
         .clear_btn {
             @include default-btn;
-            color: $base-dark-color;
+            color: #ff6565;
             background-color: transparent;
-            border: 1px solid $base-dark-color;
+            border: 1px solid #ff6565;
 
             &:hover {
                 color: #fff;
+                background-color: #ff6565;
             }
         }
     }

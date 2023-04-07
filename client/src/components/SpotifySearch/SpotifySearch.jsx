@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import styles from './SpotifySearch.module.scss';
 
-const SpotifySearch = ({ register, setValue }) => {
+const SpotifySearch = ({ register, setValue, id }) => {
     const [query, setQuery] = useState('');
     const [artist, setArtist] = useState([]);
     const [token, setToken] = useState(null);
@@ -27,6 +27,21 @@ const SpotifySearch = ({ register, setValue }) => {
           setToken(data.access_token);
         })();
     }, []);
+
+    useEffect(() => {
+        if(id) {
+            console.log(token);
+            (async () => {
+                fetch(`https://api.spotify.com/v1/artists/${id}`, {
+                    headers: {
+                        'Authorization': 'Bearer' + token
+                    }
+                })
+                .then(response => response.json())
+                .then(data => console.log(data));
+            })();
+        }
+    }, [id, token !== null])
 
     const fetchDefault = async () => {
         try {

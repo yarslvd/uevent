@@ -14,6 +14,7 @@ import { selectIsAuthMe } from '../../redux/slices/authSlice';
 import { useGetEventInfoQuery } from '../../redux/api/fetchEventsApi';
 import { useGetEventCommentsQuery, useAddEventCommentMutation } from '../../redux/api/fetchCommentsApi';
 import { useGetTicketsQuery } from '../../redux/api/fetchTicketsApi';
+import { useGetEventsQuery } from '../../redux/api/fetchEventsApi';
 
 import styles from './EventPage.module.scss';
 
@@ -44,8 +45,9 @@ const EventPage = () => {
 
   const { isLoading: isLoadingInfo, data: dataInfo, error: errorInfo } = useGetEventInfoQuery(id);
   const { isLoading: isLoadingComments, data: dataComments, error: errorComments, refetch } = useGetEventCommentsQuery({id, page});
+  const { isLoading: isLoadingEvents, data: dataEvents, error: errorEvents } = useGetEventsQuery({ limit: 4, page: 0, organizers: dataInfo?.event.organizer_id });
   // const { isLoading: isLoadingTickets, data: dataTickets, error: errorTickets } = useGetTicketsQuery(id);
-  console.log('comm', dataInfo, id);
+  console.log('comm', dataEvents, id);
 
   const onSubmit = (values) => {
     setCommentInput('');
@@ -145,13 +147,17 @@ const EventPage = () => {
           </div>
         </div>
       </div>
-      <h2 className={styles.heading}>Афіші подій організатора</h2>
-      <div className={styles.events}>
-        {newEvents.map((el, index) => (
-          <Card {...el} key={index}/>
-        ))}
-      </div>
-      <a href="/new" className={styles.more_link}>Більше</a>
+      {!isLoadingEvents && !errorEvents && dataEvents?.events.rows &&
+        <>
+          <h2 className={styles.heading}>Афіші подій організатора</h2>
+          <div className={styles.events}>
+            {dataEvents.events.rows.map((el, index) => (
+              <Card {...el} key={index}/>
+            ))}
+          </div>
+          <Link to={`/organizer`} className={styles.more_link}>Більше</Link>
+        </>
+      }
     </Layout>
   );
 };

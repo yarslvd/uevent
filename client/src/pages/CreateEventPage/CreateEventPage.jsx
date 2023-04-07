@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Chip, Stack, TextField, Button, Select, FormControl, MenuItem, InputLabel } from '@mui/material';
 
@@ -10,7 +10,7 @@ import RichEditor from '../../components/RichEditor/RichEditor';
 import Map from '../../components/Map/Map';
 import SpotifySearch from '../../components/SpotifySearch/SpotifySearch';
 import { selectIsAuth } from '../../redux/slices/authSlice';
-import { useUploadPosterMutation, useCreateEventMutation } from '../../redux/api/fetchEventsApi';
+import { useUploadPosterMutation, useCreateEventMutation, useUpdateEventMutation, useGetEventInfoQuery } from '../../redux/api/fetchEventsApi';
 import { useAddPromoMutation } from '../../redux/api/fetchPromoApi';
 
 import styles from './CreateEventPage.module.scss';
@@ -35,21 +35,28 @@ const formats = [
 
 const CreateEventPage = () => {
     const auth = useSelector(selectIsAuth);
+    const { id } = useParams();
     const navigate = useNavigate();
+    const { userInfo } = useSelector((state) => state.auth);
 
     //States
     const [selectedImage, setSelectedImage] = useState(null);
     const [imageUrl, setImageUrl] = useState(null);
     const [percentage, setPercentage] = useState(1);
     const [promocode, setPromocode] = useState("");
-    const [theme, setTheme] = useState('');
+    const [theme, setTheme] = useState("");
     const [format, setFormat] = useState('');
     const [promocodeList, setPromocodeList] = useState([]);
 
     //Mutations
-    const [uploadPoster, { isLoading: isUpdating}] = useUploadPosterMutation();
-    const [createEvent, {isLoading: isCreating}] = useCreateEventMutation();
+    const [uploadPoster] = useUploadPosterMutation();
+    const [createEvent] = useCreateEventMutation();
     const [addPromo] = useAddPromoMutation();
+    const [updateEvent] = useUpdateEventMutation();
+
+    //Queries
+    const { isLoading, data, error } = useGetEventInfoQuery(id ? id : null);
+    console.log(data);
 
     //Form
     const { register, handleSubmit, formState, control, setValue } = useForm({
@@ -223,9 +230,9 @@ const CreateEventPage = () => {
                             </FormControl>
                         </div>
                     </div>
-                    <RichEditor name="description" control={control} defaultValue="" formState={formState}/>
-                    <Map register={register} setValue={setValue}/>
-                    <SpotifySearch register={register} setValue={setValue}/>
+                    <RichEditor name="description" control={control} defaultValue="" formState={formState} description={id && data && !isLoading && !error && data.event.description}/>
+                    <Map register={register} setValue={setValue} />
+                    <SpotifySearch register={register} setValue={setValue} id={id && data && !isLoading && !error && data.event.spotify_id}/>
                 </div>
             </form>
         </Layout>

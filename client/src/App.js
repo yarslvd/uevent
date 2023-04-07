@@ -64,6 +64,10 @@ const router = createBrowserRouter([
   {
     path: '/events',
     element: <AllEvents />
+  },
+  {
+    path: '/event/:id/edit',
+    element: <CreateEventPage />
   }
 ]);
 
