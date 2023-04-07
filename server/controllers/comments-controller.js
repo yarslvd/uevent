@@ -13,11 +13,20 @@ const getAll = async (req, res) => {
         let limit = req.query.limit ?? 15;
         page = Number(page);
         limit = Number(limit);
+        let includeUser = {
+            include: [
+                {
+                    model: db.users,
+                    as: 'user',
+                    attributes: ['id', 'first_name', 'last_name', 'username', 'birthdate']
+                }
+            ]
+        }
 
-        let parametrs = Object.assign({},
+        let parametrs = Object.assign(includeUser,
             req.query.event_id ? {...filterEventId(req.query.event_id)} : {}
         );
-
+        console.log(parametrs);
         let url = `${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`
         let path = req.originalUrl.split('?')[0] + createUrlParams(req.query)
         const comments = await processPagination(
@@ -42,7 +51,14 @@ const getOne = async (req, res) => {
         const comment = await db.comments.findOne({
             where: {
                 id : commentId
-            }
+            },
+            include: [
+                {
+                    model: db.users,
+                    as: 'user',
+                    attributes: ['id', 'first_name', 'last_name', 'username', 'birthdate']
+                }
+            ]
         });
 
         return res.json ({
