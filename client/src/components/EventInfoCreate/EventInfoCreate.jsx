@@ -202,8 +202,8 @@ const EventInfoCreate = ({ register, control }) => {
                         onChange={handlePriceChange}
                         error={!valid}
                         type='text'
-                        {...register('location', {required: true})}
                         style={{ width: '100%'}}
+                        {...register('location', {required: true})}
                     />
                     <TextField
                         id="tickets"
