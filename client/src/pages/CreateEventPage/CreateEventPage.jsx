@@ -85,11 +85,13 @@ const CreateEventPage = () => {
             values.spotify_id ? {"spotify_id" : values.spotify_id} : {}
         )
         console.log({event});
-        //let res = await createEvent(event).unwrap();
+        let res = await createEvent(event).unwrap();
         
-        //const formData = new FormData();
-        //formData.append('poster', values.image[0]);
-        //await uploadPoster({file: formData, id: res.event.id});
+        if (values.image[0]) {
+            const formData = new FormData();
+            formData.append('poster', values.image[0]);
+            await uploadPoster({file: formData, id: res.event.id});
+        }
     }
 
     const handleDeletePromo = (chipIdToDelete) => {
