@@ -1,6 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { Button } from '@mui/material';
 import { Controller } from "react-hook-form";
 import { Alert } from '@mui/material';
 
@@ -12,22 +11,11 @@ const RichEditor = ({ name, control, defaultValue, formState }) => {
 
     useEffect(() => {
         const savedValue = sessionStorage.getItem('myEditorValue');
-
         if (savedValue) {
             setValue(savedValue);
         }
 
     }, []);
-
-    const log = () => {
-        if (editorRef.current) {
-            console.log(editorRef.current.getContent());
-        }
-    };
-
-    const saveText = () => {
-        sessionStorage.setItem('myEditorValue', value);
-    }
 
     const validateText = (value) => {
         return value.length > 100 || "Text must contain more than 100 characters";
@@ -70,8 +58,6 @@ const RichEditor = ({ name, control, defaultValue, formState }) => {
                     />
                 )}
             />
-            {/* <button onClick={log}>Log editor content</button> */}
-            <Button variant='contained' onClick={saveText} className={styles.saveBtn}>Save</Button>
         </div>
     )
 };

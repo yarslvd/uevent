@@ -4,6 +4,7 @@ import { Pagination, Button, useMediaQuery } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
+import parse from 'html-react-parser';
 
 import Layout from '../../components/Layout/Layout';
 import EventInfo from '../../components/EventInfo/EventInfo';
@@ -29,7 +30,7 @@ const EventPage = () => {
   const isAuth = useSelector(selectIsAuthMe);
   const matches = useMediaQuery('(max-width:500px)');
 
-  const [addEventComment, { isLoading }] = useAddEventCommentMutation();
+  const [addEventComment] = useAddEventCommentMutation();
 
   const [page, setPage] = useState(0);
   const [commentInput, setCommentInput] = useState('');
@@ -81,7 +82,7 @@ const EventPage = () => {
           <div className={styles.description}>
             <h2>Про подію</h2>
             <div className={styles.text}>
-              {!isLoadingInfo && !errorInfo && <>{dataInfo.event?.description}</>}
+              {!isLoadingInfo && !errorInfo && parse(dataInfo.event?.description)}
             </div>
           </div>
           <div className={styles.embed}>

@@ -171,6 +171,7 @@ const getOne = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
+        console.log('ss');
         let page = req.query.page ?? 0;
         let limit = req.query.limit ?? 15;
         page = Number(page);

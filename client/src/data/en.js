@@ -1,5 +1,5 @@
 const items = [
-    {name: 'ALL EVENTS', url: '/login'},
+    {name: 'ALL EVENTS', url: '/events'},
     {name: 'PERSONAL CABINET', url: '/cabinet'},
     {name: 'ABOUT US', url: '/about'},
     {name: 'PAYMENT', url: '/payment'},

@@ -94,6 +94,8 @@ const CreateEventPage = () => {
             formData.append('poster', values.image[0]);
             await uploadPoster({file: formData, id: res.event.id});
         }
+
+        navigate(`/event/${res.event.id}`);
     }
 
     const handleDeletePromo = (chipIdToDelete) => {
@@ -124,12 +126,6 @@ const CreateEventPage = () => {
           console.log(imageUrl);
         }
     }, [selectedImage]);
-
-    useEffect(() => {
-        if(!auth) {
-            navigate('/login');
-        }
-    }, [])
 
     return (
         <Layout>

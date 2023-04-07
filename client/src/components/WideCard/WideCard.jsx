@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import './WideCard.scss';
 
-const WideCard = ({ image_url, title, location, time, date, price }) => {
+const WideCard = ({ image_url, title, location, time, date, price, id }) => {
     const { t } = useTranslation();
 
     return(
@@ -24,7 +24,7 @@ const WideCard = ({ image_url, title, location, time, date, price }) => {
                             <span>{time}</span>
                         </div>
                     </div>
-                    <Link to={'/event'}>{t('wideCard.more')}</Link>
+                    <Link to={`/event/${id}`}>{t('wideCard.more')}</Link>
                 </div>
                 <div className="right">
                     <div className="date">

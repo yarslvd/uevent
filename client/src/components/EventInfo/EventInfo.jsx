@@ -17,7 +17,7 @@ const timeOptions = {
     minute: '2-digit',
 }
 
-const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, ticket_amount, isLoading, error }) => {
+const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, ticket_amount, isLoading, error, organizer }) => {
     const [isLikeActive, setIsLikeActive] = useState(false);
     const parsedDate = !isLoading && new Date(date);
 
@@ -49,11 +49,11 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                     </div>
                     <div className={styles.item}>
                         <img src="/assets/user_black_icon.png" alt="Company" />
-                        <Link>Fetch data</Link>
+                        <Link to={`/organizers/id`}>{organizer.name}</Link>
                     </div>
                     <div className={styles.item}>
                         <img src="/assets/price_black_icon.png" alt="Location" />
-                        <span>Від {!isLoading && !error && `${price} ${iso_currency}`}</span>
+                        <span>{!isLoading && !error && `${price} ${iso_currency}`}</span>
                     </div>
                 </div>
             </div>

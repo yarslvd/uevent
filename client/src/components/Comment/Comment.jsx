@@ -2,17 +2,16 @@ import { Avatar } from '@mui/material';
 
 import styles from './Comment.module.scss';
 
-const Comment = ({ user_id, comment }) => {
-
+const Comment = ({ comment, user }) => {
 
     return (
       <div className={styles.container}>
         <div className={styles.top}>
             <div className={styles.content}>
-                <Avatar alt={user_id} src="/static/images/avatar/1.jpg" />
+                <Avatar alt={user.first_name} src="/static/images/avatar/1.jpg" />
             </div>
             <div className={styles.text}>
-                <span className={styles.username}>фцвфцв</span>
+                <span className={styles.username}>{`${user.first_name} ${user.last_name}`}</span>
                 <p className={styles.comment}>{comment}</p>
             </div>
         </div>

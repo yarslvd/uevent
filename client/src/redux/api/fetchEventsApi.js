@@ -33,12 +33,15 @@ export const fetchEventsApi = createApi({
                 body: file
             })
         }),
-        
+        getEvents: build.query({
+            query: ({ page }) => `?limit=6&page=${page}`
+        })
     })
 });
 
 export const {
     useGetEventInfoQuery,
     useUploadPosterMutation,
-    useCreateEventMutation
+    useCreateEventMutation,
+    useGetEventsQuery
 } = fetchEventsApi;

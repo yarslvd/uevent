@@ -1,5 +1,5 @@
 import React from 'react'
-import { Select, FormControl, OutlinedInput, MenuItem, Slider } from '@mui/material'
+import { Select, FormControl, OutlinedInput, MenuItem, Slider, Button } from '@mui/material'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -176,6 +176,8 @@ const Filters = () => {
             sx={{ color: '#1F1F1F'}}
           />
         </div>
+        <Button variant='contained' className={styles.apply_btn}>Apply</Button>
+        <Button variant='outlined' className={styles.clear_btn}>Clear</Button>
       </div>
     </div>
   )
