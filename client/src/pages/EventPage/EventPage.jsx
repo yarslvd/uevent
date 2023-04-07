@@ -81,7 +81,7 @@ const EventPage = () => {
           <div className={styles.description}>
             <h2>Про подію</h2>
             <div className={styles.text}>
-              {!isLoadingInfo && !errorInfo && dataInfo.event?.description}
+              {!isLoadingInfo && !errorInfo && <>{dataInfo.event?.description}</>}
             </div>
           </div>
           <div className={styles.embed}>

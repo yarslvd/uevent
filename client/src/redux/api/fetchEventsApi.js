@@ -2,10 +2,11 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const baseQuery = fetchBaseQuery({
     baseUrl: `${process.env.REACT_APP_BASE_URL}/api/events`,
-    credentials: "include",
-    prepareHeaders: (headers, {endpoint}) => {
-        if (endpoint.includes("/poster")) {
-            headers.set("Content-Type", "multipart/form-data");
+    prepareHeaders: (headers, { getState }) => {
+        const token = getState().auth.userToken;
+        
+        if (token) {
+          headers.set('Authorization', `Bearer ${token}`);
         }
         return headers;
     },

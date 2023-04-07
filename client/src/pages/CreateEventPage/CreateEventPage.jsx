@@ -11,6 +11,7 @@ import Map from '../../components/Map/Map';
 import SpotifySearch from '../../components/SpotifySearch/SpotifySearch';
 import { selectIsAuth } from '../../redux/slices/authSlice';
 import { useUploadPosterMutation, useCreateEventMutation } from '../../redux/api/fetchEventsApi';
+import { useAddPromoMutation } from '../../redux/api/fetchPromoApi';
 
 import styles from './CreateEventPage.module.scss';
 
@@ -41,7 +42,6 @@ const CreateEventPage = () => {
     const [imageUrl, setImageUrl] = useState(null);
     const [percentage, setPercentage] = useState(1);
     const [promocode, setPromocode] = useState("");
-    const [promoLabel, setPromoLabel] = useState("");
     const [theme, setTheme] = useState('');
     const [format, setFormat] = useState('');
     const [promocodeList, setPromocodeList] = useState([]);
@@ -49,9 +49,7 @@ const CreateEventPage = () => {
     //Mutations
     const [uploadPoster, { isLoading: isUpdating}] = useUploadPosterMutation();
     const [createEvent, {isLoading: isCreating}] = useCreateEventMutation();
-
-
-    console.log(promocodeList);
+    const [addPromo] = useAddPromoMutation();
 
     //Form
     const { register, handleSubmit, formState, control, setValue } = useForm({
@@ -85,11 +83,15 @@ const CreateEventPage = () => {
             values.spotify_id ? {"spotify_id" : values.spotify_id} : {}
         )
         console.log({event});
-        //let res = await createEvent(event).unwrap();
+        let res = await createEvent(event).unwrap();
+
+        promocodeList.map((el) => {
+            addPromo({ text: el.promocode, discount: el.percentage, event_id: res.event.id, valid_till: date });
+        })
         
-        //const formData = new FormData();
-        //formData.append('poster', values.image[0]);
-        //await uploadPoster({file: formData, id: res.event.id});
+        const formData = new FormData();
+        formData.append('poster', values.image[0]);
+        await uploadPoster({file: formData, id: res.event.id});
     }
 
     const handleDeletePromo = (chipIdToDelete) => {
@@ -100,7 +102,7 @@ const CreateEventPage = () => {
 
     const handleAddPromo = () => {
         //console.log(!promocodeList.includes({ promo: `${promocode} (-${percentage}%)`}));
-        if(promocode !== '' && percentage > 0 && !promocodeList.includes({ promo: `${promocode} (-${percentage}%)`})) {
+        if(promocode !== '' && percentage > 0 && promocodeList.length < 5) {
             const promoLabel = `${promocode} (-${percentage}%)`
             setPromocodeList(current => [...current, { promoLabel, percentage: +percentage, promocode }]);
             setPromocode('');
