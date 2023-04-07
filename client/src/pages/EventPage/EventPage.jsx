@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pagination, Button, useMediaQuery } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useForm } from 'react-hook-form';
 
 import Layout from '../../components/Layout/Layout';
 import EventInfo from '../../components/EventInfo/EventInfo';
@@ -9,18 +11,11 @@ import Comment from '../../components/Comment/Comment';
 import Card from '../../components/Card/Card';
 import { selectIsAuthMe } from '../../redux/slices/authSlice';
 import { useGetEventInfoQuery } from '../../redux/api/fetchEventsApi';
-import { useGetEventCommentsQuery } from '../../redux/api/fetchCommentsApi';
+import { useGetEventCommentsQuery, useAddEventCommentMutation } from '../../redux/api/fetchCommentsApi';
 import { useGetTicketsQuery } from '../../redux/api/fetchTicketsApi';
+import { fetchCommentsApi } from '../../redux/api/fetchCommentsApi';
 
 import styles from './EventPage.module.scss';
-
-const comments = [
-  {fullname: 'Joe Goldberg', comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.' },
-  {fullname: 'Anton Chaika', comment: 'Hello bitcheas'},
-  {fullname: 'Yaroslav Doroshenko', comment: 'ONE KISS IS ALL IT TAKES'},
-  {fullname: 'Dima Berkut', comment: 'ONE KISS IS ALL IT TAKES'},
-  {fullname: 'Jaja ye cocojamba', comment: 'ONE KISS IS ALL IT TAKES'},
-];
 
 const newEvents = [
   { title: 'Harry Styles', location: 'Палац студентів НТУ “ХПІ”', time: '16:00', date: '28 КВІ 2023', price: 400 ,image_url: 'https://media.architecturaldigest.com/photos/623e05e0b06d6c32457e4358/master/pass/FINAL%20%20PFHH-notextwlogo.jpg' },
@@ -35,10 +30,43 @@ const EventPage = () => {
   const isAuth = useSelector(selectIsAuthMe);
   const matches = useMediaQuery('(max-width:500px)');
 
+  const [addEventComment, { isLoading }] = useAddEventCommentMutation();
+
+  const [page, setPage] = useState(0);
+  const [commentInput, setCommentInput] = useState('');
+  console.log(commentInput);
+
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      content: ''
+    },
+    mode: 'onChange'
+  });
+
   const { isLoading: isLoadingInfo, data: dataInfo, error: errorInfo } = useGetEventInfoQuery(id);
-  const { isLoading: isLoadingComments, data: dataComments, error: errorComments } = useGetEventCommentsQuery(id);
+  const { isLoading: isLoadingComments, data: dataComments, error: errorComments, refetch } = useGetEventCommentsQuery({id, page});
+  const [ trigger, { data } ] = fetchCommentsApi.endpoints.getEventComments.useLazyQuery();
   // const { isLoading: isLoadingTickets, data: dataTickets, error: errorTickets } = useGetTicketsQuery(id);
-  console.log('comm', isLoadingInfo, id);
+  console.log('comm', dataComments, id);
+
+
+  const onSubmit = (values) => {
+    setCommentInput('');
+    setPage(dataComments?.comments.pages - 1);
+    addEventComment({ comment: values.content, event_id: +id })
+    .unwrap()
+    .then(() => {
+      refetch();
+    })
+    .catch(err => {
+      console.log(err);
+    });
+  }
+
+  const handlePaginationChange = (e, p) => {
+    console.log(p);
+    setPage(p - 1);
+  }
 
   return (
     <Layout>
@@ -86,21 +114,34 @@ const EventPage = () => {
           <div className={styles.comments}>
             <h2>Коментарі</h2>
             <div className={styles.wrapper}>
-              {!isLoadingComments && !errorComments && dataComments?.event !== null ? <>
-                {dataComments?.event.map((el, index) => (
+              {!isLoadingComments && !errorComments && dataComments?.comments.rows !== null ? <>
+                {dataComments?.comments.rows.map((el, index) => (
                   <Comment {...el} key={index} />
                 ))}
-                <Pagination count={10} size={matches ? 'small' : 'large'} />
+                {dataComments?.comments.pages > 1 && <Pagination count={dataComments?.comments.pages} size={matches ? 'small' : 'large'} onChange={handlePaginationChange}/>}
               </> :
                 <span>Поки що немає коментарів</span>
               }
             </div>
             {
               isAuth &&
-              <div className={styles.textarea}>
-                <textarea name="comment" id="comment" rows="7" placeholder='Твій коментар...'></textarea>
-                <Button variant='contained'>Опубліковати</Button>
-              </div>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className={styles.textarea}>
+                  <textarea
+                    name="comment"
+                    id="comment"
+                    rows="7"
+                    placeholder='Твій коментар...'
+                    {...register('content', {
+                      required: true,
+                      minLength: 5
+                    })}
+                    onChange={(e) => setCommentInput(e.target.value)}
+                    value={commentInput}
+                  ></textarea>
+                  <Button variant='contained' type='submit'>Опубліковати</Button>
+                </div>
+              </form>
             }
           </div>
         </div>

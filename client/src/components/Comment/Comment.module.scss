@@ -14,8 +14,11 @@
         gap: 10px;
 
         .text {
-            .name {
-                font-weight: 700;
+            .username {
+                display: block !important;
+                font-weight: 600 !important;
+                font-size: 18px !important;
+                color: $base-dark-color !important;
             }
             .comment {
                 margin: 0;
