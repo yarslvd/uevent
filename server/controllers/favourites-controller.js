@@ -75,19 +75,25 @@ const getAll = async (req, res) => {
         page = Number(page);
         limit = Number(limit);
 
-        //TODO: test include param
         let parameters = Object.assign({},
-            ...filterUserId(req.user.id),
-            ...{ include: [ db.events ] },
+            {...filterUserId(req.user.id)},
+            {
+                ...{
+                    include: [{
+                        model: db.events,
+                        as: 'event'
+                    }]
+                },
+            },
         );
 
         let url = `${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`
         let path = req.originalUrl.split('?')[0] + createUrlParams(req.query)
-        const subscriptions = await processPagination(
-            url, path, db.subscriptions, limit, page, parameters);
+        const favourites = await processPagination(
+            url, path, db.favorites, limit, page, parameters);
 
         return res.status(StatusCodes.OK).json({
-            subscriptions
+            favourites
         })
     }
     catch(error) {

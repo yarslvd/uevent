@@ -27,6 +27,7 @@ const commentsRouter = require('./routes/comments-routes');
 const promosRouter = require('./routes/promos-routes');
 const ticketsRouter = require('./routes/tickets-routes');
 const subscriptionsRouter = require('./routes/subscriptions-routes');
+const favouritesRouter = require('./routes/favourites-routes');
 const paymentsRouter = require('./routes/payments-routes');
 
 app.use("/api/auth", authRouter);
@@ -36,6 +37,7 @@ app.use("/api/comments", commentsRouter);
 app.use("/api/promos", promosRouter);
 app.use("/api/tickets", ticketsRouter);
 app.use("/api/subscriptions", subscriptionsRouter);
+app.use("/api/favourites", favouritesRouter);
 app.use("/api/payments", paymentsRouter);
 
 app.listen(process.env.SERVER_PORT, () => {

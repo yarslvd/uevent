@@ -15,6 +15,7 @@ const imgurClient = new ImgurClient({ clientId: process.env.IMGUR_ID });
 
 const create = async (req, res) => {
     try {
+        console.log(req.body)
         const request = checkFields(req.body, [
             'title',
             'description',
@@ -167,7 +168,7 @@ const getAll = async (req, res) => {
         let limit = req.query.limit ?? 15;
         page = Number(page);
         limit = Number(limit);
-        console.log(req.query.organizers)
+        console.log("organizers:", req.query.organizers);
         let parameters = Object.assign({},
             req.query.organizers ? {...filterOrganizerId(req.query.organizers)} : {},
             req.query.date_between ? {...filterDateBetween(req.query.date_between.from, req.query.date_between.to)} : {},

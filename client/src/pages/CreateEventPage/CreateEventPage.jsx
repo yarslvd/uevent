@@ -9,7 +9,7 @@ import RichEditor from '../../components/RichEditor/RichEditor';
 import Map from '../../components/Map/Map';
 import SpotifySearch from '../../components/SpotifySearch/SpotifySearch';
 import { selectIsAuth } from '../../redux/slices/authSlice';
-import { useUploadPosterMutation } from '../../redux/api/fetchEventsApi';
+import { useUploadPosterMutation, useCreateEventMutation } from '../../redux/api/fetchEventsApi';
 
 import styles from './CreateEventPage.module.scss';
 
@@ -22,6 +22,8 @@ const CreateEventPage = () => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [imageUrl, setImageUrl] = useState(null);
     const [uploadPoster, { isLoading: isUpdating}] = useUploadPosterMutation();
+    const [createEvent, {isLoading: isCreating}] = useCreateEventMutation();
+
     console.log(selectedImage);
 
     const { register, handleSubmit, formState, control, setValue } = useForm({
@@ -41,14 +43,14 @@ const CreateEventPage = () => {
         }
     }, [])
 
-    const handleImageUpload = (e) => {
-        e.preventDefault();
-        const formData = new FormData();
-        const file = e.target.files[0];
-        formData.append('poster', file);
-        console.log(formData);
-        uploadPoster({file});
-    }
+    // const handleImageUpload = (e) => {
+    //     e.preventDefault();
+    //     const formData = new FormData();
+    //     const file = e.target.files[0];
+    //     formData.append('poster', file);
+    //     console.log(formData);
+    //     uploadPoster({file});
+    // }
 
     const getFullTime = (date, time) => {
         const dateNew = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
@@ -56,11 +58,32 @@ const CreateEventPage = () => {
         return `${dateNew} ${timeNew}:00+00`
     }
 
-    const onSubmit = (values) => {
-        console.log(values);
+    const onSubmit = async (values) => {
+        console.log("values:", values);
         const date = getFullTime(values.event_date, values.event_time);
         const publish_date = getFullTime(values.publish_date, values.publish_time)
-        console.log(date, publish_date);
+        //console.log(date, publish_date);
+
+        let event = Object.assign({}, {
+            "title": values.title,
+            "description": values.description,
+            "price": values.price,
+            "iso_currency": values.currency,
+            "address": values.address,
+            "location": values.location,
+            "date": date,
+            "publish_date": publish_date,
+            "organizer_id": "1", // TODO set users organizer_id
+            "ticket_amount": values.ticket_amount,
+            "visibility": "public"}, // TODO
+            values.spotify_id ? {"spotify_id" : values.spotify_id} : {}
+        )
+        console.log({event});
+        let res = await createEvent(event).unwrap();
+        
+        const formData = new FormData();
+        formData.append('poster', values.image[0]);
+        await uploadPoster({file: formData, id: res.event.id});
     }
 
     useEffect(() => {
@@ -89,8 +112,9 @@ const CreateEventPage = () => {
                         type="file"
                         id='img'
                         accept="image/png, image/jpg, image/jpeg"
-                        onChange={(e) => console.log(e.target.files[0])}
-                        {...register('image')}
+                        {...register('image', {onChange: (e) => {
+                            setImageUrl(URL.createObjectURL(e.target.files[0]));
+                        }})}
                     />
                 </div>
                 <div className={styles.info}>

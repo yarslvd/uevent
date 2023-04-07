@@ -72,14 +72,20 @@ const unsubscribe = async (req, res) => {
 const get = async (req, res) => {
     try {
         let page = req.query.page ?? 0;
-        let limit = req.query.limit ?? 15;
+        let limit = req.query.limit ?? 1;
         page = Number(page);
         limit = Number(limit);
 
-        //TODO: test include param
         let parameters = Object.assign({},
-            ...filterUserId(req.user.id),
-            ...{ include: [ db.organizers ] },
+            {...filterUserId(req.user.id)},
+            {
+                    ...{
+                        include: [{
+                            model: db.organizers,
+                            as: 'organizer'
+                        }]
+                    },
+            },
         );
 
         let url = `${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`
