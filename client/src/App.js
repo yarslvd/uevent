@@ -96,14 +96,12 @@ function App() {
       }
     }
 
-    if (userToken) {
-      getMe()
-    }
+      getMe();
 
   }, []);
 
   if (isLoading) {
-      return( <CircularProgress></CircularProgress>)
+      return(<></>)
   }
 
   return (
