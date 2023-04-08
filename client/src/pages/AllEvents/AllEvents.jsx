@@ -10,6 +10,7 @@ import { useGetEventsQuery } from '../../redux/api/fetchEventsApi';
 import styles from './AllEvents.module.scss';
 
 import { dateOptions, timeOptions } from '../../data/variables';
+import { useMemo } from 'react';
 
 // const popularEvents = [
 //   { title: 'Harry Styles', location: 'Палац студентів НТУ “ХПІ”', time: '16:00', date: '28 КВІ 2023', price: 400 ,image_url: 'https://media.architecturaldigest.com/photos/623e05e0b06d6c32457e4358/master/pass/FINAL%20%20PFHH-notextwlogo.jpg' },
@@ -27,8 +28,18 @@ const AllEvents = () => {
 
   const [page, setPage] = useState(0);
   const [filters, setFilters] = useState({});
+  const [search, setSearch] = useState('');
   const { isLoading, data, error } = useGetEventsQuery({ page, filters });
   console.log(data);
+  let i = 0;
+  const handleSearch = (e) => {setSearch(e.target.value)};
+  
+  useMemo(()=>{
+    setFilters({
+      ...filters,
+      title: search,
+    })
+  }, [search]);
 
   const handlePageChange = (e, p) => {
     setPage(p - 1);
@@ -40,7 +51,7 @@ const AllEvents = () => {
   }
 
   return (
-    <Layout>
+    <Layout searchOnChange={handleSearch}>
         <div className={styles.container}>
             <Filters setFilters={setFilters}/>
             <div className={styles.events_container}>
