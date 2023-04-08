@@ -86,10 +86,13 @@ const CreateEventPage = () => {
             "publish_date": publish_date,
             "organizer_id": "1", // TODO set users organizer_id
             "ticket_amount": values.ticket_amount,
-            "visibility": "public"}, // TODO
+            "visibility": "public", // TODO
+            "theme": values.theme,
+            "format": values.format
+        }, 
             values.spotify_id ? {"spotify_id" : values.spotify_id} : {}
         )
-        console.log({event});
+        // console.log({event});
         let res = await createEvent(event).unwrap();
 
         promocodeList.map((el) => {

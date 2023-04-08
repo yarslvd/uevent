@@ -45,13 +45,15 @@ const filterDateBetween = (from, to) => { //EXAMPLE '2022-09-24' - '2022-09-25'
     }
     return {
         date :{
-            [Sequelize.Op.between] : [from, to]
+            // [Sequelize.Op.between] : [from, to]
+            ...(from ? {[Sequelize.Op.gte]:from} : {}),
+            ...(to ? {[Sequelize.Op.lte]:to} : {})
         }
     }
 };
 
 const filterPriceBetween = (from, to) => {
-    if (to > from) {
+    if (+from > +to) {
         from = [to, to = from][0];
     }
     return {
@@ -100,9 +102,18 @@ function filterStringIncludes(columnName, str) {
     }
 }
 
+function filterInArray(columnName, arr) {
+    return {
+        [columnName]: {
+            [Sequelize.Op.in]: arr
+        }
+    }
+}
+
 module.exports = {
     byDate,
 
+    filterInArray,
     filterDateBetween,
     filterPriceBetween,
     filterOrganizerId,

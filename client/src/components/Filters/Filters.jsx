@@ -49,10 +49,12 @@ function getStyles(name, personName, theme) {
   };
 }
 
-const Filters = () => {
+const Filters = ({setFilters}) => {
   const [theme, setTheme] = React.useState([]);
   const [format, setFormat] = React.useState([]);
   const [value, setValue] = React.useState([0, 1000]);
+  const [dateFrom, setDateFrom] = React.useState(null);
+  const [dateTo, setDateTo] = React.useState(null);
 
   const { register, handleSubmit, formState, control } = useForm({
     mode: 'onChange'
@@ -79,6 +81,27 @@ const Filters = () => {
       typeof value === 'string' ? value.split(',') : value,
     );
   };
+
+  const handleApply = () => {
+    let filters = Object.assign({},
+      theme.length > 0 ? {theme: theme.toString()} : {},
+      format.length > 0 ? {format: format.toString()} : {},
+      dateFrom ? {'date_between[from]': dateFrom.toISOString()} : {},
+      dateTo ?   {'date_between[to]': dateTo.toISOString()} : {},
+      {'price_between[from]': value[0], 'price_between[to]': value[1]}
+    )
+
+    setFilters(filters);
+  }
+
+  const handleClear = () => {
+    setTheme([]);
+    setFormat([]);
+    setValue([0, 1000]);
+    setDateFrom(null);
+    setDateTo(null);
+    setFilters({});
+  }
 
   return (
     <div className={styles.container}>
@@ -153,11 +176,13 @@ const Filters = () => {
             <div className={styles.input_container}>
               <DatePicker
                 label="From"
-                onChange={(e) => console.log(e.$d.toISOString())}
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e)}
               />
               <DatePicker
                 label="To"
-                onChange={(e) => console.log((e.$d).toISOString())}
+                value={dateTo}
+                onChange={(e) => setDateTo((e))}
               />
             </div>
         </div>
@@ -176,8 +201,8 @@ const Filters = () => {
             sx={{ color: '#1F1F1F'}}
           />
         </div>
-        <Button variant='contained' className={styles.apply_btn}>Apply</Button>
-        <Button variant='outlined' className={styles.clear_btn}>Clear</Button>
+        <Button variant='contained' className={styles.apply_btn} onClick={handleApply}>Apply</Button>
+        <Button variant='outlined' className={styles.clear_btn} onClick={handleClear}>Clear</Button>
       </div>
     </div>
   )

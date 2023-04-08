@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMediaQuery, Pagination } from '@mui/material';
 
 import Layout from '../../components/Layout/Layout';
@@ -24,8 +24,8 @@ const AllEvents = () => {
   const matches = useMediaQuery('(max-width:800px)');
 
   const [page, setPage] = useState(0);
-
-  const { isLoading, data, error } = useGetEventsQuery({ page });
+  const [filters, setFilters] = useState({});
+  const { isLoading, data, error } = useGetEventsQuery({ page, filters });
   console.log(data);
 
   const handlePageChange = (e, p) => {
@@ -40,7 +40,7 @@ const AllEvents = () => {
   return (
     <Layout>
         <div className={styles.container}>
-            <Filters />
+            <Filters setFilters={setFilters}/>
             <div className={styles.events_container}>
               <div className={styles.events}>
                 {!isLoading && !error && data.events.rows.map((el, index) => (

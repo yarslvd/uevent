@@ -4,7 +4,7 @@ const {checkFields, getDesiredFields} = require("../helpers/object-fields");
 const {StatusCodes} = require("http-status-codes");
 const db = require("../models/db"); 
 const {checkEventByUser} = require("../helpers/check-event-organizer");
-const {filterDateBetween, filterPriceBetween, filterOrganizerId, filterTitle, filterColumn, filterValue, filterStringIncludes, filterColumnValue} = require("../helpers/filters-orders");
+const {filterDateBetween, filterPriceBetween, filterOrganizerId, filterTitle, filterColumn, filterValue, filterStringIncludes, filterColumnValue, filterInArray} = require("../helpers/filters-orders");
 const {processPagination} = require("../helpers/db-helper");
 const {createUrlParams} = require("../helpers/url-helpers");
 const {uid} = require('uid');
@@ -27,7 +27,9 @@ const create = async (req, res) => {
             'publish_date',
             'organizer_id',
             'ticket_amount',
-            'visibility'
+            'visibility',
+            'format',
+            'theme'
         ])
         if (!request) {
             return res.status(StatusCodes.BAD_REQUEST).json({
@@ -71,6 +73,8 @@ const create = async (req, res) => {
             ticket_amount : request.ticket_amount,
             visibility : request.visibility,
             spotify_id : req.body.spotify_id ? req.body.spotify_id : null,
+            format: request.format,
+            theme: request.theme
         });
 
         res.json({event});
@@ -171,12 +175,13 @@ const getOne = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        console.log('ss');
+        console.log(req.query);
         let page = req.query.page ?? 0;
         let limit = req.query.limit ?? 15;
         page = Number(page);
         limit = Number(limit);
         console.log("organizers:", req.query.organizers);
+
         let parameters = {
             where: {
                 ...Object.assign({},
@@ -184,8 +189,8 @@ const getAll = async (req, res) => {
                 req.query.date_between ? {...filterDateBetween(req.query.date_between.from, req.query.date_between.to)} : {},
                 req.query.price_between ? {...filterPriceBetween(req.query.price_between.from, req.query.price_between.to)} : {},
                 req.query.title ? {...filterStringIncludes('title', req.query.title)} : {},
-                req.query.theme ? {...filterColumnValue('theme', req.query.theme)} : {},
-                req.query.format ? {...filterColumnValue('format', req.query.format)} : {},
+                req.query.theme ? {...filterInArray('theme', req.query.theme.split(','))} : {},
+                req.query.format ? {...filterInArray('format', req.query.format.split(','))} : {},
             )}
         }
 

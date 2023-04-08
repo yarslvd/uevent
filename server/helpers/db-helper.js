@@ -12,6 +12,10 @@ async function processPagination (url, path, model, limit, page, attr) {
       customAttr.limit = limit;
       customAttr.offset = page * limit;
   }
+  if(!customAttr.hasOwnProperty('order')) {
+    customAttr.order = [['id', 'DESC']];
+  }
+
 
   all = await model.findAndCountAll(customAttr);
 
