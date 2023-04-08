@@ -73,7 +73,8 @@ export const ua = {
     },
     wideCard: {
         more: 'Більше',
-        price: 'Від'
+        price: 'Від',
+        free: 'Безкоштовно',
     },
     eventPage: {
         lang: 'uk'

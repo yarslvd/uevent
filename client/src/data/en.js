@@ -73,7 +73,8 @@ export const en = {
     },
     wideCard: {
         more: 'More',
-        price: 'From'
+        price: 'From',
+        free: 'Free'
     },
     eventPage: {
         lang: 'en'

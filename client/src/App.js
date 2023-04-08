@@ -95,13 +95,11 @@ function App() {
         setIsLoading(false)
       }
     }
-
-      getMe();
-
+    getMe()
   }, []);
 
   if (isLoading) {
-      return(<></>)
+      return( <CircularProgress/>)
   }
 
   return (
