@@ -42,7 +42,7 @@ const CreateEventPage = () => {
     //States
     const [selectedImage, setSelectedImage] = useState(null);
     const [imageUrl, setImageUrl] = useState(null);
-    const [percentage, setPercentage] = useState(1);
+    const [percentage, setPercentage] = useState();
     const [promocode, setPromocode] = useState("");
     const [theme, setTheme] = useState("");
     const [format, setFormat] = useState('');

@@ -11,7 +11,7 @@ module.exports = function(sequelize) {
     poster: {
       type: DataTypes.TEXT,
       allowNull: false,
-      defaultValue: "set some default poster bitch"
+      defaultValue: "https://images.unsplash.com/photo-1531058020387-3be344556be6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
     },
     title: {
       type: DataTypes.STRING(255),

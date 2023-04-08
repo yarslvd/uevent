@@ -3,12 +3,15 @@ import { useTranslation } from 'react-i18next';
 
 import './WideCard.scss';
 
-const WideCard = ({ image_url, title, location, time, date, price, id }) => {
+import { dateOptions, timeOptions } from '../../data/variables';
+
+const WideCard = ({ poster, title, location, date, price, id }) => {
     const { t } = useTranslation();
+    const parsedDate = new Date(date);
 
     return(
         <div className="containerWideCard">
-            <div className='image' style={{backgroundImage: `url(${image_url})`}}></div>
+            <div className='image' style={{backgroundImage: `url(${poster})`}}></div>
             <div className="info">
                 <div className="left">
                     <div className='details'>
@@ -21,14 +24,14 @@ const WideCard = ({ image_url, title, location, time, date, price, id }) => {
                         </div>
                         <div className='time'>
                             <img src="/assets/clock_icon.png" alt="Time" />
-                            <span>{time}</span>
+                            <span>{parsedDate.toLocaleString('uk-UK', timeOptions)}</span>
                         </div>
                     </div>
                     <Link to={`/event/${id}`}>{t('wideCard.more')}</Link>
                 </div>
                 <div className="right">
                     <div className="date">
-                        {date}&nbsp;
+                        <span>{parsedDate.toLocaleString('uk-UK', dateOptions).toUpperCase().slice(0, -3)}&nbsp;</span>
                     </div>
                     <div className="price">
                         <b>{`${t('wideCard.price')} ${price} ₴`}</b>

@@ -5,17 +5,9 @@ import { Avatar, Button } from '@mui/material';
 
 import styles from './EventInfo.module.scss';
 
-// Implement follow/unfollow
-const dateOptions = { 
-    day: 'numeric', 
-    month: 'short',
-    year: 'numeric',  
-};
+import { dateOptions, timeOptions } from '../../data/variables';
 
-const timeOptions = {
-    hour: '2-digit',
-    minute: '2-digit',
-}
+// Implement follow/unfollow
 
 const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, ticket_amount, isLoading, error, organizer }) => {
     const [isLikeActive, setIsLikeActive] = useState(false);
@@ -29,7 +21,7 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                 <div className={styles.time}>
                     <div className={styles.date}>
                         {/* //{parsedDate.getDate()} */}
-                        {!isLoading && !error && parsedDate.toLocaleString('uk-UK', dateOptions).toUpperCase().slice(0, -3)}
+                        <span>{!isLoading && !error && parsedDate.toLocaleString('uk-UK', dateOptions).toUpperCase().slice(0, -3)}</span>
                     </div>
                     <div className={styles.clock}>
                         <img src="/assets/clock_icon.png" alt="Time" />

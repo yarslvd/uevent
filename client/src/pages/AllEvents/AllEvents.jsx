@@ -9,6 +9,8 @@ import { useGetEventsQuery } from '../../redux/api/fetchEventsApi';
 
 import styles from './AllEvents.module.scss';
 
+import { dateOptions, timeOptions } from '../../data/variables';
+
 // const popularEvents = [
 //   { title: 'Harry Styles', location: 'Палац студентів НТУ “ХПІ”', time: '16:00', date: '28 КВІ 2023', price: 400 ,image_url: 'https://media.architecturaldigest.com/photos/623e05e0b06d6c32457e4358/master/pass/FINAL%20%20PFHH-notextwlogo.jpg' },
 //   { title: 'The Weeknd', location: 'Палац студентів НТУ “ХПІ”', time: '18:00', date: '29 БЕР 2023', price: 400 ,image_url: 'https://www.livenationentertainment.com/wp-content/uploads/2022/03/TR_NationalAsset_TheWeeknd_SG_1200x628.jpg' },
