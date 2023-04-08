@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from "react-hook-form";
 import { Alert, Button } from "@mui/material";
-import { useGoogleLogin } from '@react-oauth/google';
+import {useGoogleLogin} from '@react-oauth/google';
 import axios from "axios";
 
 import styles from './Signin.module.scss';
@@ -16,8 +16,6 @@ const Signin = () => {
 
     let { userInfo, error } = useSelector((state) => state.auth);
 
-    const [googleCredentials, setGoogleCredentials] = useState();
-
     const { register, handleSubmit } = useForm({
         defaultValues: {
           email: "",
@@ -29,14 +27,7 @@ const Signin = () => {
     const login = useGoogleLogin({
         onSuccess: async tokenResponse => {
             try {
-                const response = await axios.get('https://www.googleapis.com/oauth2/v1/userinfo', {
-                    headers: {
-                        Authorization: `Bearer ${tokenResponse.access_token}`,
-                        Accept: 'application/json'
-                    }
-                });
-                let { email, name, picture } = response.data;
-                setGoogleCredentials({ email, name, picture: picture.slice(0, -6) });
+                await onSubmit({provider: 'Google', token : tokenResponse.access_token})
             }
             catch(err) {
                 console.log(err);

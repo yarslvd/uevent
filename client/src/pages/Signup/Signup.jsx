@@ -15,10 +15,6 @@ const Signup = () => {
     const dispatch = useDispatch();
   
     const { userInfo, error } = useSelector((state) => state.auth);
-    const state = useSelector((state) => state);
-
-    const [googleCredentials, setGoogleCredentials] = useState();
-    console.log(error, userInfo, state);
 
     const {
         register,
@@ -36,17 +32,10 @@ const Signup = () => {
         mode: "onSubmit",
     });
 
-    const login = useGoogleLogin({
+    const googleRegister = useGoogleLogin({
         onSuccess: async tokenResponse => {
             try {
-                const response = await axios.get('https://www.googleapis.com/oauth2/v1/userinfo', {
-                    headers: {
-                        Authorization: `Bearer ${tokenResponse.access_token}`,
-                        Accept: 'application/json'
-                    }
-                });
-                let { email, name, picture } = response.data;
-                setGoogleCredentials({ email, name, picture: picture.slice(0, -6) });
+                await onSubmit({provider: 'Google', token : tokenResponse.access_token})
             }
             catch(err) {
                 console.log(err);
@@ -81,7 +70,7 @@ const Signup = () => {
                         <span>Create your new account</span>
                     </div>
 
-                    <Button onClick={() => login()} className={styles.oauthBtn}>
+                    <Button onClick={() => googleRegister()} className={styles.oauthBtn}>
                         <img src="/assets/google_icon.png" alt="" />
                         <span>Sign up with Google</span>
                     </Button>

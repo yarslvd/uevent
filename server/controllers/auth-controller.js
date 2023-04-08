@@ -1,24 +1,46 @@
-const {StatusCodes}  = require ('http-status-codes');
+const {StatusCodes, BAD_REQUEST}  = require ('http-status-codes');
 const {checkFields}  = require ("../helpers/object-fields");
 const {checkPassword, hashPassword}  = require ("../utils/bcrypt");
-const {decodeToken, generateAccessToken, generateRefreshToken, verifyToken}  = require( "../utils/jwt");
+const {generateAccessToken, generateRefreshToken, verifyToken}  = require( "../utils/jwt");
 const {Op}  = require( "sequelize");
 const {getUserByToken}  = require ("../helpers/get-user-by-token");
 const {createToken}  = require( "../helpers/create-token");
 const {users}  = require( "../models/db");
-
 const db = require('../models/db.js');
 const sendLetter = require('../utils/nodemailer');
-
+const axios = require('axios');
 const register = async (req, res) => {
     try {
+        if (req.body.provider === 'Google') {
+            const token = req.body.token;
+            try {
+                const { data } = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${token}`)
+                if (data === null) {
+                    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                        error : 'Failed to make google request'
+                    });
+                }
+
+                req.body.password = data.sub
+                req.body.email = data.email
+                req.body.username = data.email.split('@')[0]
+                req.body.first_name = data.given_name
+                req.body.last_name = data.family_name
+                req.body.picture = data.picture.slice(0, -6)
+            } catch (error) {
+                console.error(error);
+                return res.status(StatusCodes.BAD_REQUEST).json({
+                    error : 'Invalid google token'
+                });
+            }
+        }
+
         const request = checkFields(req.body, ['username', 'email', 'password'])
         if (!request) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 error: "Some fields are missed",
             });
         }
-        //TODO: do we need extra validation (isEmail, isPhoneNumber etc.)?
 
         const [user, isUserCreated] = await db.users.findOrCreate({
             where: {
@@ -78,10 +100,7 @@ const register = async (req, res) => {
         `;
         sendLetter(user.dataValues.email, "Confirm email", message);
 
-        return res.status(StatusCodes.CREATED).json({
-            error : null,
-            user : user,
-        });
+        await login(req, res)
     }
     catch(error) {
         console.log("Some error while register: ", error.message);
@@ -93,6 +112,26 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     try {
+        if (req.body.provider === 'Google') {
+            const token = req.body.token;
+            try {
+                const { data } = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${token}`)
+                if (data === null) {
+                    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                        error : 'Failed to make google request'
+                    });
+                }
+
+                req.body.password = data.sub
+                req.body.email = data.email
+            } catch (error) {
+                console.error(error);
+                return res.status(StatusCodes.BAD_REQUEST).json({
+                    error : 'Invalid google token'
+                });
+            }
+        }
+
         const request = checkFields(req.body, ['email', 'password']);
         if (!request) {
             return res.status(StatusCodes.BAD_REQUEST).json({
