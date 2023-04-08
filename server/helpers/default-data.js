@@ -456,7 +456,7 @@ const data = {
         },
         {
             event_id: 1,
-            text: 'SPRINGSALE',
+            text: 'SPRING25',
             discount: 25.00,
             valid_till: '2023-05-15 23:59:59-04'
         },
@@ -480,7 +480,7 @@ const data = {
         },
         {
             event_id: 3,
-            text: 'LAUGHOUTLOUD',
+            text: 'LAUGH30',
             discount: 30.00,
             valid_till: '2023-06-15 23:59:59-04'
         },
@@ -504,7 +504,7 @@ const data = {
         },
         {
             event_id: 5,
-            text: 'SUMMERWINE',
+            text: 'SUMMER20',
             discount: 20.00,
             valid_till: '2023-08-31 23:59:59-04'
         },
@@ -522,19 +522,19 @@ const data = {
         },
         {
             event_id: 7,
-            text: 'OUTDOORFUN',
+            text: 'OUTDOOR10',
             discount: 10.00,
             valid_till: '2023-11-30 23:59:59-04'
         },
         {
             event_id: 7,
-            text: 'FALLMOVIES',
+            text: 'FALLMOV20',
             discount: 20.00,
             valid_till: '2023-12-15 23:59:59-04'
         },
         {
             event_id: 8,
-            text: 'HOLIDAYGALA',
+            text: 'HOLIDAY',
             discount: 25.00,
             valid_till: '2023-12-31 23:59:59-04'
         },

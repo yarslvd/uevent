@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import {useEffect, useState} from 'react';
 import Cookies from "js-cookie";
 
 import './styles/App.scss';
@@ -19,6 +19,7 @@ import ConfirmEmail from './pages/ConfirmEmail/ConfirmEmail';
 import AllEvents from './pages/AllEvents/AllEvents';
 
 import Test from './pages/Test/Test'
+import {CircularProgress} from "@mui/material";
 
 const router = createBrowserRouter([
   {
@@ -74,19 +75,39 @@ const router = createBrowserRouter([
 const userToken = Cookies.get("access_token") ? Cookies.get("access_token") : null;
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true)
   const dispatch = useDispatch();
 
   const isAuth = useSelector(selectIsAuthMe);
   console.log("isAuth", isAuth);
 
   useEffect(() => {
-    if (userToken) {
-      dispatch(fetchAuthMe(userToken));
+    const getMe = async () => {
+      try {
+        console.log("waiting to fetch me", isLoading)
+        setIsLoading(true)
+        await dispatch(fetchAuthMe(userToken));
+      }
+      catch (e) {
+        console.log("error while fetching me: ",e)
+      }
+      finally {
+        setIsLoading(false)
+      }
     }
+
+    if (userToken) {
+      getMe()
+    }
+
   }, []);
 
+  if (isLoading) {
+      return( <CircularProgress></CircularProgress>)
+  }
+
   return (
-    <RouterProvider router={router} />
+      <RouterProvider router={router}/>
   );
 }
 

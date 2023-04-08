@@ -153,7 +153,7 @@ const login = async (req, res) => {
 
 const getMe = async (req, res) => {
     try {
-      const info = await verifyToken(req.cookies.access_token);
+      const info = await verifyToken(req.cookies.access_token, req.cookies.refresh_token, res);
       console.log(info);
 
       if (!info) {

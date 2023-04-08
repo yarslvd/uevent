@@ -37,6 +37,8 @@ CREATE TABLE IF NOT EXISTS events (
     poster TEXT NOT NULL DEFAULT 'set some default poster bitch',
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
+    format VARCHAR(255) NOT NULL,
+    theme VARCHAR(255) NOT NULL,
     price NUMERIC(12,2) NOT NULL,
     iso_currency VARCHAR(3) NOT NULL,
     address TEXT NOT NULL,

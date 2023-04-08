@@ -9,7 +9,7 @@ import EventInfoCreate from '../../components/EventInfoCreate/EventInfoCreate';
 import RichEditor from '../../components/RichEditor/RichEditor';
 import Map from '../../components/Map/Map';
 import SpotifySearch from '../../components/SpotifySearch/SpotifySearch';
-import { selectIsAuth } from '../../redux/slices/authSlice';
+import {selectIsAuth, selectIsAuthMe} from '../../redux/slices/authSlice';
 import { useUploadPosterMutation, useCreateEventMutation, useUpdateEventMutation, useGetEventInfoQuery } from '../../redux/api/fetchEventsApi';
 import { useAddPromoMutation } from '../../redux/api/fetchPromoApi';
 
@@ -34,7 +34,7 @@ const formats = [
 ];
 
 const CreateEventPage = () => {
-    const auth = useSelector(selectIsAuth);
+    const auth = useSelector(selectIsAuthMe);
     const { id } = useParams();
     const navigate = useNavigate();
     const { userInfo } = useSelector((state) => state.auth);
@@ -124,6 +124,7 @@ const CreateEventPage = () => {
         }
     }
 
+    console.log("create event auth: ", auth)
     useEffect(() => {
         if(!auth) {
             navigate('/login');

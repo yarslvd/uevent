@@ -8,6 +8,7 @@ const generateAccessToken = (id, username, email) => {
         username,
         id,
         email,
+        nanoIot:new Date().getMilliseconds(),
     }
 
     return jwt.sign(payload, process.env.JWT_SECRET_KEY, {expiresIn: process.env.JWT_ACCESS_TOKEN_LIFE } );
@@ -18,6 +19,7 @@ const generateRefreshToken = (id, username, email) => {
         id,
         username,
         email,
+        nanoIot:new Date().getMilliseconds(),
     }
 
     return jwt.sign(payload, process.env.JWT_SECRET_KEY, {expiresIn: process.env.JWT_REFRESH_TOKEN_LIFE } );
@@ -63,7 +65,8 @@ async function verifyToken(access_token, refresh_token, res) {
         let accessToken = generateAccessToken(decodedRefresh.decoded.id, decodedRefresh.decoded.username, decodedRefresh.decoded.email)
         let refreshToken = generateRefreshToken(decodedRefresh.decoded.id, decodedRefresh.decoded.username, decodedRefresh.decoded.email)
 
-        const dbToken = await tokens.create({token: refreshToken})
+        const {exp} = decodeToken(refreshToken).decoded;
+        const dbToken = await tokens.create({token: refreshToken, valid_till: exp * 1000})
         if (dbToken === null) {
             console.debug("failed to create new token in db")
             return null
