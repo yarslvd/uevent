@@ -9,6 +9,11 @@ const WideCard = ({ poster, title, location, date, price, id }) => {
     const { t } = useTranslation();
     const parsedDate = new Date(date);
 
+    let convertedPrice = `${t('wideCard.price')} ${price} ₴`
+    if (Number(price) === 0) {
+        convertedPrice = `${t('wideCard.free')}`
+    }
+
     return(
         <div className="containerWideCard">
             <div className='image' style={{backgroundImage: `url(${poster})`}}></div>
@@ -34,7 +39,7 @@ const WideCard = ({ poster, title, location, date, price, id }) => {
                         <span>{parsedDate.toLocaleString('uk-UK', dateOptions).toUpperCase().slice(0, -3)}&nbsp;</span>
                     </div>
                     <div className="price">
-                        <b>{`${t('wideCard.price')} ${price} ₴`}</b>
+                        <b>{convertedPrice}</b>
                     </div>
                 </div>
             </div>
