@@ -33,6 +33,12 @@
                 font-weight: 600;
                 align-self: flex-end;
                 white-space: nowrap;
+                min-width: 180px;
+
+                span {
+                    display: flex;
+                    justify-content: center;
+                }
             }
 
             .price {

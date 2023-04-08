@@ -24,4 +24,15 @@ export const currencies = [
     },
 ];
 
+export const dateOptions = { 
+    day: 'numeric', 
+    month: 'short',
+    year: 'numeric',  
+};
+
+export const timeOptions = {
+    hour: '2-digit',
+    minute: '2-digit',
+}
+
 export const priceRegExp = /^\d+(\.\d{1,2})?$/;

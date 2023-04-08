@@ -9,7 +9,7 @@ const variants = {
     close: { width: '0px', opacity: 0.1, transition: { duration: 0.5}}
 };
 
-const SearchBarFull = () => {
+const SearchBarFull = ({onChange}) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const { t } = useTranslation();
@@ -18,6 +18,8 @@ const SearchBarFull = () => {
         e.preventDefault();
         setIsOpen(true);
     };
+
+    const hadleOnChange = onChange ? onChange : () => {};
 
     return(
         <motion.div className='container' onClick={handleOpenSearch}>
@@ -32,6 +34,7 @@ const SearchBarFull = () => {
                 placeholder={'Search...'}
                 variants={variants}
                 animate={isOpen ? 'open' : 'close'}
+                onChange={hadleOnChange}
             />
         </motion.div>
     );

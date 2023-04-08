@@ -97,7 +97,7 @@ function filterColumnValue(columnName, value) {
 function filterStringIncludes(columnName, str) {
     return {
         [columnName]: {
-            [Sequelize.Op.like]: `%${str}%`
+            [Sequelize.Op.iLike]: `%${str}%`
         }
     }
 }
