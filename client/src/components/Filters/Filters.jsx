@@ -90,7 +90,7 @@ const Filters = ({setFilters}) => {
       dateTo ?   {'date_between[to]': dateTo.toISOString()} : {},
       {'price_between[from]': value[0], 'price_between[to]': value[1]}
     )
-
+    
     setFilters(filters);
   }
 

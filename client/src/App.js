@@ -1,11 +1,8 @@
 import {useEffect, useState} from 'react';
 import Cookies from "js-cookie";
-
-import './styles/App.scss';
+import { CircularProgress } from "@mui/material";
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-
-import { fetchAuthMe, selectIsAuthMe, selectIsAuth } from "./redux/slices/authSlice";
 
 import Main from './pages/Main/Main';
 import EventPage from './pages/EventPage/EventPage';
@@ -17,9 +14,12 @@ import ResetPassword from './pages/ResetPassword/ResetPassword';
 import ChangePassword from './pages/ChangePassword/ChangePassword';
 import ConfirmEmail from './pages/ConfirmEmail/ConfirmEmail';
 import AllEvents from './pages/AllEvents/AllEvents';
+import Profile from './pages/Profile/Profile';
+import { fetchAuthMe, selectIsAuthMe } from "./redux/slices/authSlice";
 
 import Test from './pages/Test/Test'
-import {CircularProgress} from "@mui/material";
+
+import './styles/App.scss';
 
 const router = createBrowserRouter([
   {
@@ -69,6 +69,10 @@ const router = createBrowserRouter([
   {
     path: '/event/:id/edit',
     element: <CreateEventPage />
+  },
+  {
+    path: '/profile',
+    element: <Profile />
   }
 ]);
 
@@ -99,7 +103,7 @@ function App() {
   }, []);
 
   if (isLoading) {
-      return( <CircularProgress/>)
+      return( <CircularProgress sx={{ height: '1000px' }}/>)
   }
 
   return (

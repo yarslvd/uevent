@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import { useGetEventsQuery } from '../../redux/api/fetchEventsApi';
+import { Link } from 'react-router-dom';
 
 import Layout from '../../components/Layout/Layout';
 import Carousel from '../../components/Carousel/Carousel';
@@ -16,12 +18,6 @@ const slides = [
     { title: 'Lola', url: 'https://storage.concert.ua/JWd/16/RN/6282001ee74da/752f.jpg:31-eventpage-main_banner-desktop' },
 ];
 
-const popularEvents = [
-    { title: 'Harry Styles', location: 'Палац студентів НТУ “ХПІ”', time: '16:00', date: '28 КВІ 2023', price: 400 ,image_url: 'https://media.architecturaldigest.com/photos/623e05e0b06d6c32457e4358/master/pass/FINAL%20%20PFHH-notextwlogo.jpg' },
-    { title: 'The Weeknd', location: 'Палац студентів НТУ “ХПІ”', time: '18:00', date: '29 БЕР 2023', price: 400 ,image_url: 'https://www.livenationentertainment.com/wp-content/uploads/2022/03/TR_NationalAsset_TheWeeknd_SG_1200x628.jpg' },
-    { title: 'Океан Ельзи. Світовий тур 2023', location: 'Стадіон Металіст', time: '18:00', date: '17 ЧЕР 2023', price: 550 ,image_url: 'https://vgorode.ua/img/article/11918/24_main-v1640936452.jpg' },
-];
-
 const newEvents = [
     { title: 'Harry Styles', location: 'Палац студентів НТУ “ХПІ”', time: '16:00', date: '28 КВІ 2023', price: 400 ,image_url: 'https://media.architecturaldigest.com/photos/623e05e0b06d6c32457e4358/master/pass/FINAL%20%20PFHH-notextwlogo.jpg' },
     { title: 'The Weeknd', location: 'Палац студентів НТУ “ХПІ”', time: '18:00', date: '29 БЕР 2023', price: 400 ,image_url: 'https://www.livenationentertainment.com/wp-content/uploads/2022/03/TR_NationalAsset_TheWeeknd_SG_1200x628.jpg' },
@@ -30,8 +26,17 @@ const newEvents = [
 ];
 
 const Main = () => {
-    const matches = useMediaQuery('(max-width:800px)');
     const { t } = useTranslation();
+    const matches = useMediaQuery('(max-width:800px)');
+
+    const [popular, setPopular] = useState([]);
+    const [upComming, setUpComming] = useState([]);
+    const [recent, setRecent] = useState([]);
+
+    const filters = { 'price_between[from]': 10, 'price_between[to]': 100 }
+
+    const { isLoading: isLoadingPopular, isError: isErrorPopular, data: dataPopular } = useGetEventsQuery({ limit: 3 });
+    const { isLoading: isLoadingUpComming, isError: isErrorUpComming, data: dataUpComming } = useGetEventsQuery({ limit: 3,  filters });
 
     return (
         <Layout>
@@ -44,12 +49,12 @@ const Main = () => {
                     <img src="/assets/popularEvents_illustration.svg" alt="" />
                 </div>
                 <div className='events'>
-                    {popularEvents.map((el, index) => (
+                    {!isLoadingPopular && !isErrorPopular && dataPopular.events.rows.map((el, index) => (
                         matches ?
                             <Card {...el} key={index}/> :
                             <WideCard {...el} key={index}/>
                     ))}
-                    <a href="/popular" className='more-link'>Більше</a>
+                    <Link to="/events" className='more-link'>Більше</Link>
                 </div>
             </div>
             <div className="nearestEvents mainEvents">
@@ -58,12 +63,12 @@ const Main = () => {
                     <img src="/assets/upcommingEvents_illustration.svg" alt="" />
                 </div>
                 <div className="events">
-                    {popularEvents.map((el, index) => (
+                    {!isLoadingUpComming && !isErrorUpComming && dataUpComming.events.rows.map((el, index) => (
                         matches ?
                             <Card {...el} key={index}/> :
                             <WideCard {...el} key={index}/> 
                     ))}
-                    <a href="/closest" className='more-link'>Більше</a>
+                    <Link to="/events" className='more-link'>Більше</Link>
                 </div>
             </div>
             <div className="new">
@@ -75,7 +80,7 @@ const Main = () => {
                         <Card {...el} key={index}/>
                     ))}
                 </div>
-                <a href="/new" className='more-link'>Більше</a>
+                <Link to="/events" className='more-link'>Більше</Link>
             </div>
         </Layout>
     );

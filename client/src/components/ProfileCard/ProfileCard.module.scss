@@ -1,0 +1,46 @@
+@import '../../styles/mixins.scss';
+
+.container {
+    position: sticky;
+    top: 20px;
+    background-color: $base-lightgray-color;
+    padding: 40px 40px;
+    height: 430px;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 367px;
+    width: 100%;
+
+    .avatar {
+        width: 200px;
+        height: 200px;
+        font-size: 56px;
+    }
+
+    .displayContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+
+        .text {
+            h3 {
+                margin: 0;
+                font-size: 24px;
+                margin-top: 15px;
+                text-align: center;
+            }
+
+            span {
+                display: flex;
+                justify-content: center;
+            }
+        }
+
+        .settingsBtn {
+            @include default-btn;
+        }
+    }
+}

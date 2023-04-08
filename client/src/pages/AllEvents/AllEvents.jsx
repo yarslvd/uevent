@@ -33,12 +33,14 @@ const AllEvents = () => {
   console.log(data);
   let i = 0;
   const handleSearch = (e) => {setSearch(e.target.value)};
+  console.log(filters);
   
   useMemo(()=>{
     setFilters({
       ...filters,
       title: search,
     })
+
   }, [search]);
 
   const handlePageChange = (e, p) => {
