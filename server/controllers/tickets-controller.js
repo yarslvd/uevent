@@ -5,6 +5,8 @@ const {Op} = require("sequelize");
 const {checkUserAndEvent} = require("../helpers/check-user-event");
 const { createPayment } = require("../helpers/create-payment");
 const {waitTx} = require("../helpers/wait-tx");
+const { createUrlParams } = require("../helpers/url-helpers");
+const { processPagination } = require("../helpers/db-helper");
 
 const create = async (req, res) => {
     try {
@@ -120,7 +122,7 @@ const get = async (req, res) => {
                     as: 'user'
                 } ]
         })
-
+        
         return res.json ({
             tickets
         });
@@ -137,7 +139,45 @@ const getTicketsByPayment = async (req, res) => {
     // return pdf
 }
 
+
+const getUserTickets = async (req, res) => {
+    try {
+        console.log(req.query);
+        let page = req.query.page ?? 0;
+        let limit = req.query.limit ?? 15;
+        page = Number(page);
+        limit = Number(limit);
+
+        let parameters = {
+            where: {
+                user_id: req.user.id
+            },
+            include: [
+                {
+                    model: db.events,
+                    as: 'event'
+                }
+            ]
+        }
+
+        let url = `${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`
+        let path = req.originalUrl.split('?')[0] + createUrlParams(req.query)
+        const tickets = await processPagination(url, path, db.tickets, limit, page, parameters);
+
+        res.json({
+            tickets
+        })
+    }
+    catch(error) {
+        console.log("Some error while getting tickets: ", error.message);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json ({
+            error : "Some error while getting tickets: " + error.message
+        });
+    }
+}
+
 module.exports = {
     get,
     create,
+    getUserTickets
 }

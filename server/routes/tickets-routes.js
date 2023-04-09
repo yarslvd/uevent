@@ -8,5 +8,7 @@ const router = express.Router();
 router.route('/')
     .post(jwtMiddleware, controller.create)
     .get(controller.get)
+    
+router.get('/user-tickets', jwtMiddleware, controller.getUserTickets);
 
 module.exports = router;

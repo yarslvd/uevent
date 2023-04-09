@@ -106,6 +106,7 @@ async function jwtMiddleware(req, res, next) {
 
         let user = await verifyToken(token, req.cookies.refresh_token, res)
         if (user == null) {
+            clearAuthCookies(res);
             return res.status(StatusCodes.UNAUTHORIZED).json ({
                 error : 'Token is invalid'
             })
@@ -115,10 +116,16 @@ async function jwtMiddleware(req, res, next) {
         next();
     } catch(err) {
         console.log("jwt middleware", err)
+        clearAuthCookies(res);
         return res.status(StatusCodes.UNAUTHORIZED).json ({
             error : 'User is not authorized'
         })
     }
+}
+
+function clearAuthCookies(res) {
+    res.clearCookie("access_token");
+    res.clearCookie("refresh_token");
 }
 
 module.exports = {

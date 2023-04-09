@@ -48,6 +48,23 @@ const CreateEventPage = () => {
     const [visibility, setVisibility] = useState('');
     const [promocodeList, setPromocodeList] = useState([]);
 
+    const [eventInfo, setEventInfo] = useState({
+        address: "",
+        location: "",
+        title: "",
+        description:"",
+        date: "",
+        publish_date: "",
+        format: "",
+        iso_currency: "",
+        organizer: {},
+        price: "",
+        spotify_id: "",
+        theme: "",
+        ticket_amount: "",
+        visibility: ""
+    });
+
     //Mutations
     const [uploadPoster] = useUploadPosterMutation();
     const [createEvent] = useCreateEventMutation();
@@ -130,6 +147,14 @@ const CreateEventPage = () => {
             navigate('/login');
         }
     }, []);
+
+
+    // edit event
+    useEffect(()=> {
+        if (id && !isLoading && window.location.href.includes('/edit')) {
+            setImageUrl(data.event.poster)
+        }
+    },[data, isLoading])
 
     useEffect(() => {
         if (selectedImage) {
