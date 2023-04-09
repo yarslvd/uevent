@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: `${process.env.REACT_APP_BASE_URL}/api/tickets`,
+    baseUrl: `${process.env.REACT_APP_BASE_URL}/api/payments`,
     prepareHeaders: (headers, { getState }) => {
         const token = getState().auth.userToken;
         
@@ -12,24 +12,19 @@ const baseQuery = fetchBaseQuery({
     },
 })
 
-export const fetchTicketsApi = createApi({
-    reducerPath: 'fetchTicketsApi',
+export const fetchPaymentApi = createApi({
+    reducerPath: 'fetchPaymentApi',
     baseQuery: baseQuery,
     endpoints: (build) => ({
-        getTickets: build.query({
-            query: () => `/`,
-        }),
-        buyTickets: build.query({
-            query: (ticket) => ({
-                url: `/`, 
-                method:"POST",
-                body: ticket
+        checkPayment: build.query({
+            query: (id) => ({
+                url: `/` + id, 
+                method:"GET"
             })
         }),
     })
 });
 
 export const {
-    useGetTicketsQuery,
-    useLazyBuyTicketsQuery
-} = fetchTicketsApi;
+    useLazyCheckPaymentQuery
+} = fetchPaymentApi;

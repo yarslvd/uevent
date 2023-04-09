@@ -1,11 +1,13 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Avatar, Button } from '@mui/material';
 
 import styles from './EventInfo.module.scss';
 
 import { dateOptions, timeOptions } from '../../data/variables';
+import { useLazyBuyTicketsQuery } from '../../redux/api/fetchTicketsApi';
+import { useLazyCheckPaymentQuery } from '../../redux/api/fetchPaymentApi';
 
 // Implement follow/unfollow
 
@@ -13,7 +15,26 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
     const [isLikeActive, setIsLikeActive] = useState(false);
     const parsedDate = !isLoading && new Date(date);
 
+    const [buyTickets] = useLazyBuyTicketsQuery();
+    const { id } = useParams();
+
     //fetch data of organization by id;
+
+    const handlePayment = async (e) => {
+        e.preventDefault();
+        
+        const ticket = {
+            event_id: +id,
+            count: 1,
+            redirect_url: window.location.href + '?check-payment=true'
+        }
+        const payment = await buyTickets(ticket).unwrap();
+ 
+        e.target[1].value = payment.data;
+        e.target[2].value = payment.signature;
+        e.target.submit();
+        return true;
+    }
 
     return (
         <div className={styles.container}>
@@ -60,7 +81,11 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                     </div>
                 </div>
                 <div className={styles.button_section}>
-                    <Button variant='contained' className={styles.buy_btn}>Купити</Button>
+                    <form method="POST" action="https://www.liqpay.ua/api/3/checkout" onSubmit={handlePayment} acceptCharset="utf-8">
+                        <Button variant='contained' type='submit' className={styles.buy_btn}>Купити</Button>
+                        <input type="hidden" name="data" value=""/>
+                        <input type="hidden" name="signature" value=""/>
+                    </form>
                     <motion.div 
                         className={styles.like_btn}
                         whileTap={{ scale: 0.8 }}

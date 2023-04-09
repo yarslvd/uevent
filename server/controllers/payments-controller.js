@@ -47,45 +47,73 @@ const confirmPay = (req, res) => {
 
 const checkPayment = async (req,res) => {
   try{
-      const paymentId = req.params.id;
-      const payment = await db.payments.findByPk(paymentId);
-      if(payment.status === 'success') {
-        return res.status(StatusCodes.OK).json({
-          status: payment.status,
-          error: ""
-        })
-      }
-
-      liqpay.api("request", {
-          "action"   : "status",
-          "version"  : "3",
-          "order_id" : payment.order_id
-      }, async (data) => {
-        switch(data.status) {
-          case "success": {
-            await db.payments.update({status: "success"}, {where:{id: paymentId}, plain: true});
-
-            return res.status(StatusCodes.OK).json({
-              status: "success",
-              error: ""
-            })
+      const eventId = req.params.event_id;
+      const payments = await db.payments.findAll({
+        include: [{
+            model: db.users,
+            as: "payer",
+            where: {
+              id: req.user.id
+            }
+          },
+          {
+            model: db.events,
+            as: "event",
+            where: {
+              id: eventId
+            }
           }
-          case "processing":
-          case "prepared":
-            await db.payments.update({status: "pending"}, {where:{id: paymentId}, plain: true});
-
-            return res.status(StatusCodes.OK).json({
-              status: "pending",
-              error: ""
-            });
-          default:
-            await db.payments.update({status: "reverted"}, {where:{id: paymentId}, plain: true});
-            return res.status(StatusCodes.OK).json({
-              status: "reverted",
-              error: data.err_description
-            });
-        }
+        ]
       });
+      let resultPayments = [];
+      const checkPayments = async () => {
+        for (let payment of payments) {
+          if(payment.status === 'success') {
+            resultPayments.push({
+              id: payment.id,
+              status: "success"
+            })
+            continue;
+          }
+          let liqpayCheck = () => new Promise((resolve) => {
+            liqpay.api("request", {
+              "action"   : "status",
+              "version"  : "3",
+              "order_id" : payment.order_id
+            }, async (data) => {
+              console.log("check:", data);
+              payment.error = data.err_description;
+              switch(data.status) {
+              case "success": {
+                await db.payments.update({status: "success"}, {where:{id: payment.id}, plain: true});
+                payment.status = "success"
+                break;
+              }
+              case "processing":
+              case "prepared":
+                await db.payments.update({status: "pending"}, {where:{id: payment.id}, plain: true});
+                payment.status = "pending";
+                break;
+              default:
+                await db.payments.update({status: "reverted"}, {where:{id: payment.id}, plain: true});
+                payment.status = "reverted"
+                payment.error = data.err_description;
+              }
+              resultPayments.push({
+                id: payment.id,
+                status: payment.status,
+                error: payment.error
+              })
+              resolve();
+            });
+          })
+
+          await liqpayCheck();
+        }
+      }
+      await checkPayments()
+
+      res.json({payments: resultPayments})
   }
   catch(error) {
       console.log("Some error while checking payment: ", error.message);

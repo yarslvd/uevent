@@ -8,9 +8,11 @@ const {waitTx} = require("../helpers/wait-tx");
 
 const create = async (req, res) => {
     try {
+        console.log(req.body)
         const request = checkFields(req.body, [
             'event_id',
-            'count'
+            'count',
+            'redirect_url'
         ])
         if (!request) {
             return res.status(StatusCodes.BAD_REQUEST).json({
@@ -36,14 +38,14 @@ const create = async (req, res) => {
             })
         }
 
-        const paymentObj = await createPayment(event, req.user.id, request.count);
-
-        const paymentStatus = await waitTx("pending", paymentObj.orderId)
-        if (paymentStatus === "reverted") {
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-                error : "Failed to make transaction"
-            })
-        }
+        const paymentObj = await createPayment(event, req.user.id, request.count, request.redirect_url);
+    
+        // const paymentStatus = await waitTx("pending", paymentObj.orderId)
+        // if (paymentStatus === "reverted") {
+        //     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        //         error : "Failed to make transaction"
+        //     })
+        // }
 
         event.dataValues.ticket_amount -= request.count;
         await db.events.update(event.dataValues, {where: {id: event.dataValues.id}, plain: true})

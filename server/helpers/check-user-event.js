@@ -1,7 +1,7 @@
 const {StatusCodes} = require("http-status-codes");
 const db = require("../models/db");
 
-async function checkUserAndEvent(res, eventId, userId) {
+async function checkUserAndEvent(res, userId, eventId) {
     const user = await db.users.findByPk(userId);
     if (user === null) {
         res.status(StatusCodes.NOT_FOUND).json({

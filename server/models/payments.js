@@ -16,6 +16,14 @@ module.exports = function(sequelize) {
                 key: 'id'
             }
         },
+        event_id: {
+            type: DataTypes.BIGINT,
+            allowNull: false,
+            references: {
+                model: 'events',
+                key: 'id'
+            }
+        },
         order_id: {
             type: DataTypes.TEXT,
             allowNull: false,
@@ -27,6 +35,9 @@ module.exports = function(sequelize) {
         status: {
           type: DataTypes.ENUM('success', 'reverted', 'pending'),
           allowNull: false
+        },
+        timestamp: {
+            type: DataTypes.DATE,
         },
     }, {
         sequelize,

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pagination, Button, useMediaQuery } from '@mui/material';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import parse from 'html-react-parser';
@@ -17,6 +17,8 @@ import { useGetTicketsQuery } from '../../redux/api/fetchTicketsApi';
 import { useGetEventsQuery } from '../../redux/api/fetchEventsApi';
 
 import styles from './EventPage.module.scss';
+import { useLazyCheckPaymentQuery } from '../../redux/api/fetchPaymentApi';
+import { useEffect } from 'react';
 
 const newEvents = [
   { title: 'Harry Styles', location: 'Палац студентів НТУ “ХПІ”', time: '16:00', date: '28 КВІ 2023', price: 400 ,image_url: 'https://media.architecturaldigest.com/photos/623e05e0b06d6c32457e4358/master/pass/FINAL%20%20PFHH-notextwlogo.jpg' },
@@ -30,7 +32,9 @@ const EventPage = () => {
   const { id } = useParams();
   const isAuth = useSelector(selectIsAuthMe);
   const matches = useMediaQuery('(max-width:500px)');
-
+  const [searchParams] = useSearchParams();
+  const [checkPayment] = useLazyCheckPaymentQuery();
+  
   const [addEventComment] = useAddEventCommentMutation();
 
   const [page, setPage] = useState(0);
@@ -67,6 +71,19 @@ const EventPage = () => {
     setPage(p - 1);
   }
 
+  const checkEventPayment = async () => {
+    let data = await checkPayment(id).unwrap()
+    console.log(data);
+  }
+
+  useEffect(() => {
+    if (!!searchParams.get('check-payment')) {
+      window.history.replaceState({}, 'uevent', window.location.href.split("?")[0]);
+
+      checkEventPayment();
+    }
+  }, [])
+
   return (
     <Layout>
       <div className={styles.header}>
@@ -78,7 +95,7 @@ const EventPage = () => {
           }}
         ></div>
         <div className={styles.info}>
-          <EventInfo {...dataInfo?.event} isLoading={isLoadingInfo} error={errorInfo} />
+          <EventInfo {...dataInfo?.event} event_id={dataInfo?.id} isLoading={isLoadingInfo} error={errorInfo} />
         </div>
         <div className={styles.content}>
           <div className={styles.description}>

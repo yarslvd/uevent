@@ -6,6 +6,6 @@ const router = express.Router();
 
 //  /api/payments/
 router.post(controller.confirmPay); // for liqpay server
-router.get('/:id', jwtMiddleware, controller.checkPayment);  
+router.get('/:event_id', jwtMiddleware, controller.checkPayment);  
 
 module.exports = router;
