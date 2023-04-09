@@ -8,6 +8,111 @@
     margin-top: 36px;
     margin-bottom: 200px;
 
+    .ticketsContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .ticket {
+            height: 230px; 
+            display: flex;
+            background-color: $base-lightgray-color;
+            border-radius: 38px;
+    
+            .image {
+                width: 230px;
+                height: 230px;
+                background-position: center;
+                background-size: cover;
+                border-radius: 38px;
+            }
+    
+            .info {
+                padding: 30px 20px;
+                width: calc(100% - 230px);
+                display: grid;
+                grid-template-columns: 6fr 2fr;
+    
+                .right {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+    
+                    .date {
+                        padding: 8px 29px;
+                        background-color: #fff;
+                        border: 1px solid #661F1F1F;
+                        border-radius: 35px;
+                        font-weight: 600;
+                        align-self: flex-end;
+                        white-space: nowrap;
+                        min-width: 180px;
+    
+                        span {
+                            display: flex;
+                            justify-content: center;
+                        }
+                    }
+    
+                    .price {
+                        align-self: flex-end;
+                    }
+                }
+    
+                .left {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+    
+                    a {
+                        @include reset-link-dark;
+                        align-self: flex-start;
+                        padding: 10px 55px;
+                        border-radius: 9px;
+                        cursor: pointer;
+                        background-color: transparent;
+                        font-size: 16px;
+                        border: 2px solid #1f1f1f;
+                        transition: all ease-in-out 0.4s;
+    
+                        &:hover {
+                            background-color: #1f1f1f;
+                            color: #fff;
+                        }
+                    }
+                    .details {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
+    
+                        h3 {
+                            font-size: 28px;
+                            font-weight: 700;
+                            margin: 0;
+                        }
+                        .time {
+                            @include flex-align-center;
+                            gap: 6px;
+                            img {
+                                width: 20px;
+                                height: 20px;
+                            }
+                        }
+                        .location {
+                            @include flex-align-center;
+                            gap: 6px;
+                            svg {
+                                fill: $base-dark-color;
+                                width: 20px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     .homeContainer {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -89,6 +194,39 @@
             display: flex;
             justify-content: center;
             margin-bottom: 20px;
+        }
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .ticket {
+        .info {
+            .left {
+                .details {
+                    h3 {
+                        font-size: 24px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .ticket {
+
+        .image {
+            height: 160px;
+            width: 160px;
+        }
+        .info {
+            .left {
+                .details {
+                    h3 {
+                        font-size: 24px;
+                    }
+                }
+            }
         }
     }
 }
