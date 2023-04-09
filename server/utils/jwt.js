@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const {StatusCodes} = require('http-status-codes');
 
 const {users, tokens} = require('../models/db.js');
+const db = require("../models/db.js");
 
 const generateAccessToken = (id, username, email) => {
     const payload = {
@@ -78,7 +79,14 @@ async function verifyToken(access_token, refresh_token, res) {
         decodedAccess.decoded = decodedRefresh.decoded
     }
 
-    let user = await users.findByPk(decodedAccess.decoded.id)
+    let user = await users.findByPk(decodedAccess.decoded.id, {
+        include: [
+            {
+                model: db.organizers,
+                as: 'organizers'
+            }
+        ]
+    })
     if (user === null){
         console.debug("no user with such id")
         return null
