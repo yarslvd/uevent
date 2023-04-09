@@ -108,7 +108,7 @@ const getOne = async (req, res) => {
     try {
         const eventId = req.params.event_id;
 
-        let result = await checkUserAndEvent(res, eventId, req.user.id)
+        let result = await checkUserAndEvent(res, req.user.id, eventId)
         if (result === null) {
             return
         }

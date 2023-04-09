@@ -173,7 +173,7 @@ ___
 }
 ```
 ___
-### GET /api/tickets?event_id=...
+### GET /api/tickets?event_id=...?user_id=...
 ___
 ## PROMOS
 ___
@@ -213,3 +213,42 @@ ___
 ## PAYMENTS
 ___
 ### GET /api/payments/:id
+___
+
+
+## FAVOURITES
+___
+### POST /api/favourites/
+```json
+{
+  "event_id": ""
+}
+```
+___
+### DELETE /api/favourites/:event_id
+___
+### GET /api/favourites?limit=5&page=1
+___
+### GET /api/favourites/:event_id
+___
+
+## SUBSCRIPTIONS
+___
+### POST /api/subscriptions/
+```json
+{
+  "event_id": ""
+}
+```
+___
+### DELETE /api/subscriptions/:organizer_id
+___
+### GET /api/subscriptionslimit=5&page=1
+___
+## USERS
+___
+### GET /api/users/me
+___ 
+### GET /api/users/tickets
+___
+### GET /api/users/:id

@@ -11,6 +11,7 @@ const upload = multer({
 
 //  api/users/
 router.get('/me', jwtMiddleware, controller.getMe);
+router.get('/tickets', jwtMiddleware, controller.getTickets);
 router.get('/:id', controller.getOne);
 router.patch('/', jwtMiddleware, controller.update);
 router.post('/avatar', jwtMiddleware, upload.single("avatar"), controller.updateAvatar);
