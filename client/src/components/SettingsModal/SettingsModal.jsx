@@ -47,7 +47,7 @@ const SettingsModal = ({ open, handleClose }) => {
         if (values.full_name) {
             const splitted = values.full_name.split(" ");
             values.first_name = splitted[0]
-            values.last_name = splitted.length > 1 ? splitted[1] : '';
+            values.last_name = splitted[1];
         }
 
         if (Object.keys(values).length > 0) {
