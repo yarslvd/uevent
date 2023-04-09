@@ -36,6 +36,9 @@ module.exports = function(sequelize) {
     password: {
       type: DataTypes.STRING(255),
       allowNull: false
+    },
+    image: {
+      type: DataTypes.TEXT
     }
   }, {
     sequelize,

@@ -3,9 +3,23 @@ import { Modal, Button, Avatar, Alert } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
 import styles from './SettingsModal.module.scss';
+import { useState } from 'react';
+import { useUpdateUserMutation, useUploadAvatarMutation } from '../../redux/api/fetchAuthApi';
+
+function removeEmptyFields(data) {
+    Object.keys(data).forEach(key => {
+      if (data[key] === '') {
+        delete data[key];
+      }
+    });
+  }
 
 const SettingsModal = ({ open, handleClose }) => {
     const inputFileRef = useRef(null);
+    const [imageUrl, setImageUrl] = useState("");
+    const [uploadAvatar] = useUploadAvatarMutation();
+    const [updateUser] = useUpdateUserMutation();
+    const [avatar, setAvatar] = useState(null);
 
     const { register, handleSubmit, formState: { errors }, watch } = useForm({
         defaultValues: {
@@ -18,11 +32,29 @@ const SettingsModal = ({ open, handleClose }) => {
     });
 
     const handleChangeFile = (event) => {
-        console.log(event);
+        setImageUrl(URL.createObjectURL(event.target.files[0]));
+        setAvatar(event.target.files[0]);
     }
 
-    const onSubmit = (values) => {
-        console.log(values);
+    const onSubmit = async (values) => {
+        if(avatar) {
+            const formData = new FormData();
+            formData.append('avatar', avatar);
+            await uploadAvatar({file: formData});
+        }
+        
+        removeEmptyFields(values);
+        if (values.full_name) {
+            const splitted = values.full_name.split(" ");
+            values.first_name = splitted[0]
+            values.last_name = splitted.length > 1 ? splitted[1] : '';
+        }
+
+        if (Object.keys(values).length > 0) {
+            await updateUser(values);
+        }
+
+        handleClose();
     }
 
     return (
@@ -42,21 +74,25 @@ const SettingsModal = ({ open, handleClose }) => {
                         </svg>
                     </div>
                 </div>
-                <form onSubmit={handleSubmit()}>
+                <form onSubmit={handleSubmit(onSubmit)}>
 
                     {/* {!Object.keys(errors).length == 0 && <Alert severity="warning" className={styles.errmsg}>{Object.values(errors)[0].message}</Alert>}
                     {error && <Alert severity="error" className={styles.errmsg}>{error}</Alert>}
                     {data && window.location.reload() && <Alert severity="success" className={styles.errmsg}>{data}</Alert>} */}
 
                     <div className={styles.updateAvatar}>
-                        <Avatar src='asd' alt={'awdwd'} className={styles.previewAvatar}></Avatar>
-                        <Button variant="outlined" onClick={() => inputFileRef.current.click()} className={styles.btn}>Upload</Button>
+                        <Avatar src='asd' alt={'awdwd'} className={styles.previewAvatar} style={{
+                            backgroundImage:`url(${imageUrl})`,
+                            backgroundSize: 'cover'
+                        }}></Avatar>
+                        <Button variant="outlined" onClick={() => {console.log(inputFileRef.current);inputFileRef.current.click();}} className={styles.btn}>Upload</Button>
                         <input
-                            ref={inputFileRef}
+                            id="avatar"
                             type='file'
-                            onChange={handleChangeFile}
                             hidden
                             accept="image/png, image/jpg, image/jpeg"
+                            onChange={(e)=>{handleChangeFile(e)}}
+                            ref={inputFileRef}
                         >
                         </input>
                     </div>
