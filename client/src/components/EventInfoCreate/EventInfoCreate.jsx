@@ -3,18 +3,24 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { TimePicker  } from '@mui/x-date-pickers/TimePicker';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { TextField, MenuItem, Button } from '@mui/material';
+import { TextField, MenuItem, Button, FormControl } from '@mui/material';
 import { Controller } from 'react-hook-form';
-import { isFuture } from "date-fns";
+import { isFuture, setDate } from "date-fns";
 import { currencies, priceRegExp } from '../../data/variables';
 
 import styles from './EventInfoCreate.module.scss';
+import { useEffect } from 'react';
 
-const EventInfoCreate = ({ register, control }) => {
+const EventInfoCreate = ({ register, control, eventInfo }) => {
     const [price, setPrice] = useState();
     const [currency, setCurrency] = useState('UAH');
     const [combinedPrice, setCombinedPrice] = useState('');
     const [valid, setValid] = useState(true);
+    const [title, setTitle] = useState('');
+    const [eventDate, setEventDate] = useState();
+    const [eventTime, setEventTime] = useState();
+    const [publishDate, setPublishDate] = useState();
+    const [publishTime, setPublishTime] = useState();
 
     const handlePriceChange = (e) => {
         if(!priceRegExp.test(e.target.value)) {
@@ -31,15 +37,28 @@ const EventInfoCreate = ({ register, control }) => {
         setCurrency(e.target.value);
         setCombinedPrice(`${price} ${e.target.value}`);
     };
+    useEffect(()=>{
+        console.log("eventInfo");
+        if (eventInfo) {
+            setTitle(eventInfo.title);
+            setPrice(eventInfo.price);
+            setCurrency(eventInfo.iso_currency);
+            setCombinedPrice(`${price} ${currency}`);
+            setEventDate((new Date(eventInfo.date)));
+            setEventTime((new Date(eventInfo.date)));
+            // console.log("date init", new Date(eventInfo.date))
+        }
+    }, [eventInfo])
 
     return (
         <div className={styles.container}>
             <div className={styles.inputs}>
                 <div>
-                    <input type="text" className={styles.title} placeholder='НАЗВА ПОДІЇ' {...register('title', { required: true, minLength: 5 })}/>
+                    <input type="text" value={title}  className={styles.title} placeholder='НАЗВА ПОДІЇ' {...register('title', { onChange: (e)=>{setTitle(e.target.value);},required: true, minLength: 5 })}/>
                 </div>
                 <div className={styles.money}>
                     <TextField
+                        InputLabelProps={{shrink: price ? true : false}}
                         id="price"
                         label="Price"
                         variant="outlined"
@@ -48,16 +67,17 @@ const EventInfoCreate = ({ register, control }) => {
                         error={!valid}
                         type='number'
                         inputProps={{ min: 0, max: 10000 }}
-                        {...register('price')}
+                        value={price}
+                        {...register('price', {onChange: (e)=>{setPrice(e.target.value)}})}
                     />
                     <TextField
                         id="select-currency"
                         select
                         label="Currency"
-                        defaultValue="UAH"
+                        defaultValue={"UAH"}
+                        value={currency}
                         className={styles.currency}
-                        onChange={handleCurrencyChange}
-                        {...register('currency', { required: true })}
+                        {...register('currency', { onChange: handleCurrencyChange, required: true })}
                     >
                         {currencies.map((option) => (
                             <MenuItem key={option.value} value={option.value}>
@@ -90,8 +110,12 @@ const EventInfoCreate = ({ register, control }) => {
                                             name={name}
                                             error={!!fieldState.error}
                                             helperText={fieldState.error?.message}
+                                            
                                         />
                                     )}
+                                    defaultValue={eventDate}
+                                    value={eventDate}
+                                    onChange={(e)=>{setEventDate(e); console.log("date", e)}}
                                 />
                             )}
                         />
@@ -116,6 +140,9 @@ const EventInfoCreate = ({ register, control }) => {
                                             helperText={fieldState.error?.message}
                                         />
                                     )}
+                                    value={eventTime}
+                                    defaultValue={eventTime}
+                                    onChange={(e)=>setEventTime(e)}
                                 />
                             )}
                         />
@@ -156,6 +183,8 @@ const EventInfoCreate = ({ register, control }) => {
                                             helperText={fieldState.error?.message}
                                         />
                                     )}
+                                    value={publishDate}
+                                    onChange={(e)=>setPublishDate(e)}
                                 />
                             )}
                         />
@@ -180,6 +209,8 @@ const EventInfoCreate = ({ register, control }) => {
                                             helperText={fieldState.error?.message}
                                         />
                                     )}
+                                    value={publishTime}
+                                    onChange={(e)=>setPublishTime(e)}
                                 />
                             )}
                         />

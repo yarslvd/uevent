@@ -152,7 +152,13 @@ const CreateEventPage = () => {
     // edit event
     useEffect(()=> {
         if (id && !isLoading && window.location.href.includes('/edit')) {
-            setImageUrl(data.event.poster)
+            console.log("bebra:", data.event);
+            setImageUrl(data.event.poster);
+            setEventInfo(data.event);
+            console.log("theme")
+            data?.event?.theme ?? setTheme(data.event.theme);
+            console.log("format")
+            data?.event?.format ?? setFormat(data.event.format);
         }
     },[data, isLoading])
 
@@ -189,7 +195,7 @@ const CreateEventPage = () => {
                     />
                 </div>
                 <div className={styles.info}>
-                    <EventInfoCreate register={register} control={control}/>
+                    <EventInfoCreate register={register} eventInfo={id && data && !isLoading && !error && data.event} control={control}/>
                 </div>
                 <div className={styles.content}>
                     <div className={styles.details}>
@@ -273,7 +279,7 @@ const CreateEventPage = () => {
                         </div>
                     </div>
                     <RichEditor name="description" control={control} defaultValue="" formState={formState} description={id && data && !isLoading && !error && data.event.description}/>
-                    <Map register={register} setValue={setValue} />
+                    <Map register={register} setValue={setValue} eventAddress={id && data && !isLoading && !error && data.event.address}/>
                     <SpotifySearch register={register} setValue={setValue} id={id && data && !isLoading && !error && data.event.spotify_id}/>
                 </div>
             </form>

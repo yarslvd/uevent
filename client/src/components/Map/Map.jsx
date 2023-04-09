@@ -5,7 +5,7 @@ import styles from './Map.module.scss';
 
 const libraries = ['places'];
 
-const Map = ({ register, setValue }) => {
+const Map = ({ register, setValue, eventAddress }) => {
     const [placeName, setPlaceName] = useState('');
     const [markerPosition, setMarkerPosition] = useState(null);
     const [center, setCenter] = useState({ lat: 49.9935, lng: 36.2304 });
@@ -21,6 +21,34 @@ const Map = ({ register, setValue }) => {
       libraries,
       language: 'en',
     });
+
+
+    const handleEventAddress = () => {
+      setPlaceName(eventAddress);
+      const geocoder = new window.google.maps.Geocoder();
+      geocoder.geocode({address: eventAddress}, (results, status) => {
+        console.log("eventAddress", results)
+        if (status === 'OK') {
+          if (results[0]) {
+              const {lat, lng} = results[0].geometry.location
+              let pos = {lat: lat(), lng: lng()};
+              setCenter(pos);
+              setMarkerPosition(pos);
+              console.log("location:", results[0].geometry.location);
+          } else {
+            console.log('No results found');
+          }
+        } else {
+          console.log(`Geocoder failed due to: ${status}`);
+        }
+      })
+    }
+
+    useEffect(() => {
+      if (eventAddress) {
+        handleEventAddress();
+      }
+    }, [window?.google?.maps]);
 
     useEffect(() => {
       setValue("address", placeName);
