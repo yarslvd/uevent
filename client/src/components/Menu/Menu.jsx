@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useMediaQuery, FormControl, Select, MenuItem } from '@mui/material';
 import { useTranslation } from "react-i18next";
+import { useSelector } from 'react-redux';
 
 import ModalWindow from '../ModalWindow/ModalWindow';
 import SearchBarSimple from '../SearchBarSimple/SearchBarSimple';
+import { selectIsAuthMe } from '../../redux/slices/authSlice';
 
 import styles from './Menu.module.scss';
 
@@ -14,6 +16,7 @@ const Menu = ({ menuOpen, setMenuOpen }) => {
     const [language, setLanguage] = useState(JSON.parse(localStorage.getItem('lang')) || 'ua');
     const matches = useMediaQuery('(max-width:1000px)');
     const matchesSearch = useMediaQuery('(max-width:650px)');
+    const { userInfo } = useSelector((state) => state.auth);
 
     const menu = t('menu.items', { returnObjects: true });
     const cities = t('modalWindow.cities', { returnObjects: true });
@@ -64,7 +67,7 @@ const Menu = ({ menuOpen, setMenuOpen }) => {
                         {matchesSearch && <SearchBarSimple />}
                     </ul>
                     <div className={styles.bottom}>
-                        {matches && <Link to={'login'} className='login'>{t('menu.login')}</Link>}
+                        {matches && (!userInfo ? <Link to='/login' className='login'>{t('menu.login')}</Link> : <Link to='/profile' className='login'>{userInfo.username}</Link>)}
                         <FormControl variant="outlined">
                             <Select
                                 labelId="change-language"

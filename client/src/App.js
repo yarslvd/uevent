@@ -103,7 +103,7 @@ function App() {
   }, []);
 
   if (isLoading) {
-      return( <CircularProgress sx={{ height: '1000px' }}/>)
+      return( <div style={{ width: '100vh', height: '100wh' }}><CircularProgress sx={{ top: '50%', left: '50%  ' }}/></div>)
   }
 
   return (

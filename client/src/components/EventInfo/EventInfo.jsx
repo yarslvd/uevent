@@ -7,16 +7,26 @@ import styles from './EventInfo.module.scss';
 
 import { dateOptions, timeOptions } from '../../data/variables';
 import { useLazyBuyTicketsQuery } from '../../redux/api/fetchTicketsApi';
+import { useAddFavouriteMutation } from '../../redux/api/fetchFavouritesApi';
+import { useDeleteFavouriteMutation } from '../../redux/api/fetchFavouritesApi';
+import { useGetFavouriteOneQuery } from '../../redux/api/fetchFavouritesApi';
+import { useGetFavouritesQuery } from '../../redux/api/fetchFavouritesApi';
 import { useLazyCheckPaymentQuery } from '../../redux/api/fetchPaymentApi';
 
 // Implement follow/unfollow
 
 const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, ticket_amount, isLoading, error, organizer }) => {
-    const [isLikeActive, setIsLikeActive] = useState(false);
+    const { id } = useParams();
+    const { data } = useGetFavouriteOneQuery(id);
+
+    const [isLikeActive, setIsLikeActive] = useState(data ? true : false);
     const parsedDate = !isLoading && new Date(date);
 
     const [buyTickets] = useLazyBuyTicketsQuery();
-    const { id } = useParams();
+    const [addFavourite] = useAddFavouriteMutation();
+    const [deleteFavourite] = useDeleteFavouriteMutation();
+    const { refetch } = useGetFavouritesQuery();
+    console.log(isLikeActive);
 
     //fetch data of organization by id;
 
@@ -34,6 +44,24 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
         e.target[2].value = payment.signature;
         e.target.submit();
         return true;
+    }
+
+    const handleLike =  () => {
+        setIsLikeActive(!isLikeActive);
+        const event_id = +id;
+
+        if(!isLikeActive) {
+            console.log('add');
+            addFavourite({event_id})
+                .unwrap()
+                .then(() => {
+                    refetch();
+                })
+        }
+        else {
+            console.log('delete');
+            deleteFavourite(event_id).unwrap();
+        }
     }
 
     return (
@@ -89,7 +117,7 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                     <motion.div 
                         className={styles.like_btn}
                         whileTap={{ scale: 0.8 }}
-                        onClick={() => setIsLikeActive(!isLikeActive)}
+                        onClick={handleLike}
                     >
                         <img src={isLikeActive ? "/assets/heart_filled_icon.png" : "/assets/heart_empty_icon.png"} alt="Like Event" />
                     </motion.div>

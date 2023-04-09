@@ -9,7 +9,7 @@ import EventInfoCreate from '../../components/EventInfoCreate/EventInfoCreate';
 import RichEditor from '../../components/RichEditor/RichEditor';
 import Map from '../../components/Map/Map';
 import SpotifySearch from '../../components/SpotifySearch/SpotifySearch';
-import {selectIsAuth, selectIsAuthMe} from '../../redux/slices/authSlice';
+import { selectIsAuthMe } from '../../redux/slices/authSlice';
 import { useUploadPosterMutation, useCreateEventMutation, useUpdateEventMutation, useGetEventInfoQuery } from '../../redux/api/fetchEventsApi';
 import { useAddPromoMutation } from '../../redux/api/fetchPromoApi';
 
@@ -37,7 +37,6 @@ const CreateEventPage = () => {
     const auth = useSelector(selectIsAuthMe);
     const { id } = useParams();
     const navigate = useNavigate();
-    const { userInfo } = useSelector((state) => state.auth);
 
     //States
     const [selectedImage, setSelectedImage] = useState(null);
@@ -46,6 +45,7 @@ const CreateEventPage = () => {
     const [promocode, setPromocode] = useState("");
     const [theme, setTheme] = useState("");
     const [format, setFormat] = useState('');
+    const [visibility, setVisibility] = useState('');
     const [promocodeList, setPromocodeList] = useState([]);
 
     //Mutations
@@ -86,13 +86,13 @@ const CreateEventPage = () => {
             "publish_date": publish_date,
             "organizer_id": "1", // TODO set users organizer_id
             "ticket_amount": values.ticket_amount,
-            "visibility": "public", // TODO
+            "visibility": values.visibility, // TODO
             "theme": values.theme,
             "format": values.format
         }, 
             values.spotify_id ? {"spotify_id" : values.spotify_id} : {}
         )
-        // console.log({event});
+        console.log({event});
         let res = await createEvent(event).unwrap();
 
         promocodeList.map((el) => {
@@ -201,14 +201,13 @@ const CreateEventPage = () => {
                                     ))}
                                 </Stack>
                             </div>
-                            <FormControl sx={{width: '100%', maxWidth: '300px'}}>
+                            <FormControl sx={{width: '100%', maxWidth: '280px', marginRight: '20px' }}>
                                 <InputLabel id="Theme">Theme</InputLabel>
                                 <Select
                                     labelId="Theme"
                                     id="Theme"
                                     value={theme}
                                     label="Theme"
-                                    sx={{ marginRight: '20px' }}
                                     {...register('theme', { required: true })}
                                     onChange={(e) => setTheme(e.target.value)}
                                 >
@@ -217,7 +216,7 @@ const CreateEventPage = () => {
                                     ))}
                                 </Select>
                             </FormControl>
-                            <FormControl sx={{width: '100%', maxWidth: '300px'}}>
+                            <FormControl sx={{width: '100%', maxWidth: '280px', marginRight: '20px'}}>
                                 <InputLabel id="Format">Format</InputLabel>
                                 <Select
                                     labelId="Format"
@@ -230,6 +229,20 @@ const CreateEventPage = () => {
                                     {formats.map((el, index) => (
                                         <MenuItem value={el} key={index}>{el}</MenuItem>
                                     ))}
+                                </Select>
+                            </FormControl>
+                            <FormControl sx={{width: '100%', maxWidth: '280px' }}>
+                                <InputLabel id="Visitors visibility">Visitors visibility</InputLabel>
+                                <Select
+                                    labelId="Visitors visibility"
+                                    id="Visitors visibility"
+                                    value={visibility}
+                                    label="Visitors visibility"
+                                    {...register('visibility', { required: true })}
+                                    onChange={(e) => setVisibility(e.target.value)}
+                                >
+                                    <MenuItem value={'public'}>Visible</MenuItem>
+                                    <MenuItem value={'private'}>Hidden</MenuItem>
                                 </Select>
                             </FormControl>
                         </div>

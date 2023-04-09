@@ -10,6 +10,7 @@ const {filterUserId} = require("../helpers/filters-orders");
 
 const add = async (req, res) => {
     try {
+        console.log(req.body);
         const request = checkFields(req.body, [
             'event_id',
         ])
@@ -19,7 +20,8 @@ const add = async (req, res) => {
             });
         }
 
-        let result = await checkUserAndEvent(res, request.event_id, req.user.id)
+        let result = await checkUserAndEvent(res, req.user.id, request.event_id);
+
         if (result === null) {
             return
         }
@@ -46,7 +48,7 @@ const remove = async (req, res) => {
     try {
         const eventId = req.params.event_id;
 
-        let result = await checkUserAndEvent(res, eventId, req.user.id)
+        let result = await checkUserAndEvent(res, req.user.id, eventId)
         if (result === null) {
             return
         }

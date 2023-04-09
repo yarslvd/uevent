@@ -1,6 +1,6 @@
 const items = [
     {name: 'ВСІ ПОДІЇ', url: '/events'},
-    {name: 'ОСОБИСТИЙ КАБІНЕТ', url: '/cabinet'},
+    {name: 'ОСОБИСТИЙ КАБІНЕТ', url: '/profile'},
     {name: 'ПРО НАС', url: '/about'},
     {name: 'ОПЛАТА', url: '/payment'},
     {name: 'ПОВЕРНЕННЯ', url: '/refund'},

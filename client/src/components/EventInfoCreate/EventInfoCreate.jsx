@@ -47,6 +47,7 @@ const EventInfoCreate = ({ register, control }) => {
                         onChange={handlePriceChange}
                         error={!valid}
                         type='number'
+                        inputProps={{ min: 0, max: 10000 }}
                         {...register('price')}
                     />
                     <TextField

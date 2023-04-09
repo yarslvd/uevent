@@ -148,20 +148,6 @@ const authSlice = createSlice({
                 state.status = "rejected";
             })
 
-            //GET ME
-            .addCase(fetchAuthMe.pending, (state) => {
-                state.userInfo = null;
-                state.status = "loading";
-            })
-            .addCase(fetchAuthMe.fulfilled, (state, action) => {
-                state.userInfo = action.payload;
-                state.status = "resolved";
-            })
-            .addCase(fetchAuthMe.rejected, (state, action) => {
-                state.userInfo = null;
-                state.status = "rejected";
-            })
-
             //REGISTER
             .addCase(fetchSignup.pending, (state) => {
                 state.userInfo = null;
@@ -238,6 +224,20 @@ const authSlice = createSlice({
                 state.error = action.payload;
                 state.status = "rejected";
             })
+
+            //GET ME
+            .addCase(fetchAuthMe.pending, (state) => {
+              state.userInfo = null;
+              state.status = "loading";
+          })
+          .addCase(fetchAuthMe.fulfilled, (state, action) => {
+              state.userInfo = action.payload;
+              state.status = "resolved";
+          })
+          .addCase(fetchAuthMe.rejected, (state, action) => {
+              state.userInfo = null;
+              state.status = "rejected";
+          })
     },
 });
 

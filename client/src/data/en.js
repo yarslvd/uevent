@@ -1,6 +1,6 @@
 const items = [
     {name: 'ALL EVENTS', url: '/events'},
-    {name: 'PERSONAL CABINET', url: '/cabinet'},
+    {name: 'PERSONAL CABINET', url: '/profile'},
     {name: 'ABOUT US', url: '/about'},
     {name: 'PAYMENT', url: '/payment'},
     {name: 'REFUND', url: '/refund'},

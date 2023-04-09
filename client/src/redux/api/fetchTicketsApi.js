@@ -17,7 +17,10 @@ export const fetchTicketsApi = createApi({
     baseQuery: baseQuery,
     endpoints: (build) => ({
         getTickets: build.query({
-            query: () => `/`,
+            query: ({ user_id }) => ({
+                url: `?user_id=${user_id}`,
+                method: 'GET',
+            })
         }),
         buyTickets: build.query({
             query: (ticket) => ({

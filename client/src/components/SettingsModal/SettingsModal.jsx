@@ -14,7 +14,7 @@ function removeEmptyFields(data) {
     });
   }
 
-const SettingsModal = ({ open, handleClose }) => {
+const SettingsModal = ({ open, handleClose, image, username, full_name }) => {
     const inputFileRef = useRef(null);
     const [imageUrl, setImageUrl] = useState("");
     const [uploadAvatar] = useUploadAvatarMutation();
@@ -55,6 +55,7 @@ const SettingsModal = ({ open, handleClose }) => {
         }
 
         handleClose();
+        window.location.reload();
     }
 
     return (
@@ -81,10 +82,10 @@ const SettingsModal = ({ open, handleClose }) => {
                     {data && window.location.reload() && <Alert severity="success" className={styles.errmsg}>{data}</Alert>} */}
 
                     <div className={styles.updateAvatar}>
-                        <Avatar src='asd' alt={'awdwd'} className={styles.previewAvatar} style={{
-                            backgroundImage:`url(${imageUrl})`,
-                            backgroundSize: 'cover'
-                        }}></Avatar>
+                        <div className={styles.previewAvatar} style={{
+                            backgroundImage:`url(${imageUrl ? imageUrl : image})`,
+                            backgroundSize: 'cover',
+                        }}></div>
                         <Button variant="outlined" onClick={() => {console.log(inputFileRef.current);inputFileRef.current.click();}} className={styles.btn}>Upload</Button>
                         <input
                             id="avatar"
@@ -93,8 +94,7 @@ const SettingsModal = ({ open, handleClose }) => {
                             accept="image/png, image/jpg, image/jpeg"
                             onChange={(e)=>{handleChangeFile(e)}}
                             ref={inputFileRef}
-                        >
-                        </input>
+                        />
                     </div>
                     <div className={styles.inputs}>
                         <div className={styles.errors}>
