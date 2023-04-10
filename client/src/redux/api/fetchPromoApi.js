@@ -23,9 +23,17 @@ export const fetchPromoApi = createApi({
                 body: obj
             })
         }),
+        validatePromo: build.mutation({
+            query: (obj) => ({
+                url: '/validate',
+                method:"POST",
+                body: obj
+            })
+        })
     })
 });
 
 export const {
-    useAddPromoMutation
+    useAddPromoMutation,
+    useValidatePromoMutation
 } = fetchPromoApi;

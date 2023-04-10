@@ -8,6 +8,81 @@
     margin-top: 36px;
     margin-bottom: 200px;
 
+    .companyContainer {
+        .noCompany {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+
+            .newBtn {
+                @include default-btn;
+            }
+        }
+
+        .company {
+            .eventsContainer {
+
+                .bar {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    button {
+                        border-color: #1f1f1f;
+                        background-color: transparent;
+                        
+                        a {
+                            text-decoration: none;
+                            color: #1f1f1f;
+                        }
+                    }
+                }
+            }
+            .card {
+                background-color: $base-lightgray-color;
+                padding: 20px;
+                border-radius: 20px;
+                display: flex;
+                gap: 40px;
+
+                .avatarContainer {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 15px;
+
+                    .avatar {
+                        width: 150px;
+                        height: 150px;
+                    }
+    
+                    .editBtn {
+                        @include default-btn;
+                        padding: 5px 40px;
+                    }
+                }
+
+                .info {
+                    margin-top: 20px;
+
+                    h3 {
+                        font-size: 24px;
+                        margin: 0;
+                    }
+
+                    p {
+                        margin: 0;
+                        margin-bottom: 20px;
+                    }
+
+                    a {
+                        color: $base-dark-color;
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
+    }
+
     .ticketsContainer {
         display: flex;
         flex-direction: column;

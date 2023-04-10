@@ -1,9 +1,10 @@
-import { useRef } from 'react'
-import { Modal, Button, Avatar, Alert } from '@mui/material';
+import { useRef, useState } from 'react'
+import { Modal, Button, Alert } from '@mui/material';
 import { useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import styles from './SettingsModal.module.scss';
-import { useState } from 'react';
+
 import { useUpdateUserMutation, useUploadAvatarMutation } from '../../redux/api/fetchAuthApi';
 
 function removeEmptyFields(data) {
@@ -20,6 +21,8 @@ const SettingsModal = ({ open, handleClose, image, username, full_name }) => {
     const [uploadAvatar] = useUploadAvatarMutation();
     const [updateUser] = useUpdateUserMutation();
     const [avatar, setAvatar] = useState(null);
+
+    const { userInfo, error } = useSelector((state) => state.auth);
 
     const { register, handleSubmit, formState: { errors }, watch } = useForm({
         defaultValues: {
@@ -77,9 +80,8 @@ const SettingsModal = ({ open, handleClose, image, username, full_name }) => {
                 </div>
                 <form onSubmit={handleSubmit(onSubmit)}>
 
-                    {/* {!Object.keys(errors).length == 0 && <Alert severity="warning" className={styles.errmsg}>{Object.values(errors)[0].message}</Alert>}
+                    {!Object.keys(errors).length == 0 && <Alert severity="warning" className={styles.errmsg}>{Object.values(errors)[0].message}</Alert>}
                     {error && <Alert severity="error" className={styles.errmsg}>{error}</Alert>}
-                    {data && window.location.reload() && <Alert severity="success" className={styles.errmsg}>{data}</Alert>} */}
 
                     <div className={styles.updateAvatar}>
                         <div className={styles.previewAvatar} style={{

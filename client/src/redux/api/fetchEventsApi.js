@@ -42,7 +42,7 @@ export const fetchEventsApi = createApi({
             })
         }),
         getEvents: build.query({
-            query: ({ limit = '8', page, id, filters }) => ({
+            query: ({ limit = 8, page, id, filters }) => ({
                 url: '/',
                 method: 'GET',
                 params: {

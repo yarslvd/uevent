@@ -10,7 +10,6 @@ import styles from "./ProfileCard.module.scss";
 const ProfileCard = ({ first_name, last_name, username, image }) => {
     const navigate = useNavigate();
     const [modalOpen, setModalOpen] = useState(false);
-    console.log(modalOpen);
 
     const handleClose = () => {
         setModalOpen(false);
