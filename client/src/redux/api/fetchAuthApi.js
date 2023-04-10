@@ -34,5 +34,5 @@ export const fetchAuthApi = createApi({
 
 export const {
     useUpdateUserMutation,
-    useUploadAvatarMutation
+    useUploadAvatarMutation,
 } = fetchAuthApi;

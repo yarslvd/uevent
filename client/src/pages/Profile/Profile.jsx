@@ -58,13 +58,13 @@ const Profile = () => {
     const auth = useSelector(selectIsAuthMe);
     const matches = useMediaQuery('(max-width:930px)');
     const { userInfo } = useSelector((state) => state.auth);
-    console.log(userInfo.id);
+    console.log(userInfo);
 
     const [value, setValue] = useState(0);
     const [isLikeActive, setIsLikeActive] = useState(true);
 
     const { data: dataFavourites, isLoading: isLoadingFavourites, isError: isErrorFavourites, refetch: refetchFavourites } = useGetFavouritesQuery();
-    const { data: dataTickets, isLoading: isLoadingTickets, isError: isErrorTickets } = useGetTicketsQuery({ user_id: +userInfo.id });
+    const { data: dataTickets, isLoading: isLoadingTickets, isError: isErrorTickets } = useGetTicketsQuery(auth && { user_id: +userInfo.id });
     const [deleteFavourite] = useDeleteFavouriteMutation();
 
     console.log(dataTickets);
@@ -155,7 +155,7 @@ const Profile = () => {
                     </TabPanel>
                     <TabPanel value={value} index={1}>
                         <div className={styles.ticketsContainer}>
-                            {!isLoadingTickets && !isErrorTickets && dataTickets.tickets.rows.map((el, index) => (
+                            {!isLoadingTickets && !isErrorTickets && dataTickets != 'undefined' ? dataTickets.tickets.rows.map((el, index) => (
                                 <div className={styles.ticket} key={index}>
                                     <div className={styles.image} style={{backgroundImage: `url(${el.event.poster})`}}></div>
                                     <div className={styles.info}>
@@ -173,13 +173,22 @@ const Profile = () => {
                                                     <span>{(new Date(el.event.date)).toLocaleString('uk-UK', dateOptions).toUpperCase().slice(0, -3)}</span>
                                                 </div>
                                             </div>
-                                            <Link to={`/event/`}>('wideCard.more')</Link>
+                                            <Link to={`/event/`}>More</Link>
                                         </div>
                                         <div className={styles.right}>
+                                            <motion.div 
+                                                className={styles.downloadBtn}
+                                                whileTap={{ scale: 0.8 }}
+                                                // onClick={handleLike}
+                                            >
+                                                <img src={'/assets/download.png'} alt="Like Event" />
+                                            </motion.div>
                                         </div>
                                     </div>
                                 </div>
-                            ))}
+                            )) :
+                                <span className={styles.noTickets}>You have no tickets ;(</span>
+                            }
                         </div>
                     </TabPanel>
                     <TabPanel value={value} index={2}>

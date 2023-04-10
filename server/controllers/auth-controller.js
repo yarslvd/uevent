@@ -174,12 +174,16 @@ const login = async (req, res) => {
         res.cookie("access_token", accessToken);
         res.cookie("refresh_token", refreshToken);
 
+        console.log(user.dataValues);
+
         return res.status(StatusCodes.OK).json ({
             error : null,
             first_name: user.dataValues.first_name,
             last_name: user.dataValues.last_name,
             email: user.dataValues.email,
-            username: user.dataValues.username
+            username: user.dataValues.username,
+            image: user.dataValues.image,
+            token: accessToken,
         })
     }
     catch (error){
@@ -255,15 +259,23 @@ const refresh = async (req, res) => {
     }
 };
 
-const logout = (req, res) => {
+const logout = async (req, res) => {
     if (!req.get("Authorization")) {
         return res.status(StatusCodes.UNAUTHORIZED).json ({
             error : 'User is not authorized'
         })
     }
 
-    res.header("Authorization", "");
-    res.sendStatus(StatusCodes.NO_CONTENT);
+    try {
+        res.clearCookie("access_token");
+        res.clearCookie("refresh_token");
+        res.header("Authorization", "");
+        res.send({ message: 'Logged out successfully' });
+    }
+    catch (error) {
+        res.status(500).send({ error: error.message });
+        //res.sendStatus(StatusCodes.NO_CONTENT);
+    }
 }
 
 const emailConfirm = async (req, res) => {

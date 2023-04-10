@@ -4,6 +4,7 @@ const baseQuery = fetchBaseQuery({
     baseUrl: `${process.env.REACT_APP_BASE_URL}/api/events`,
     prepareHeaders: (headers, { getState }) => {
         const token = getState().auth.userToken;
+        console.log(token);
         
         if (token) {
           headers.set('Authorization', `Bearer ${token}`);
