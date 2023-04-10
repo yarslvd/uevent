@@ -163,7 +163,7 @@ const validate = async (req, res) => {
             })
         }
 
-        let event = db.events.findByPk(request.event_id)
+        let event = await db.events.findByPk(request.event_id)
         if (event === null) {
             return res.status(StatusCodes.BAD_REQUEST).json ({
                 error : "Wrong promo event"
