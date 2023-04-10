@@ -5,7 +5,7 @@
     top: 20px;
     background-color: $base-lightgray-color;
     padding: 40px 40px;
-    height: 430px;
+    height: 500px;
     border-radius: 30px;
     display: flex;
     flex-direction: column;
@@ -39,8 +39,27 @@
             }
         }
 
-        .settingsBtn {
-            @include default-btn;
+        .buttons {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+
+            .settingsBtn {
+                @include default-btn;
+            }
+
+            .logoutBtn {
+                @include default-btn;
+                background-color: transparent;
+                border-color: $base-dark-color;
+                color: $base-dark-color;
+                height: 48px;
+
+                &:hover {
+                    color: #fff;
+                }
+            }
         }
     }
 }

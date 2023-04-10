@@ -5,6 +5,7 @@ import { Avatar, Button } from '@mui/material';
 
 import styles from './EventInfo.module.scss';
 
+import BuyTicketModal from '../BuyTicketModal/BuyTicketModal';
 import { dateOptions, timeOptions } from '../../data/variables';
 import { useLazyBuyTicketsQuery } from '../../redux/api/fetchTicketsApi';
 import { useAddFavouriteMutation } from '../../redux/api/fetchFavouritesApi';
@@ -20,6 +21,8 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
     const { data } = useGetFavouriteOneQuery(id);
 
     const [isLikeActive, setIsLikeActive] = useState(data ? true : false);
+    const [modalOpen, setModalOpen] = useState(false);
+
     const parsedDate = !isLoading && new Date(date);
 
     const [buyTickets] = useLazyBuyTicketsQuery();
@@ -45,6 +48,10 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
         e.target.submit();
         return true;
     }
+
+    const handleClose = () => {
+        setModalOpen(false);
+    };
 
     const handleLike =  () => {
         setIsLikeActive(!isLikeActive);
@@ -110,7 +117,8 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                 </div>
                 <div className={styles.button_section}>
                     <form method="POST" action="https://www.liqpay.ua/api/3/checkout" onSubmit={handlePayment} acceptCharset="utf-8">
-                        <Button variant='contained' type='submit' className={styles.buy_btn}>Купити</Button>
+                        <Button variant='contained' onClick={() => setModalOpen(true)} className={styles.buy_btn}>Купити</Button>
+                        <BuyTicketModal open={modalOpen} handleClose={handleClose}/>
                         <input type="hidden" name="data" value=""/>
                         <input type="hidden" name="signature" value=""/>
                     </form>

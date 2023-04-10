@@ -6,10 +6,12 @@ import { Box, Tabs, Tab, Avatar, Button, useMediaQuery } from '@mui/material';
 
 import Layout from '../../components/Layout/Layout';
 import ProfileCard from '../../components/ProfileCard/ProfileCard';
+import OrganizationCreateModal from '../../components/OrganizationCreateModal/OrganizationCreateModal';
 import { selectIsAuthMe } from '../../redux/slices/authSlice';
 import { useGetFavouritesQuery } from '../../redux/api/fetchFavouritesApi';
 import { useDeleteFavouriteMutation } from '../../redux/api/fetchFavouritesApi';
 import { useGetTicketsQuery } from '../../redux/api/fetchTicketsApi';
+import { useGetEventsQuery } from '../../redux/api/fetchEventsApi';
 import { dateOptions } from '../../data/variables';
 
 import styles from './Profile.module.scss';
@@ -58,16 +60,22 @@ const Profile = () => {
     const auth = useSelector(selectIsAuthMe);
     const matches = useMediaQuery('(max-width:930px)');
     const { userInfo } = useSelector((state) => state.auth);
-    console.log(userInfo.id);
+    console.log(userInfo);
 
     const [value, setValue] = useState(0);
     const [isLikeActive, setIsLikeActive] = useState(true);
+    const [modalOpen, setModalOpen] = useState(false);
 
     const { data: dataFavourites, isLoading: isLoadingFavourites, isError: isErrorFavourites, refetch: refetchFavourites } = useGetFavouritesQuery();
-    const { data: dataTickets, isLoading: isLoadingTickets, isError: isErrorTickets } = useGetTicketsQuery({ user_id: +userInfo.id });
+    const { data: dataTickets, isLoading: isLoadingTickets, isError: isErrorTickets } = useGetTicketsQuery(auth && { user_id: +userInfo.id });
+    const { data: dataEvents, isLoading: isLoadingEvents, isError: isErrorEvents } = useGetEventsQuery({ limit: 1000, id: userInfo.organizers[0].id });
+    console.log(dataEvents);
+
     const [deleteFavourite] = useDeleteFavouriteMutation();
 
-    console.log(dataTickets);
+    const handleClose = () => {
+        setModalOpen(false);
+    };
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -155,7 +163,7 @@ const Profile = () => {
                     </TabPanel>
                     <TabPanel value={value} index={1}>
                         <div className={styles.ticketsContainer}>
-                            {!isLoadingTickets && !isErrorTickets && dataTickets.tickets.rows.map((el, index) => (
+                            {!isLoadingTickets && !isErrorTickets && dataTickets.tickets.count !== 0 ? dataTickets.tickets.rows.map((el, index) => (
                                 <div className={styles.ticket} key={index}>
                                     <div className={styles.image} style={{backgroundImage: `url(${el.event.poster})`}}></div>
                                     <div className={styles.info}>
@@ -173,17 +181,62 @@ const Profile = () => {
                                                     <span>{(new Date(el.event.date)).toLocaleString('uk-UK', dateOptions).toUpperCase().slice(0, -3)}</span>
                                                 </div>
                                             </div>
-                                            <Link to={`/event/`}>('wideCard.more')</Link>
+                                            <Link to={`/event/`}>More</Link>
                                         </div>
                                         <div className={styles.right}>
+                                            <motion.div 
+                                                className={styles.downloadBtn}
+                                                whileTap={{ scale: 0.8 }}
+                                                // onClick={handleLike}
+                                            >
+                                                <img src={'/assets/download.png'} alt="Download Ticket" />
+                                            </motion.div>
                                         </div>
                                     </div>
                                 </div>
-                            ))}
+                            )) :
+                                <span className={styles.noTickets}>You have no tickets ;(</span>
+                            }
                         </div>
                     </TabPanel>
                     <TabPanel value={value} index={2}>
-                        Item Three
+                        <div className={styles.companyContainer}>
+                            {userInfo?.organizers?.length >= 1 ? 
+                                <div className={styles.company}>
+                                    <div className={styles.card}>
+                                        <div className={styles.avatarContainer}>
+                                            <Avatar src='sd' className={styles.avatar}></Avatar>
+                                            <Button variant='contained' className={styles.editBtn}>Edit</Button>
+                                        </div>
+                                        <div className={styles.info}>
+                                            <h3>{userInfo.organizers[0].name}</h3>
+                                            <p>{userInfo.organizers[0].description}</p>
+                                            <div>
+                                                <a href={`mailto:${userInfo.organizers[0].email}`}>{userInfo.organizers[0].email}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className={styles.eventsContainer}>
+                                        <div className={styles.bar}>
+                                            <h3>Your Events</h3>
+                                            <Button variant='outlined'>
+                                                <Link to={'/event/new'}>New Event</Link>
+                                            </Button>
+                                        </div>
+                                        <div className={styles.events}>
+                                            {!isLoadingEvents && !isErrorEvents}
+                                        </div>
+                                    </div>
+                                </div> :
+                                <div className={styles.noCompany}>
+                                    <Button variant='contained' onClick={() => setModalOpen(true)} className={styles.newBtn}>Create new organization</Button>
+                                    <OrganizationCreateModal
+                                        open={modalOpen}
+                                        handleClose={handleClose}
+                                    />
+                                </div>
+                            }
+                        </div>
                     </TabPanel>
                 </Box>
             </div>

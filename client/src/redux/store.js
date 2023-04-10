@@ -7,6 +7,7 @@ import { fetchPromoApi } from './api/fetchPromoApi';
 import { fetchAuthApi } from './api/fetchAuthApi';
 import { fetchPaymentApi } from './api/fetchPaymentApi';
 import { fetchFavouritesApi } from './api/fetchFavouritesApi';
+import { fetchOrganizersApi } from './api/fetchOrganizersApi';
 
 export default configureStore({
     reducer: {
@@ -18,8 +19,9 @@ export default configureStore({
         [fetchAuthApi.reducerPath]: fetchAuthApi.reducer,
         [fetchPaymentApi.reducerPath]: fetchPaymentApi.reducer,
         [fetchFavouritesApi.reducerPath]: fetchFavouritesApi.reducer,
+        [fetchOrganizersApi.reducerPath]: fetchOrganizersApi.reducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }).concat(fetchEventsApi.middleware,
         fetchCommentsApi.middleware, fetchTicketsApi.middleware, fetchPromoApi.middleware, fetchAuthApi.middleware, fetchPaymentApi.middleware,
-        fetchFavouritesApi.middleware),
+        fetchFavouritesApi.middleware, fetchOrganizersApi.middleware),
 });

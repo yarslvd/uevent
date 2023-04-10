@@ -175,11 +175,14 @@ const login = async (req, res) => {
         res.cookie("access_token", accessToken);
         res.cookie("refresh_token", refreshToken);
 
-        let {password, ...restUser} = user;
-
         return res.status(StatusCodes.OK).json ({
             error : null,
-            user: restUser,
+            first_name: user.dataValues.first_name,
+            last_name: user.dataValues.last_name,
+            email: user.dataValues.email,
+            username: user.dataValues.username,
+            image: user.dataValues.image,
+            token: accessToken,
         })
     }
     catch (error){
