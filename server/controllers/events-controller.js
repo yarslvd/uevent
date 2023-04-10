@@ -107,7 +107,10 @@ const update = async (req, res) => {
             'date',
             'publish_date',
             'ticket_amount',
-            'visibility'
+            'visibility',
+            'theme',
+            'format',
+            'spotify_id'
         ])
 
         await db.events.update(toUpdate, {where: { id: event.dataValues.id}, plain: true });
@@ -152,6 +155,10 @@ const getOne = async (req, res) => {
                 {
                     model: db.organizers,
                     as: 'organizer'
+                },
+                {
+                    model: db.promos,
+                    as: "promos"
                 }
             ]
         });

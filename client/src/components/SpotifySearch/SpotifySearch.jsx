@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import styles from './SpotifySearch.module.scss';
 
-const SpotifySearch = ({ register, setValue, id }) => {
+const SpotifySearch = ({ register, setValue, id, editRadio }) => {
     const [query, setQuery] = useState('');
     const [artist, setArtist] = useState([]);
     const [token, setToken] = useState(null);
@@ -12,6 +12,13 @@ const SpotifySearch = ({ register, setValue, id }) => {
         setValue('spotify_id', radio);
     },[radio, setValue]);
     
+    useEffect(() => {
+        if(editRadio) {
+            setRadio(editRadio);
+            setValue('spotify_id', editRadio);
+        }
+    }, [editRadio])
+
     useEffect(() => {
         (async () => {
           const response = await fetch('https://accounts.spotify.com/api/token', {
@@ -29,19 +36,19 @@ const SpotifySearch = ({ register, setValue, id }) => {
     }, []);
 
     useEffect(() => {
-        if(id) {
+        if(id && token !== null) {
             console.log(token);
             (async () => {
                 fetch(`https://api.spotify.com/v1/artists/${id}`, {
                     headers: {
-                        'Authorization': 'Bearer' + token
+                        'Authorization': 'Bearer ' + token
                     }
                 })
                 .then(response => response.json())
-                .then(data => console.log(data));
+                .then(data => console.log("spotify",data));
             })();
         }
-    }, [id, token !== null])
+    }, [id, token])
 
     const fetchDefault = async () => {
         try {

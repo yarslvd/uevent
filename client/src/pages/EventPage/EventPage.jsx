@@ -133,7 +133,7 @@ const EventPage = () => {
             </div>
           </div>
           <div className={styles.embed}>
-            { !isLoadingInfo && !errorInfo && dataInfo.event.spotify_id !== null &&
+            { !isLoadingInfo && !errorInfo && dataInfo.event.spotify_id &&
               <iframe
               title="spotify"
               src={`https://open.spotify.com/embed/artist/${dataInfo.event.spotify_id}?utm_source=generator`}

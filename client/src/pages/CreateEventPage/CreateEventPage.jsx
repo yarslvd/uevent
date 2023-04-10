@@ -11,7 +11,7 @@ import Map from '../../components/Map/Map';
 import SpotifySearch from '../../components/SpotifySearch/SpotifySearch';
 import { selectIsAuthMe } from '../../redux/slices/authSlice';
 import { useUploadPosterMutation, useCreateEventMutation, useUpdateEventMutation, useGetEventInfoQuery } from '../../redux/api/fetchEventsApi';
-import { useAddPromoMutation } from '../../redux/api/fetchPromoApi';
+import { useAddPromoMutation, useDeletePromoMutation } from '../../redux/api/fetchPromoApi';
 
 import styles from './CreateEventPage.module.scss';
 import { useRef } from 'react';
@@ -38,6 +38,8 @@ const CreateEventPage = () => {
     const auth = useSelector(selectIsAuthMe);
     const { id } = useParams();
     const navigate = useNavigate();
+
+    const { userInfo } = useSelector((state) => state.auth);
 
     //States
     const [selectedImage, setSelectedImage] = useState(null);
@@ -70,6 +72,7 @@ const CreateEventPage = () => {
     const [uploadPoster] = useUploadPosterMutation();
     const [createEvent] = useCreateEventMutation();
     const [addPromo] = useAddPromoMutation();
+    const [deletePromo] = useDeletePromoMutation();
     const [updateEvent] = useUpdateEventMutation();
 
     //Queries
@@ -93,7 +96,7 @@ const CreateEventPage = () => {
         const publish_date = values.publish_date && values.publish_time && getFullTime(values.publish_date, values.publish_time)
         
 
-        let event = Object.assign({}, {
+        let event = {
             "title": values.title,
             "description": values.description,
             "price": values.price,
@@ -102,14 +105,14 @@ const CreateEventPage = () => {
             "location": values.location,
             "date": date,
             "publish_date": publish_date,
-            "organizer_id": "1", // TODO set users organizer_id
+            "organizer_id": userInfo.organizers[0]?.id, // TODO set users organizer_id
             "ticket_amount": values.ticket_amount,
             "visibility": values.visibility,
             "theme": values.theme,
-            "format": values.format
-        }, 
-            values.spotify_id ? {"spotify_id" : values.spotify_id} : {}
-        )
+            "format": values.format,
+            "spotify_id" : values.spotify_id
+        }
+
         console.log({event});
         let res;
         if (id && data && !isLoading && !error && data.event) {
@@ -118,15 +121,36 @@ const CreateEventPage = () => {
             event.organizer_id = data.event.organizer_id;
             event.id = id;
             res = await updateEvent(event).unwrap();
+        
+            let deletedPromos = data.event.promos.filter((fetchedEl) => {
+                return promocodeList.filter((el) => {
+                    return el.promoLabel == `${fetchedEl.text} (-${fetchedEl.discount}%)`
+                }).length == 0;
+            });
+
+            for (let el of deletedPromos) {
+                deletePromo(el.text);
+            }
+
+            let addedPromos = promocodeList.filter(el => {
+                return data.event.promos.filter(fetchedEl => {
+                    return el.promoLabel == `${fetchedEl.text} (-${fetchedEl.discount}%)`
+                }).length == 0;
+            })
+
+            addedPromos.map((el) => {
+                addPromo({ text: el.promocode, discount: el.percentage, event_id: data.event.id, valid_till: date || data.event.date });
+            });
+
+            console.log({deletedPromos, addedPromos});
         }
         else {
             res = await createEvent(event).unwrap();
+            promocodeList.map((el) => {
+                addPromo({ text: el.promocode, discount: el.percentage, event_id: res.event.id, valid_till: date });
+            })
         }
          
-
-        promocodeList.map((el) => {
-            addPromo({ text: el.promocode, discount: el.percentage, event_id: res.event.id, valid_till: date });
-        })
         
         if(values.image[0]) {
             console.log(values.image[0]);
@@ -135,7 +159,7 @@ const CreateEventPage = () => {
             await uploadPoster({file: formData, id: res.event.id});
         }
 
-        navigate(`/event/${res.event.id}`);
+        navigate(`/event/${res?.event?.id || id}`);
     }
 
     const handleDeletePromo = (chipIdToDelete) => {
@@ -174,6 +198,11 @@ const CreateEventPage = () => {
             setValue("format", data.event.format);
             setVisibility(data.event.visibility);
             setValue("visibility", data.event.visibility);
+            setPromocodeList(data.event.promos.map((el) => {
+                return {
+                    promoLabel: `${el.text} (-${el.discount}%)`
+                }
+            }));
             // setValue("date", data.event.date);
         }
     },[data])
@@ -298,7 +327,7 @@ const CreateEventPage = () => {
                     </div>
                     <RichEditor name="description" control={control} defaultValue="" formState={formState} description={id && data && !isLoading && !error && data.event.description}/>
                     <Map register={register} setValue={setValue} eventAddress={id && data && !isLoading && !error && data.event.address}/>
-                    <SpotifySearch register={register} setValue={setValue} id={id && data && !isLoading && !error && data.event.spotify_id}/>
+                    <SpotifySearch register={register} setValue={setValue} editRadio={id && data && !isLoading && !error && data.event.spotify_id}/>
                 </div>
             </form>
         </Layout>

@@ -102,7 +102,12 @@ const EventInfoCreate = ({ register, control, setValue, eventInfo }) => {
                             name="event_date"
                             rules={{
                                 validate: {
-                                    min: (date) => isFuture(date) || "Please, enter a future date"
+                                    min: (date)=>{
+                                        console.log("publish_date:", date);
+                                        console.log("isFuture:", (date && isFuture(date)));
+                                        console.log("isEdit:", (!isEditEvent() && !date));
+                                        return (date && isFuture(date)) || (isEditEvent() && !date) || "Please, enter a future date";
+                                    }
                                 },
                                 required: !isEditEvent()
                             }}
@@ -167,7 +172,12 @@ const EventInfoCreate = ({ register, control, setValue, eventInfo }) => {
                             name="publish_date"
                             rules={{
                                 validate: {
-                                    min: (date) => isFuture(date) || "Please, enter a future date"
+                                    min: (date) => {
+                                        console.log("publish_date:", date);
+                                        console.log("isFuture:", (date && isFuture(date)));
+                                        console.log("isEdit:", (!isEditEvent() && !date));
+                                        return (date && isFuture(date)) || (isEditEvent() && !date) || "Please, enter a future date";
+                                    }
                                 },
                                 required: !isEditEvent()
                             }}
