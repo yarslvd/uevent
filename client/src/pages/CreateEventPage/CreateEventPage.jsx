@@ -14,6 +14,7 @@ import { useUploadPosterMutation, useCreateEventMutation, useUpdateEventMutation
 import { useAddPromoMutation } from '../../redux/api/fetchPromoApi';
 
 import styles from './CreateEventPage.module.scss';
+import { useRef } from 'react';
 
 const themes = [
   'Business',
@@ -88,9 +89,9 @@ const CreateEventPage = () => {
 
     const onSubmit = async (values) => {
         console.log("values:", values);
-        const date = getFullTime(values.event_date, values.event_time);
-        const publish_date = getFullTime(values.publish_date, values.publish_time)
-        //console.log(date, publish_date);
+        const date = values.event_date && values.event_time && getFullTime(values.event_date, values.event_time);
+        const publish_date = values.publish_date && values.publish_time && getFullTime(values.publish_date, values.publish_time)
+        
 
         let event = Object.assign({}, {
             "title": values.title,
@@ -103,20 +104,32 @@ const CreateEventPage = () => {
             "publish_date": publish_date,
             "organizer_id": "1", // TODO set users organizer_id
             "ticket_amount": values.ticket_amount,
-            "visibility": values.visibility, // TODO
+            "visibility": values.visibility,
             "theme": values.theme,
             "format": values.format
         }, 
             values.spotify_id ? {"spotify_id" : values.spotify_id} : {}
         )
         console.log({event});
-        let res = await createEvent(event).unwrap();
+        let res;
+        if (id && data && !isLoading && !error && data.event) {
+            event.date = event.date ? event.date : data.event.date;
+            event.publish_date = event.publish_date ? event.publish_date : data.event.publish_date;
+            event.organizer_id = data.event.organizer_id;
+            event.id = id;
+            res = await updateEvent(event).unwrap();
+        }
+        else {
+            res = await createEvent(event).unwrap();
+        }
+         
 
         promocodeList.map((el) => {
             addPromo({ text: el.promocode, discount: el.percentage, event_id: res.event.id, valid_till: date });
         })
         
         if(values.image[0]) {
+            console.log(values.image[0]);
             const formData = new FormData();
             formData.append('poster', values.image[0]);
             await uploadPoster({file: formData, id: res.event.id});
@@ -155,12 +168,15 @@ const CreateEventPage = () => {
             console.log("bebra:", data.event);
             setImageUrl(data.event.poster);
             setEventInfo(data.event);
-            console.log("theme")
-            data?.event?.theme ?? setTheme(data.event.theme);
-            console.log("format")
-            data?.event?.format ?? setFormat(data.event.format);
+            setTheme(data.event.theme);
+            setValue("theme", data.event.theme);
+            setFormat(data.event.format);
+            setValue("format", data.event.format);
+            setVisibility(data.event.visibility);
+            setValue("visibility", data.event.visibility);
+            // setValue("date", data.event.date);
         }
-    },[data, isLoading])
+    },[data])
 
     useEffect(() => {
         if (selectedImage) {
@@ -168,6 +184,10 @@ const CreateEventPage = () => {
           console.log(imageUrl);
         }
     }, [selectedImage]);
+
+    const isEditEvent = () => {
+        return id && window.location.href.includes('/edit');
+    }
 
     return (
         <Layout>
@@ -195,7 +215,7 @@ const CreateEventPage = () => {
                     />
                 </div>
                 <div className={styles.info}>
-                    <EventInfoCreate register={register} eventInfo={id && data && !isLoading && !error && data.event} control={control}/>
+                    <EventInfoCreate register={register} setValue={setValue} eventInfo={id && data && !isLoading && !error && data.event} control={control}/>
                 </div>
                 <div className={styles.content}>
                     <div className={styles.details}>
@@ -239,8 +259,7 @@ const CreateEventPage = () => {
                                     id="Theme"
                                     value={theme}
                                     label="Theme"
-                                    {...register('theme', { required: true })}
-                                    onChange={(e) => setTheme(e.target.value)}
+                                    {...register('theme', { required: !isEditEvent(), onChange: (e) => setTheme(e.target.value) })}
                                 >
                                     {themes.map((el, index) => (
                                         <MenuItem value={el} key={index}>{el}</MenuItem>
@@ -254,9 +273,9 @@ const CreateEventPage = () => {
                                     id="Format"
                                     value={format}
                                     label="Format"
-                                    {...register('format', { required: true })}
-                                    onChange={(e) => setFormat(e.target.value)}
-                                >
+                                    {...register('format', { required: !isEditEvent()})}
+                                        onChange={(e) => setFormat(e.target.value)}
+                                    >
                                     {formats.map((el, index) => (
                                         <MenuItem value={el} key={index}>{el}</MenuItem>
                                     ))}
@@ -269,8 +288,7 @@ const CreateEventPage = () => {
                                     id="Visitors visibility"
                                     value={visibility}
                                     label="Visitors visibility"
-                                    {...register('visibility', { required: true })}
-                                    onChange={(e) => setVisibility(e.target.value)}
+                                    {...register('visibility', { required: !isEditEvent(), onChange:(e) => setVisibility(e.target.value) })}
                                 >
                                     <MenuItem value={'public'}>Visible</MenuItem>
                                     <MenuItem value={'private'}>Hidden</MenuItem>

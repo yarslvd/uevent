@@ -90,7 +90,7 @@ const create = async (req, res) => {
 const update = async (req, res) => {
     try {
         const eventId = req.params.id;
-
+        console.log(req.body);
         let event = await checkEventByUser(res, eventId, req.user.id)
         if (event === null) {
             return
