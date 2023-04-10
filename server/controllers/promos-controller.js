@@ -137,6 +137,7 @@ const deletePromo = async (req, res) => {
 
 const validate = async (req, res) => {
     try {
+        console.log(req.body);
         const request = checkFields(req.body, ['promo_text', 'event_id'])
         if (!request) {
             return res.status(StatusCodes.BAD_REQUEST).json({
@@ -157,25 +158,25 @@ const validate = async (req, res) => {
             })
         }
 
-        if (promo.event_id !== request.event_id) {
+        if (promo.event_id != request.event_id) {
             return res.status(StatusCodes.BAD_REQUEST).json ({
                 error : "Promo is wrong"
             })
         }
 
-        let event = db.events.findByPk(request.event_id)
+        let event = await db.events.findByPk(request.event_id);
         if (event === null) {
+            
             return res.status(StatusCodes.BAD_REQUEST).json ({
                 error : "Wrong promo event"
             })
         }
 
-        if (new Date().getTime() < new Date(promo.valid_till).getTime()) {
-            return res.status(StatusCodes.BAD_REQUEST).json ({
-                error : "Promo is expired"
-            })
-        }
-
+        // if (new Date().getTime() < new Date(promo.valid_till).getTime()) {
+        //     return res.status(StatusCodes.BAD_REQUEST).json ({
+        //         error : "Promo is expired"
+        //     })
+        // }
 
         return res.json ({
             promo

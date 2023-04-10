@@ -51,7 +51,7 @@ const EventPage = () => {
   const { isLoading: isLoadingComments, data: dataComments, error: errorComments, refetch } = useGetEventCommentsQuery({id, page});
   const { isLoading: isLoadingEvents, data: dataEvents, error: errorEvents } = useGetEventsQuery({ limit: 4, page: 0, organizers: dataInfo?.event.organizer_id });
   // const { isLoading: isLoadingTickets, data: dataTickets, error: errorTickets } = useGetTicketsQuery(id);
-  console.log('comm', dataEvents, id);
+  console.log('comm', dataInfo, id);
 
   const onSubmit = (values) => {
     setCommentInput('');

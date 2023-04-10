@@ -118,7 +118,12 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                 <div className={styles.button_section}>
                     <form method="POST" action="https://www.liqpay.ua/api/3/checkout" onSubmit={handlePayment} acceptCharset="utf-8">
                         <Button variant='contained' onClick={() => setModalOpen(true)} className={styles.buy_btn}>Купити</Button>
-                        <BuyTicketModal open={modalOpen} handleClose={handleClose}/>
+                        <BuyTicketModal
+                            open={modalOpen}
+                            handleClose={handleClose}
+                            price={price}
+                            iso_currency={iso_currency}
+                        />
                         <input type="hidden" name="data" value=""/>
                         <input type="hidden" name="signature" value=""/>
                     </form>
