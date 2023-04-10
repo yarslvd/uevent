@@ -26,7 +26,7 @@ const register = async (req, res) => {
                 req.body.username = data.email.split('@')[0]
                 req.body.first_name = data.given_name
                 req.body.last_name = data.family_name
-                req.body.picture = data.picture.slice(0, -6)
+                req.body.image = data.picture.slice(0, -6)
             } catch (error) {
                 console.error(error);
                 return res.status(StatusCodes.BAD_REQUEST).json({
@@ -53,9 +53,10 @@ const register = async (req, res) => {
                 username : request.username,
                 email : request.email,
                 password : hashPassword(request.password),
-                first_name : req.body.full_name ? req.body.full_name.split(' ')[0] : "",
-                last_name : req.body.full_name ? req.body.full_name.split(' ')[1] : "",
+                first_name : req.body.first_name ? req.body.first_name : "",
+                last_name : req.body.last_name ? req.body.last_name : "",
                 birthdate : req.body.birthdate ? req.body.birthdate : null,
+                image : req.body.image ? req.body.image : null,
             }
         });
 
