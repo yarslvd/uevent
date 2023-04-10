@@ -59,7 +59,6 @@ const EventPage = () => {
   const { isLoading: isLoadingInfo, data: dataInfo, error: errorInfo } = useGetEventInfoQuery(id);
   const { isLoading: isLoadingComments, data: dataComments, error: errorComments, refetch } = useGetEventCommentsQuery({id, page});
   const { isLoading: isLoadingEvents, data: dataEvents, error: errorEvents } = useGetEventsQuery({ limit: 4, page: 0, organizers: dataInfo?.event.organizer_id });
-  // const { isLoading: isLoadingTickets, data: dataTickets, error: errorTickets } = useGetTicketsQuery(id);
 
   const deleteCommentFunction = async (commentId) => {
     await deleteComment({id: commentId});

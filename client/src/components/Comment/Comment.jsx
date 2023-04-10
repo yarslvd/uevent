@@ -9,7 +9,6 @@ import {useState} from "react";
 const Comment = ({ id, comment, user, setEditing, deleteComment }) => {
     const { userInfo } = useSelector((state) => state.auth);
     const [modalOpen, setModalOpen] = useState(false);
-    console.log(user)
     const handleClose = () => {
         setModalOpen(false);
     }
