@@ -23,6 +23,12 @@ export const fetchPromoApi = createApi({
                 body: obj
             })
         }),
+        deletePromo: build.mutation({
+            query: (promoText) => ({
+                url: `/${promoText}`, 
+                method:"DELETE"
+            })
+        }),
         validatePromo: build.mutation({
             query: (obj) => ({
                 url: '/validate',
@@ -35,5 +41,6 @@ export const fetchPromoApi = createApi({
 
 export const {
     useAddPromoMutation,
+    useDeletePromoMutation,
     useValidatePromoMutation
 } = fetchPromoApi;

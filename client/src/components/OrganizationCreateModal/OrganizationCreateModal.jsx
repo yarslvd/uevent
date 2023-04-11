@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 
 import styles from './OrganizationCreateModal.module.scss';
 
-import { useNewOrganizationMutation } from '../../redux/api/fetchOrganizersApi';
+import { useNewOrganizationMutation, useUploadAvatarMutation } from '../../redux/api/fetchOrganizersApi';
 
 const OrganizationCreateModal = ({ open, handleClose }) => {
     const inputFileRef = useRef(null);
@@ -12,7 +12,7 @@ const OrganizationCreateModal = ({ open, handleClose }) => {
     const [imageUrl, setImageUrl] = useState("");
 
     const [newOrganization] = useNewOrganizationMutation();
-
+    const [uploadAvatar] = useUploadAvatarMutation();
     const {
         register,
         handleSubmit,
@@ -27,12 +27,6 @@ const OrganizationCreateModal = ({ open, handleClose }) => {
     });
 
     const onSubmit = async (values) => {
-        // if(avatar) {
-        //     const formData = new FormData();
-        //     formData.append('avatar', avatar);
-        //     await uploadAvatar({file: formData});
-        // }
-        
         //removeEmptyFields(values);
         if (values.full_name) {
             const splitted = values.full_name.split(" ");
@@ -41,7 +35,14 @@ const OrganizationCreateModal = ({ open, handleClose }) => {
         }
 
         if (Object.keys(values).length > 0) {
-            await newOrganization(values);
+            let res = await newOrganization(values);
+            console.log({res});
+
+            if(avatar) {
+                const formData = new FormData();
+                formData.append('avatar', avatar);
+                await uploadAvatar({file: formData, id: res.data.organizer.id});
+            }
         }
 
         handleClose();
@@ -134,7 +135,7 @@ const OrganizationCreateModal = ({ open, handleClose }) => {
                                         id="description"
                                         required
                                         placeholder='Information about organization'
-                                        classname={styles.textarea}
+                                        className={styles.textarea}
                                         {...register("description")}
                                     >
                                     </textarea>

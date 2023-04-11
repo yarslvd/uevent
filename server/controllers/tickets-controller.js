@@ -78,8 +78,8 @@ const get = async (req, res) => {
             });
         }
 
-        let event = db.events.findByPk(req.query.event_id)
-        if (event === null) {
+        let event = await db.events.findByPk(req.query.event_id)
+        if (!event) {
             return res.status(StatusCodes.NOT_FOUND).json({
                 error: "No such event to get ticket",
             });
@@ -119,7 +119,8 @@ const get = async (req, res) => {
                 where: { event_id: req.query.event_id },
                 include: [ {
                     model:db.users,
-                    as: 'user'
+                    as: 'user',
+                    attributes: ['id', 'image', 'first_name', 'last_name', 'username', 'birthdate']
                 } ]
         })
         

@@ -29,7 +29,7 @@ export const fetchEventsApi = createApi({
         }),
         updateEvent: build.mutation({
             query: (event) => ({
-                url: `/`, 
+                url: `/${event.id}`, 
                 method:"PATCH",
                 body: event
             })

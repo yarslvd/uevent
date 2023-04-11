@@ -18,7 +18,7 @@ const getAll = async (req, res) => {
                 {
                     model: db.users,
                     as: 'user',
-                    attributes: ['id', 'first_name', 'last_name', 'username', 'birthdate']
+                    attributes: ['id', 'image', 'first_name', 'last_name', 'username', 'birthdate']
                 }
             ]
         }

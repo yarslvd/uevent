@@ -11,16 +11,15 @@ import { currencies, priceRegExp } from '../../data/variables';
 import styles from './EventInfoCreate.module.scss';
 import { useEffect } from 'react';
 
-const EventInfoCreate = ({ register, control, eventInfo }) => {
+const EventInfoCreate = ({ register, control, setValue, eventInfo }) => {
     const [price, setPrice] = useState();
     const [currency, setCurrency] = useState('UAH');
     const [combinedPrice, setCombinedPrice] = useState('');
     const [valid, setValid] = useState(true);
     const [title, setTitle] = useState('');
-    const [eventDate, setEventDate] = useState();
-    const [eventTime, setEventTime] = useState();
-    const [publishDate, setPublishDate] = useState();
-    const [publishTime, setPublishTime] = useState();
+    const [location, setLocation] = useState('');
+    const [ticketAmount, setTicketAmount] = useState();
+
 
     const handlePriceChange = (e) => {
         if(!priceRegExp.test(e.target.value)) {
@@ -44,17 +43,27 @@ const EventInfoCreate = ({ register, control, eventInfo }) => {
             setPrice(eventInfo.price);
             setCurrency(eventInfo.iso_currency);
             setCombinedPrice(`${price} ${currency}`);
-            setEventDate((new Date(eventInfo.date)));
-            setEventTime((new Date(eventInfo.date)));
+            setLocation(eventInfo.location);
+            setTicketAmount(eventInfo.ticket_amount)
+
+            setValue("title", eventInfo.title);
+            setValue("price", eventInfo.price);
+            setValue("currency", eventInfo.iso_currency);
+            setValue("location", eventInfo.location);
+            setValue("ticket_amount", eventInfo.ticket_amount);
             // console.log("date init", new Date(eventInfo.date))
         }
     }, [eventInfo])
+
+    const isEditEvent = () => {
+        return eventInfo && window.location.href.includes('/edit');
+    }
 
     return (
         <div className={styles.container}>
             <div className={styles.inputs}>
                 <div>
-                    <input type="text" value={title}  className={styles.title} placeholder='НАЗВА ПОДІЇ' {...register('title', { onChange: (e)=>{setTitle(e.target.value);},required: true, minLength: 5 })}/>
+                    <input type="text" value={title}  className={styles.title} placeholder='НАЗВА ПОДІЇ' {...register('title', { onChange: (e)=>{setTitle(e.target.value);},required: !isEditEvent(), minLength: 5 })}/>
                 </div>
                 <div className={styles.money}>
                     <TextField
@@ -74,10 +83,10 @@ const EventInfoCreate = ({ register, control, eventInfo }) => {
                         id="select-currency"
                         select
                         label="Currency"
-                        defaultValue={"UAH"}
+                        defaultValue={currency ? currency : "UAH"}
                         value={currency}
                         className={styles.currency}
-                        {...register('currency', { onChange: handleCurrencyChange, required: true })}
+                        {...register('currency', { onChange: handleCurrencyChange, required: !isEditEvent() })}
                     >
                         {currencies.map((option) => (
                             <MenuItem key={option.value} value={option.value}>
@@ -93,15 +102,20 @@ const EventInfoCreate = ({ register, control, eventInfo }) => {
                             name="event_date"
                             rules={{
                                 validate: {
-                                    min: (date) => isFuture(date) || "Please, enter a future date"
+                                    min: (date)=>{
+                                        console.log("publish_date:", date);
+                                        console.log("isFuture:", (date && isFuture(date)));
+                                        console.log("isEdit:", (!isEditEvent() && !date));
+                                        return (date && isFuture(date)) || (isEditEvent() && !date) || "Please, enter a future date";
+                                    }
                                 },
-                                required: true
+                                required: !isEditEvent()
                             }}
                             render={({ field: { ref, onBlur, name, ...field }, fieldState }) => (
                                 <DatePicker
                                     {...field}
                                     inputRef={ref}
-                                    required={true}
+                                    required={!isEditEvent()}
                                     label="Event Date"
                                     textField={(inputProps) => (
                                         <TextField
@@ -113,9 +127,6 @@ const EventInfoCreate = ({ register, control, eventInfo }) => {
                                             
                                         />
                                     )}
-                                    defaultValue={eventDate}
-                                    value={eventDate}
-                                    onChange={(e)=>{setEventDate(e); console.log("date", e)}}
                                 />
                             )}
                         />
@@ -123,7 +134,7 @@ const EventInfoCreate = ({ register, control, eventInfo }) => {
                             control={control}
                             name="event_time"
                             rules={{
-                                required: true
+                                required: !isEditEvent()
                             }}
                             render={({ field: { ref, onBlur, name, ...field }, fieldState }) => (
                                 <TimePicker
@@ -140,9 +151,6 @@ const EventInfoCreate = ({ register, control, eventInfo }) => {
                                             helperText={fieldState.error?.message}
                                         />
                                     )}
-                                    value={eventTime}
-                                    defaultValue={eventTime}
-                                    onChange={(e)=>setEventTime(e)}
                                 />
                             )}
                         />
@@ -164,15 +172,20 @@ const EventInfoCreate = ({ register, control, eventInfo }) => {
                             name="publish_date"
                             rules={{
                                 validate: {
-                                    min: (date) => isFuture(date) || "Please, enter a future date"
+                                    min: (date) => {
+                                        console.log("publish_date:", date);
+                                        console.log("isFuture:", (date && isFuture(date)));
+                                        console.log("isEdit:", (!isEditEvent() && !date));
+                                        return (date && isFuture(date)) || (isEditEvent() && !date) || "Please, enter a future date";
+                                    }
                                 },
-                                required: true
+                                required: !isEditEvent()
                             }}
                             render={({ field: { ref, onBlur, name, ...field }, fieldState }) => (
                                 <DatePicker
                                     {...field}
                                     inputRef={ref}
-                                    required={true}
+                                    required={!isEditEvent()}
                                     label="Publish Date"
                                     textField={(inputProps) => (
                                         <TextField
@@ -183,8 +196,6 @@ const EventInfoCreate = ({ register, control, eventInfo }) => {
                                             helperText={fieldState.error?.message}
                                         />
                                     )}
-                                    value={publishDate}
-                                    onChange={(e)=>setPublishDate(e)}
                                 />
                             )}
                         />
@@ -192,7 +203,7 @@ const EventInfoCreate = ({ register, control, eventInfo }) => {
                             control={control}
                             name="publish_time"
                             rules={{
-                                required: true
+                                required: !isEditEvent()
                             }}
                             render={({ field: { ref, onBlur, name, ...field }, fieldState }) => (
                                 <TimePicker
@@ -209,8 +220,6 @@ const EventInfoCreate = ({ register, control, eventInfo }) => {
                                             helperText={fieldState.error?.message}
                                         />
                                     )}
-                                    value={publishTime}
-                                    onChange={(e)=>setPublishTime(e)}
                                 />
                             )}
                         />
@@ -228,6 +237,7 @@ const EventInfoCreate = ({ register, control, eventInfo }) => {
                 <div style={{ display: 'flex', gap: '10px' }}>
                     <TextField
                         id="location"
+                        InputLabelProps={{shrink: location ? true : false}}
                         label="Place name"
                         variant="outlined"
                         className={styles.price}
@@ -235,17 +245,28 @@ const EventInfoCreate = ({ register, control, eventInfo }) => {
                         error={!valid}
                         type='text'
                         style={{ width: '100%'}}
-                        {...register('location', {required: true})}
+                        {...register('location', {required: !isEditEvent(),
+                            onChange: (e) => {
+                                setLocation(e.target.value);
+                            }
+                        })}
+                        value={location}
                     />
                     <TextField
                         id="tickets"
+                        InputLabelProps={{shrink: ticketAmount ? true : false}}
                         label="Tickets Amount"
                         variant="outlined"
                         className={styles.price}
                         onChange={handlePriceChange}
                         error={!valid}
                         type='number'
-                        {...register('ticket_amount', {required: true})}
+                        {...register('ticket_amount', {required: !isEditEvent(),
+                            onChange: (e) => {
+                                setTicketAmount(e.target.value);
+                            }
+                        })}
+                        value={ticketAmount}
                     />
                 </div>
             </div>

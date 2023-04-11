@@ -23,9 +23,17 @@ export const fetchOrganizersApi = createApi({
                 body: body
             })
         }),
+        uploadAvatar: build.mutation({
+            query: ({file, id}) => ({
+                url: `/${id}/avatar`,
+                method: 'POST',
+                body: file
+            })
+        }),
     })
 });
 
 export const {
     useNewOrganizationMutation,
+    useUploadAvatarMutation
 } = fetchOrganizersApi;

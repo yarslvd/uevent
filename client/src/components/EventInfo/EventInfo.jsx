@@ -7,7 +7,7 @@ import styles from './EventInfo.module.scss';
 
 import BuyTicketModal from '../BuyTicketModal/BuyTicketModal';
 import { dateOptions, timeOptions } from '../../data/variables';
-import { useLazyBuyTicketsQuery } from '../../redux/api/fetchTicketsApi';
+import {useGetEventTicketsQuery, useGetTicketsQuery, useLazyBuyTicketsQuery} from '../../redux/api/fetchTicketsApi';
 import { useAddFavouriteMutation } from '../../redux/api/fetchFavouritesApi';
 import { useDeleteFavouriteMutation } from '../../redux/api/fetchFavouritesApi';
 import { useGetFavouriteOneQuery } from '../../redux/api/fetchFavouritesApi';
@@ -29,7 +29,9 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
     const [addFavourite] = useAddFavouriteMutation();
     const [deleteFavourite] = useDeleteFavouriteMutation();
     const { refetch } = useGetFavouritesQuery();
-    console.log(isLikeActive);
+    const { isLoading: isLoadingTickets, data: dataTickets, error: errorTickets } = useGetEventTicketsQuery({event_id:id});
+
+    console.log(isLoadingTickets, dataTickets, errorTickets)
 
     //fetch data of organization by id;
 
@@ -109,9 +111,16 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                 <div className={styles.visitors}>
                     <span>Підуть</span>
                     <div className={styles.avatars}>
-                        {Array.from({ length: 19 }).map((_, index) => (
-                            <Link to={'/user/efe'} key={index}><Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" className={styles.avatar}/></Link>
-                        ))}
+                        {!isLoadingTickets && !errorTickets && [...new Set(dataTickets.tickets)].map((el, index) => {
+                            if (index > 18) return <></>
+                            return <Link to={`/user/${el.user.id}`} key={index}>
+                            <Avatar
+                            alt={el.user.first_name+el.user.last_name}
+                            src={el.user.image?el.user.image:`/static/images/avatar/1.jpg`}
+                            className={styles.avatar}
+                            />
+                            </Link>
+                        })}
                         <div onClick={() => console.log('Open modal with users who going to event')} className={styles.moreVisitors}>ще</div>
                     </div>
                 </div>

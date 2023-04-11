@@ -54,6 +54,7 @@ const getOne = async (req, res) => {
 
 const create = async (req, res) => {
     try {
+        console.log(req.body);
         const request = checkFields(req.body, ['event_id', 'text', 'discount', 'valid_till'])
         if (!request) {
             return res.status(StatusCodes.BAD_REQUEST).json({

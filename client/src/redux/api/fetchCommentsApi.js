@@ -16,6 +16,15 @@ export const fetchCommentsApi = createApi({
     reducerPath: 'fetchCommentsApi',
     baseQuery: baseQuery,
     endpoints: (build) => ({
+        updateEventComment: build.mutation({
+            query: ({id, comment}) => ({
+                url: `/${id}`,
+                method:"PATCH",
+                body: {
+                    comment:comment,
+                }
+            })
+        }),
         getEventComments: build.query({
             query: ({id, page}) => `?event_id=${id}&limit=5&page=${page}`
         }),
@@ -25,11 +34,19 @@ export const fetchCommentsApi = createApi({
                 method: 'POST',
                 body: obj
             })
-        })
+        }),
+        deleteEventComment: build.mutation({
+            query: ({id}) => ({
+                url: `/${id}`,
+                method: "DELETE",
+            }),
+        }),
     })
 });
 
 export const {
+    useUpdateEventCommentMutation,
     useGetEventCommentsQuery,
-    useAddEventCommentMutation
+    useAddEventCommentMutation,
+    useDeleteEventCommentMutation,
 } = fetchCommentsApi;

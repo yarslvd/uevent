@@ -19,6 +19,15 @@ export const fetchTicketsApi = createApi({
         getTickets: build.query({
             query: () => `/user-tickets`
         }),
+        getEventTickets: build.query ({
+            query: ({event_id}) => ({
+                url: `/`,
+                method:"GET",
+                params:{
+                    event_id:event_id
+                }
+            }),
+        }),
         buyTickets: build.query({
             query: (ticket) => ({
                 url: `/`, 
@@ -31,5 +40,6 @@ export const fetchTicketsApi = createApi({
 
 export const {
     useGetTicketsQuery,
+    useGetEventTicketsQuery,
     useLazyBuyTicketsQuery
 } = fetchTicketsApi;

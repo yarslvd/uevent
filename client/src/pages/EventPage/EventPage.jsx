@@ -12,13 +12,18 @@ import Comment from '../../components/Comment/Comment';
 import Card from '../../components/Card/Card';
 import { selectIsAuthMe } from '../../redux/slices/authSlice';
 import { useGetEventInfoQuery } from '../../redux/api/fetchEventsApi';
-import { useGetEventCommentsQuery, useAddEventCommentMutation } from '../../redux/api/fetchCommentsApi';
+import {
+  useGetEventCommentsQuery,
+  useAddEventCommentMutation,
+  useUpdateEventCommentMutation, useDeleteEventCommentMutation
+} from '../../redux/api/fetchCommentsApi';
 import { useGetTicketsQuery } from '../../redux/api/fetchTicketsApi';
 import { useGetEventsQuery } from '../../redux/api/fetchEventsApi';
 
 import styles from './EventPage.module.scss';
 import { useLazyCheckPaymentQuery } from '../../redux/api/fetchPaymentApi';
 import { useEffect } from 'react';
+import {useUpdateUserMutation} from "../../redux/api/fetchAuthApi";
 
 const newEvents = [
   { title: 'Harry Styles', location: 'Палац студентів НТУ “ХПІ”', time: '16:00', date: '28 КВІ 2023', price: 400 ,image_url: 'https://media.architecturaldigest.com/photos/623e05e0b06d6c32457e4358/master/pass/FINAL%20%20PFHH-notextwlogo.jpg' },
@@ -40,6 +45,10 @@ const EventPage = () => {
   const [page, setPage] = useState(0);
   const [commentInput, setCommentInput] = useState('');
 
+  const [editing, setEditing] = useState(null)
+  const [updateComment] = useUpdateEventCommentMutation();
+  const [deleteComment] = useDeleteEventCommentMutation();
+
   const { register, handleSubmit } = useForm({
     defaultValues: {
       content: ''
@@ -50,10 +59,23 @@ const EventPage = () => {
   const { isLoading: isLoadingInfo, data: dataInfo, error: errorInfo } = useGetEventInfoQuery(id);
   const { isLoading: isLoadingComments, data: dataComments, error: errorComments, refetch } = useGetEventCommentsQuery({id, page});
   const { isLoading: isLoadingEvents, data: dataEvents, error: errorEvents } = useGetEventsQuery({ limit: 4, page: 0, organizers: dataInfo?.event.organizer_id });
-  // const { isLoading: isLoadingTickets, data: dataTickets, error: errorTickets } = useGetTicketsQuery(id);
-  console.log('comm', dataInfo, id);
 
-  const onSubmit = (values) => {
+  const deleteCommentFunction = async (commentId) => {
+    await deleteComment({id: commentId});
+    refetch();
+
+  }
+
+  const onSubmit = async (values) => {
+    if (editing) {
+      console.log(editing)
+      await updateComment({id: editing.id, comment: editing.content});
+      setCommentInput('');
+      setEditing(null);
+      refetch();
+      return
+    }
+
     setCommentInput('');
     setPage(dataComments?.comments.pages - 1);
     addEventComment({ comment: values.content, event_id: +id })
@@ -67,13 +89,19 @@ const EventPage = () => {
   }
 
   const handlePaginationChange = (e, p) => {
-    console.log(p);
     setPage(p - 1);
   }
 
   const checkEventPayment = async () => {
     let data = await checkPayment(id).unwrap()
     console.log(data);
+  }
+
+  const setEditingText = (text) => {
+    setEditing({
+      id:editing.id,
+      content:text
+    })
   }
 
   useEffect(() => {
@@ -105,7 +133,7 @@ const EventPage = () => {
             </div>
           </div>
           <div className={styles.embed}>
-            { !isLoadingInfo && !errorInfo && dataInfo.event.spotify_id !== null &&
+            { !isLoadingInfo && !errorInfo && dataInfo.event.spotify_id &&
               <iframe
               title="spotify"
               src={`https://open.spotify.com/embed/artist/${dataInfo.event.spotify_id}?utm_source=generator`}
@@ -132,9 +160,9 @@ const EventPage = () => {
           <div className={styles.comments}>
             <h2>Коментарі</h2>
             <div className={styles.wrapper}>
-              {!isLoadingComments && !errorComments && dataComments?.comments.rows != 0 ? <>
+              {!isLoadingComments && !errorComments && dataComments?.comments.rows !== 0 ? <>
                 {dataComments?.comments.rows.map((el, index) => (
-                  <Comment {...el} key={index} />
+                  <Comment {...el} setEditing={setEditing} deleteComment={deleteCommentFunction} key={index} />
                 ))}
                 {dataComments?.comments.pages > 1 && <Pagination count={dataComments?.comments.pages} size={matches ? 'small' : 'large'} onChange={handlePaginationChange}/>}
               </> :
@@ -154,8 +182,8 @@ const EventPage = () => {
                       required: true,
                       minLength: 5
                     })}
-                    onChange={(e) => setCommentInput(e.target.value)}
-                    value={commentInput}
+                    onChange={(e) => editing ? setEditingText(e.target.value): setCommentInput(e.target.value)}
+                    value={editing ? editing.content : commentInput}
                   ></textarea>
                   <Button variant='contained' type='submit'>Опубліковати</Button>
                 </div>

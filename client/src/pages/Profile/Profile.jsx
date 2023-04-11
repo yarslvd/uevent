@@ -68,7 +68,7 @@ const Profile = () => {
 
     const { data: dataFavourites, isLoading: isLoadingFavourites, isError: isErrorFavourites, refetch: refetchFavourites } = useGetFavouritesQuery();
     const { data: dataTickets, isLoading: isLoadingTickets, isError: isErrorTickets } = useGetTicketsQuery(auth && { user_id: +userInfo.id });
-    const { data: dataEvents, isLoading: isLoadingEvents, isError: isErrorEvents } = useGetEventsQuery({ limit: 1000, id: userInfo.organizers[0].id });
+    const { data: dataEvents, isLoading: isLoadingEvents, isError: isErrorEvents } = useGetEventsQuery({ limit: 1000, id: userInfo?.organizers && userInfo.organizers[0]?.id });
     console.log(dataEvents);
 
     const [deleteFavourite] = useDeleteFavouriteMutation();
@@ -205,7 +205,7 @@ const Profile = () => {
                                 <div className={styles.company}>
                                     <div className={styles.card}>
                                         <div className={styles.avatarContainer}>
-                                            <Avatar src='sd' className={styles.avatar}></Avatar>
+                                            <Avatar src={userInfo.organizers[0].image} className={styles.avatar}></Avatar>
                                             <Button variant='contained' className={styles.editBtn}>Edit</Button>
                                         </div>
                                         <div className={styles.info}>

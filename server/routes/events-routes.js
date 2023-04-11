@@ -16,6 +16,7 @@ const router = express.Router();
 router.route('/')
     .post(jwtMiddleware, controller.create)
     .get(controller.getAll)
+router.route('/upcoming')
 router.route('/:id')
     .get(controller.getOne)
     .patch(jwtMiddleware, controller.update)
