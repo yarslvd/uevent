@@ -4,8 +4,12 @@ const {checkFields}  = require ("../helpers/object-fields");
 const {processPagination} = require('../helpers/db-helper')
 const {filterOrganizerName} = require("../helpers/filters-orders")
 const {createUrlParams} = require("../helpers/url-helpers")
-
+const path = require('path');
+const fs = require('fs');
 const db = require('../models/db.js');
+const { ImgurClient } = require('imgur'); 
+
+const imgurClient = new ImgurClient({ clientId: process.env.IMGUR_ID });
 
 const getAll = async (req, res) => {
   try {
@@ -140,10 +144,37 @@ const deleteOrganizer = async (req, res) => {
   }
 }
 
+const updateAvatar = async (req,res) => {
+  try{
+      const id = req.params.id;
+      const tempPath = req.file.path;
+      const targetPath = path.join(__dirname, "../public/organizers/" + id + path.extname(req.file.originalname));
+
+      fs.renameSync(tempPath, targetPath);
+      
+      const response = await imgurClient.upload({
+          image: fs.createReadStream(targetPath),
+          type: 'stream',
+      });
+      console.log(response.data);
+
+      await db.organizers.update({image: response.data.link}, {where: { id: id}, plain: true });
+
+      res.sendStatus(StatusCodes.OK);
+  }
+  catch(error) {
+      console.log("Some error while updating organizer avatar: ", error.message);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json ({
+          error : "Some error while updating organizer avatar: " + error.message
+      });
+  }
+}
+
 module.exports = {
   getAll,
   getOne,
   create,
   update,
+  updateAvatar,
   delete: deleteOrganizer
 }

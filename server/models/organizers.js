@@ -27,6 +27,9 @@ module.exports = function(sequelize) {
         model: 'users',
         key: 'id'
       }
+    },
+    image: {
+      type: DataTypes.TEXT
     }
   }, {
     sequelize,
