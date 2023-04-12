@@ -1,3 +1,4 @@
+const fs = require('fs');
 const {checkFields} = require("../helpers/object-fields");
 const {StatusCodes} = require("http-status-codes");
 const db = require("../models/db");
@@ -7,6 +8,8 @@ const { createPayment } = require("../helpers/create-payment");
 const {waitTx} = require("../helpers/wait-tx");
 const { createUrlParams } = require("../helpers/url-helpers");
 const { processPagination } = require("../helpers/db-helper");
+const { generatePdf } = require("../helpers/generate-pdf");
+
 
 const create = async (req, res) => {
     try {
@@ -136,10 +139,6 @@ const get = async (req, res) => {
     }
 }
 
-const getTicketsByPayment = async (req, res) => {
-    // return pdf
-}
-
 
 const getUserTickets = async (req, res) => {
     try {
@@ -177,8 +176,73 @@ const getUserTickets = async (req, res) => {
     }
 }
 
+const getPdf = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        if (req.query.event_id === null) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                error: "Some fields are missed",
+            });
+        }
+
+        let event = await db.events.findByPk(req.query.event_id)
+        if (!event) {
+            return res.status(StatusCodes.NOT_FOUND).json({
+                error: "No such event to get ticket",
+            });
+        }
+
+        
+
+        let tickets = await db.tickets.findAll({
+            where: { event_id: req.query.event_id, user_id: userId },
+            include: [ {
+                model:db.users,
+                as: 'user',
+                attributes: ['id', 'image', 'first_name', 'last_name', 'username', 'birthdate']
+            } ]
+        })
+
+        if (tickets.length == 0) {
+            return res.status(StatusCodes.NOT_FOUND).json({
+                error: "User does not have tickets for this event",
+            });
+        }
+
+        const data = {
+            eventTitle: event.title,
+            eventDescription: event.description,
+            format: event.format,
+            theme: event.theme,
+            address: event.address,
+            location: event.location,
+            date: event.date,
+            pricePerTicket: event.price,
+            isoCurrency: event.iso_currency,
+            ticketsAmount: tickets.length,
+            totalPrice: tickets.length * event.price,
+            username: req.user.username,
+            first_name: req.user.first_name,
+            last_name: req.user.last_name,
+            email: req.user.email
+        }
+
+        const template = fs.readFileSync("./assets/ticket.html", { encoding: "utf8" });
+        const pdf = await generatePdf(template, data);
+        // console.log(pdf);
+        return res.status(StatusCodes.OK).contentType("application/pdf").send(pdf);
+    }
+    catch(error) {
+        console.log("Some error while getting tickets: ", error.message);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json ({
+            error : "Some error while getting tickets: " + error.message
+        });
+    }
+}
+
 module.exports = {
     get,
     create,
-    getUserTickets
+    getUserTickets,
+    getPdf
 }
