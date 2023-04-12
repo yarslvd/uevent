@@ -10,5 +10,6 @@ router.route('/')
     .get(controller.get)
     
 router.get('/user-tickets', jwtMiddleware, controller.getUserTickets);
+router.get('/pdf', jwtMiddleware, controller.getPdf);
 
 module.exports = router;

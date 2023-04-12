@@ -33,5 +33,10 @@ services:
       - uevent-api
     ports:
       - '81:3000'
+  pdfskit:
+    image: pspdfkit/processor
+    restart: always
+    ports:
+      - 8000:5000
 volumes:
   pgdata:

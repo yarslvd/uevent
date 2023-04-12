@@ -77,7 +77,6 @@ const CreateEventPage = () => {
 
     //Queries
     const { isLoading, data, error } = useGetEventInfoQuery(id ? id : null);
-    console.log(data);
 
     //Form
     const { register, handleSubmit, formState, control, setValue } = useForm({
