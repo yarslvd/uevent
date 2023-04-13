@@ -12,7 +12,7 @@ import { useGetFavouritesQuery } from '../../redux/api/fetchFavouritesApi';
 import { useDeleteFavouriteMutation } from '../../redux/api/fetchFavouritesApi';
 import { useGetTicketsQuery } from '../../redux/api/fetchTicketsApi';
 import { useGetEventsQuery } from '../../redux/api/fetchEventsApi';
-import { dateOptions } from '../../data/variables';
+import { dateOptions, timeOptions } from '../../data/variables';
 
 import styles from './Profile.module.scss';
 
@@ -48,12 +48,12 @@ const favouritesEvents = [
     { title: 'Океан Ельзи. Світовий тур 2023', image_url: 'https://vgorode.ua/img/article/11918/24_main-v1640936452.jpg' },
 ];
 
-const tickets = [
-    { title: 'Harry Styles', location: 'Палац студентів НТУ “ХПІ”', time: '16:00', date: '28 КВІ 2023', price: 400 ,image_url: 'https://media.architecturaldigest.com/photos/623e05e0b06d6c32457e4358/master/pass/FINAL%20%20PFHH-notextwlogo.jpg' },
-    { title: 'The Weeknd', location: 'Палац студентів НТУ “ХПІ”', time: '18:00', date: '29 БЕР 2023', price: 400 ,image_url: 'https://www.livenationentertainment.com/wp-content/uploads/2022/03/TR_NationalAsset_TheWeeknd_SG_1200x628.jpg' },
-    { title: 'Океан Ельзи. Світовий тур 2023', location: 'Стадіон Металіст', time: '18:00', date: '17 ЧЕР 2023', price: 550 ,image_url: 'https://vgorode.ua/img/article/11918/24_main-v1640936452.jpg' },
-    { title: 'Океан Ельзи. Світовий тур 2023', location: 'Стадіон Металіст', time: '18:00', date: '17 ЧЕР 2023', price: 550 ,image_url: 'https://vgorode.ua/img/article/11918/24_main-v1640936452.jpg' },
-];
+// const tickets = [
+//     { title: 'Harry Styles', location: 'Палац студентів НТУ “ХПІ”', time: '16:00', date: '28 КВІ 2023', price: 400 ,image_url: 'https://media.architecturaldigest.com/photos/623e05e0b06d6c32457e4358/master/pass/FINAL%20%20PFHH-notextwlogo.jpg' },
+//     { title: 'The Weeknd', location: 'Палац студентів НТУ “ХПІ”', time: '18:00', date: '29 БЕР 2023', price: 400 ,image_url: 'https://www.livenationentertainment.com/wp-content/uploads/2022/03/TR_NationalAsset_TheWeeknd_SG_1200x628.jpg' },
+//     { title: 'Океан Ельзи. Світовий тур 2023', location: 'Стадіон Металіст', time: '18:00', date: '17 ЧЕР 2023', price: 550 ,image_url: 'https://vgorode.ua/img/article/11918/24_main-v1640936452.jpg' },
+//     { title: 'Океан Ельзи. Світовий тур 2023', location: 'Стадіон Металіст', time: '18:00', date: '17 ЧЕР 2023', price: 550 ,image_url: 'https://vgorode.ua/img/article/11918/24_main-v1640936452.jpg' },
+// ];
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -239,7 +239,7 @@ const Profile = () => {
                                                                 </div>
                                                                 <div className={styles.time}>
                                                                     <img src="/assets/clock_icon.png" alt="Time" />
-                                                                    <span>{el.date}</span>
+                                                                    <span>{new Date(el.date).toLocaleString('uk-UK', timeOptions)}</span>
                                                                 </div>
                                                             </div>
                                                             <Link to={`/event/${el.id}/edit`}>Edit</Link>

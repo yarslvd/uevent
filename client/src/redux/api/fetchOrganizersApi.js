@@ -30,10 +30,14 @@ export const fetchOrganizersApi = createApi({
                 body: file
             })
         }),
+        getOrganization: build.query({
+            query: (id) => `/${id}`
+        }),
     })
 });
 
 export const {
     useNewOrganizationMutation,
-    useUploadAvatarMutation
+    useUploadAvatarMutation,
+    useGetOrganizationQuery
 } = fetchOrganizersApi;
