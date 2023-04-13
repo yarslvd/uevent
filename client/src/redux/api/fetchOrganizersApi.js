@@ -30,12 +30,6 @@ export const fetchOrganizersApi = createApi({
                 body: body
             })
         }),
-        getOrganization: build.mutation({
-            query: ({id}) => ({
-                url: `/${id}`,
-                method: 'GET',
-            })
-        }),
         uploadAvatar: build.mutation({
             query: ({file, id}) => ({
                 url: `/${id}/avatar`,
@@ -43,12 +37,15 @@ export const fetchOrganizersApi = createApi({
                 body: file
             })
         }),
+        getOrganization: build.query({
+            query: (id) => `/${id}`
+        }),
     })
 });
 
 export const {
     useNewOrganizationMutation,
     useUpdateOrganizationMutation,
-    useGetOrganizationMutation,
-    useUploadAvatarMutation
+    useUploadAvatarMutation,
+    useGetOrganizationQuery,
 } = fetchOrganizersApi;

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Modal, Button, Alert } from '@mui/material';
+import { Modal, Button, Alert, FormControlLabel, Checkbox } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
@@ -16,6 +16,7 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
     const [itemCount, setItemCount] = useState(1);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [showVisitor, setShowVisitor] = useState(true);
 
     const [validatePromocode] = useValidatePromoMutation();
 
@@ -99,6 +100,7 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
                         </div>
                     }
                 </div>
+                <FormControlLabel control={<Checkbox checked={showVisitor} />} label="Show as a visitor" onChange={(e) => setShowVisitor(e.target.checked)}/>
                 <div className={styles.countContainer}>
                     <Button className={styles.countBtn} onClick={handleDecrease}>-</Button>
                     <span>{itemCount}</span>

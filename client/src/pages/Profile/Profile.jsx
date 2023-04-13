@@ -17,7 +17,7 @@ import {
 import { useDeleteFavouriteMutation } from '../../redux/api/fetchFavouritesApi';
 import { useGetTicketsQuery } from '../../redux/api/fetchTicketsApi';
 import { useGetEventsQuery } from '../../redux/api/fetchEventsApi';
-import { dateOptions } from '../../data/variables';
+import { dateOptions, timeOptions } from '../../data/variables';
 
 import styles from './Profile.module.scss';
 
