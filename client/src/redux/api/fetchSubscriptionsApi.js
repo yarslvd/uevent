@@ -18,24 +18,28 @@ export const fetchSubscriptionApi = createApi({
         getSubscriptions: build.query({
             query: () => '/'
         }),
-        addFavourite: build.mutation({
+        addSubscription: build.mutation({
             query: (event_id) => ({
                 url: '/',
                 method: 'POST',
                 body: event_id
             })
         }),
-        deleteFavourite: build.mutation({
-            query: (event_id) => ({
-                url: `/${event_id}`,
+        deleteSubscription: build.mutation({
+            query: (organizer_id) => ({
+                url: `/${organizer_id}`,
                 method: 'DELETE',
             })
         }),
-        getFavouriteOne: build.query({
-            query: (event_id) => `/${event_id}`
+        getSubscriptionOne: build.query({
+            query: (user_id, limit, page) => `/?user_id=${user_id}&limit=${limit}&page=${page}`
         })
     })
 });
 
 export const {
+    useGetSubscriptionsQuery,
+    useAddSubscriptionMutation,
+    useDeleteSubscriptionMutation,
+    useGetSubscriptionOneQuery
 } = fetchSubscriptionApi;

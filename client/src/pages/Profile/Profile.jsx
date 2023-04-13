@@ -6,9 +6,14 @@ import { Box, Tabs, Tab, Avatar, Button, useMediaQuery } from '@mui/material';
 
 import Layout from '../../components/Layout/Layout';
 import ProfileCard from '../../components/ProfileCard/ProfileCard';
-import OrganizationCreateModal from '../../components/OrganizationCreateModal/OrganizationCreateModal';
+import OrganizationModal from '../../components/OrganizationCreateModal/OrganizationModal';
 import { selectIsAuthMe } from '../../redux/slices/authSlice';
 import { useGetFavouritesQuery } from '../../redux/api/fetchFavouritesApi';
+import {
+    fetchSubscriptionApi,
+    useDeleteSubscriptionMutation,
+    useGetSubscriptionOneQuery
+} from "../../redux/api/fetchSubscriptionsApi";
 import { useDeleteFavouriteMutation } from '../../redux/api/fetchFavouritesApi';
 import { useGetTicketsQuery } from '../../redux/api/fetchTicketsApi';
 import { useGetEventsQuery } from '../../redux/api/fetchEventsApi';
@@ -41,19 +46,6 @@ function a11yProps(index) {
     };
 }
 
-const favouritesEvents = [
-    { title: 'Harry Styles', image_url: 'https://media.architecturaldigest.com/photos/623e05e0b06d6c32457e4358/master/pass/FINAL%20%20PFHH-notextwlogo.jpg' },
-    { title: 'The Weeknd', image_url: 'https://www.livenationentertainment.com/wp-content/uploads/2022/03/TR_NationalAsset_TheWeeknd_SG_1200x628.jpg' },
-    { title: 'Океан Ельзи. Світовий тур 2023', image_url: 'https://vgorode.ua/img/article/11918/24_main-v1640936452.jpg' },
-    { title: 'Океан Ельзи. Світовий тур 2023', image_url: 'https://vgorode.ua/img/article/11918/24_main-v1640936452.jpg' },
-];
-
-const tickets = [
-    { title: 'Harry Styles', location: 'Палац студентів НТУ “ХПІ”', time: '16:00', date: '28 КВІ 2023', price: 400 ,image_url: 'https://media.architecturaldigest.com/photos/623e05e0b06d6c32457e4358/master/pass/FINAL%20%20PFHH-notextwlogo.jpg' },
-    { title: 'The Weeknd', location: 'Палац студентів НТУ “ХПІ”', time: '18:00', date: '29 БЕР 2023', price: 400 ,image_url: 'https://www.livenationentertainment.com/wp-content/uploads/2022/03/TR_NationalAsset_TheWeeknd_SG_1200x628.jpg' },
-    { title: 'Океан Ельзи. Світовий тур 2023', location: 'Стадіон Металіст', time: '18:00', date: '17 ЧЕР 2023', price: 550 ,image_url: 'https://vgorode.ua/img/article/11918/24_main-v1640936452.jpg' },
-    { title: 'Океан Ельзи. Світовий тур 2023', location: 'Стадіон Металіст', time: '18:00', date: '17 ЧЕР 2023', price: 550 ,image_url: 'https://vgorode.ua/img/article/11918/24_main-v1640936452.jpg' },
-];
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -67,11 +59,12 @@ const Profile = () => {
     const [modalOpen, setModalOpen] = useState(false);
 
     const { data: dataFavourites, isLoading: isLoadingFavourites, isError: isErrorFavourites, refetch: refetchFavourites } = useGetFavouritesQuery();
+    const { data: dataSubscriptions, isLoading: isLoadingSubscriptions, isError: isErrorSubscriptions, refetch: refetchSubscriptions } = useGetSubscriptionOneQuery(userInfo.id, 1000, 0);
     const { data: dataTickets, isLoading: isLoadingTickets, isError: isErrorTickets } = useGetTicketsQuery(auth && { user_id: +userInfo.id });
     const { data: dataEvents, isLoading: isLoadingEvents, isError: isErrorEvents } = useGetEventsQuery({ limit: 1000, id: userInfo?.organizers && userInfo.organizers[0]?.id });
-    console.log(dataEvents);
 
     const [deleteFavourite] = useDeleteFavouriteMutation();
+    const [deleteSubscription] = useDeleteSubscriptionMutation();
 
     const handleClose = () => {
         setModalOpen(false);
@@ -86,6 +79,15 @@ const Profile = () => {
             .unwrap()
             .then(() => {
                 refetchFavourites();
+            })
+            .catch(err => console.log(err))
+    }
+
+    const deleteSubs = (organizer_id) => {
+        deleteSubscription(organizer_id)
+            .unwrap()
+            .then(() => {
+                refetchSubscriptions();
             })
             .catch(err => console.log(err))
     }
@@ -146,14 +148,14 @@ const Profile = () => {
                             <div className={styles.colContainer}>
                                 <h3>Subscriptions</h3>
                                 <div className={styles.itemsContainer}>
-                                    {favouritesEvents.map((el, index) => (
+                                    {!isLoadingSubscriptions && !isErrorSubscriptions && dataSubscriptions.subscriptions.rows.map((el, index) => (
                                         <div className={styles.item} key={index}>
                                             <div className={styles.info}>
-                                                <Avatar className={styles.avatar} src={el.image_url}></Avatar>
-                                                <Link to='/'>{el.title}</Link>
+                                                <Avatar className={styles.avatar} src={el.organizer.image}></Avatar>
+                                                <Link to={`/organizers/${el.organizer.id}`}>{el.organizer.name}</Link>
                                             </div>
                                             <div className={styles.like}>
-                                                <Button variant='contained'>Unfollow</Button>
+                                                <Button variant='contained' onClick={() => deleteSubs(el.organizer.id)}>Unfollow</Button>
                                             </div>
                                         </div>
                                     ))}
@@ -206,7 +208,12 @@ const Profile = () => {
                                     <div className={styles.card}>
                                         <div className={styles.avatarContainer}>
                                             <Avatar src={userInfo.organizers[0].image} className={styles.avatar}></Avatar>
-                                            <Button variant='contained' className={styles.editBtn}>Edit</Button>
+                                            <Button variant='contained' onClick={() => setModalOpen(true)} className={styles.editBtn}>Edit</Button>
+                                            <OrganizationModal
+                                                open={modalOpen}
+                                                handleClose={handleClose}
+                                                organizer={userInfo.organizers[0]}
+                                            />
                                         </div>
                                         <div className={styles.info}>
                                             <h3>{userInfo.organizers[0].name}</h3>
@@ -252,7 +259,7 @@ const Profile = () => {
                                 </div> :
                                 <div className={styles.noCompany}>
                                     <Button variant='contained' onClick={() => setModalOpen(true)} className={styles.newBtn}>Create new organization</Button>
-                                    <OrganizationCreateModal
+                                    <OrganizationModal
                                         open={modalOpen}
                                         handleClose={handleClose}
                                     />

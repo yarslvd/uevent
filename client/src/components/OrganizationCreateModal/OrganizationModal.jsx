@@ -4,14 +4,19 @@ import { useForm } from 'react-hook-form';
 
 import styles from './OrganizationCreateModal.module.scss';
 
-import { useNewOrganizationMutation, useUploadAvatarMutation } from '../../redux/api/fetchOrganizersApi';
+import {
+    useNewOrganizationMutation,
+    useUpdateOrganizationMutation,
+    useUploadAvatarMutation
+} from '../../redux/api/fetchOrganizersApi';
 
-const OrganizationCreateModal = ({ open, handleClose }) => {
+const OrganizationModal = ({ open, handleClose, organizer }) => {
     const inputFileRef = useRef(null);
     const [avatar, setAvatar] = useState(null);
-    const [imageUrl, setImageUrl] = useState("");
+    const [imageUrl, setImageUrl] = useState(organizer?organizer.image:"");
 
     const [newOrganization] = useNewOrganizationMutation();
+    const [updateOrganization] = useUpdateOrganizationMutation();
     const [uploadAvatar] = useUploadAvatarMutation();
     const {
         register,
@@ -19,15 +24,17 @@ const OrganizationCreateModal = ({ open, handleClose }) => {
         formState: { errors },
       } = useForm({
         defaultValues: {
-          name: "",
-          email: "",
-          description: "",
+          name: organizer?organizer.name:"",
+          email: organizer?organizer.email:"",
+          description: organizer?organizer.description:"",
         },
         mode: "onSubmit",
     });
 
     const onSubmit = async (values) => {
-        //removeEmptyFields(values);
+        // removeEmptyFields(values);
+
+
         if (values.full_name) {
             const splitted = values.full_name.split(" ");
             values.first_name = splitted[0]
@@ -35,8 +42,11 @@ const OrganizationCreateModal = ({ open, handleClose }) => {
         }
 
         if (Object.keys(values).length > 0) {
-            let res = await newOrganization(values);
-            console.log({res});
+            let res = organizer
+                ? await updateOrganization({id: organizer.id, body: values})
+                : await newOrganization(values)
+
+            console.log("res: ", {res})
 
             if(avatar) {
                 const formData = new FormData();
@@ -62,7 +72,7 @@ const OrganizationCreateModal = ({ open, handleClose }) => {
         >
             <div className={styles.container}>
                 <div className={styles.header}>
-                    <h2>Create Organization</h2>
+                    <h2> {organizer ? `Update` : `Create`} Organization</h2>
                     <div onClick={handleClose} className={styles.close_btn}>
                         <svg focusable="true" aria-hidden="true" viewBox="0 0 24 24">
                             <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
@@ -143,7 +153,9 @@ const OrganizationCreateModal = ({ open, handleClose }) => {
                             </div>
                         </div>
                         <div>
-                            <Button variant="contained" type='submit' className={styles.button}>Save</Button>
+                            <Button variant="contained" type='submit' className={styles.button}>
+                                {organizer ? `Update` : `Save`}
+                            </Button>
                         </div>
                     </form>
                 </div>
@@ -152,4 +164,4 @@ const OrganizationCreateModal = ({ open, handleClose }) => {
     )
 }
 
-export default OrganizationCreateModal;
+export default OrganizationModal;
