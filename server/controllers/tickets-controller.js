@@ -229,7 +229,7 @@ const getPdf = async (req, res) => {
 
         const template = fs.readFileSync("./assets/ticket.html", { encoding: "utf8" });
         const pdf = await generatePdf(template, data);
-        // console.log(pdf);
+
         return res.status(StatusCodes.OK).contentType("application/pdf").send(pdf);
     }
     catch(error) {

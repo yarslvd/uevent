@@ -20,10 +20,6 @@ const generatePdf = async (template, data) => {
 
   const filledTemplate = Mustache.render(template, data);
 
-  const body = new FormData();
-  body.append("template.html", filledTemplate, { filename: "template.html" });
-  body.append("generation", JSON.stringify(generation));
-
   // Create a browser instance
   const browser = await puppeteer.launch();
 
