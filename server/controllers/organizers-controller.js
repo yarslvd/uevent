@@ -90,7 +90,7 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const request = checkFields(req.body, ['name', 'email'])
+    const request = checkFields(req.body, ['name', 'email', 'description'])
     if (!request) {
         return res.status(StatusCodes.BAD_REQUEST).json({
             error: "Some fields are missed",

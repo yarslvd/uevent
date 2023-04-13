@@ -87,7 +87,7 @@ const Profile = () => {
         deleteSubscription(organizer_id)
             .unwrap()
             .then(() => {
-                refetchSubscriptions();
+                refetchSubscriptions(userInfo.id, 1000, 0);
             })
             .catch(err => console.log(err))
     }

@@ -47,7 +47,7 @@ const unsubscribe = async (req, res) => {
     try {
         const organizerId = req.params.organizer_id;
 
-        let result = checkUserAndOrganizer(res, organizerId, req.user.id)
+        let result = await checkUserAndOrganizer(res, organizerId, req.user.id)
         if (result === null) {
             return
         }
