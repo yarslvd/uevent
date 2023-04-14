@@ -17,8 +17,13 @@ function startPaymentChecker(payments, users, events, tickets) {
         let event = await events.findByPk(payment.event_id);
         let userTickets = await tickets.findAll({
           where: {
-            payment_id: payment.id
+            event_id: event.id,
+            ...(payment.payer_id ? {user_id: payment.payer_id} : {payment_id: payment.id})
           }
+        });
+        console.log("rrrrr", {
+          event_id: event.id,
+          ...(payment.payer_id ? {user_id: payment.payer_id} : {payment_id: payment.id})
         });
         let user = payment.payer_id ? 
         await users.findByPk(payment.payer_id) 
@@ -35,7 +40,6 @@ function startPaymentChecker(payments, users, events, tickets) {
             }
           ]
         }
-        console.log()
         sendLetter(payment.email, `uevent. Tickets for "${event.title}" event`, "", options);
       }
       if(result.status == 'reverted'){

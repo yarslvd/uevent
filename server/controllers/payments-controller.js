@@ -1,7 +1,9 @@
 const { StatusCodes } = require('http-status-codes');
 const {uid} = require('uid');
+const { generateTicketPdf } = require('../helpers/generate-pdf');
 const LiqPay = require("../libs/liqpay/liqpay");
 const db = require('../models/db');
+const { sendLetter } = require('../utils/nodemailer');
 
 const liqpay = new LiqPay(process.env.LIQPAY_PUB, process.env.LIQPAY_PRIV);
 
@@ -135,6 +137,28 @@ const checkPayments = async (payments) => {
         case "success": {
           await db.payments.update({status: "success"}, {where:{id: payment.id}, plain: true});
           payment.status = "success"
+
+          let event = await db.events.findByPk(payment.event_id);
+          let userTickets = await db.tickets.findAll({
+            where: {
+              event_id: event.id,
+              ...(payment.payer_id ? {user_id: payment.payer_id} : {payment_id: payment.id})
+            }
+          });
+
+          let user = payment.payer_id ? await db.users.findByPk(payment.payer_id) : {username: payment.email.split("@")[0], first_name: "", last_name: "", email: payment.email}
+          let pdf = await generateTicketPdf(user, event, userTickets);
+          let options = {
+            attachments: [
+              {
+                filename: "tickets.pdf",
+                content: pdf,
+                contentType: "application/pdf"
+              }
+            ]
+          }
+          sendLetter(payment.email, `uevent. Tickets for "${event.title}" event`, "", options);
+
           break;
         }
         case "processing":

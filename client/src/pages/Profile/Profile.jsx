@@ -53,6 +53,7 @@ const Profile = () => {
     const matches = useMediaQuery('(max-width:930px)');
     const { userInfo } = useSelector((state) => state.auth);
     console.log(userInfo);
+    let eventTicketsCounts = {}
 
     const [value, setValue] = useState(0);
     const [isLikeActive, setIsLikeActive] = useState(true);
@@ -165,7 +166,17 @@ const Profile = () => {
                     </TabPanel>
                     <TabPanel value={value} index={1}>
                         <div className={styles.ticketsContainer}>
-                            {!isLoadingTickets && !isErrorTickets && dataTickets.tickets.count !== 0 ? dataTickets.tickets.rows.map((el, index) => (
+                            {!isLoadingTickets && !isErrorTickets && dataTickets.tickets.count !== 0 ? [...new Set(dataTickets.tickets.rows.map(el => {
+                                const {id, payment_id, can_show, ...rest} = el;  
+                                const {ticket_amount, ...restEvent} = el.event;
+                                rest.event = restEvent;
+                                
+                                eventTicketsCounts[rest.event_id] = eventTicketsCounts[rest.event_id] ? ++eventTicketsCounts[rest.event_id] : 1;
+                                return JSON.stringify(rest)
+                            }))].map((el, index) => {
+                            el = JSON.parse(el);
+                            // console.log(el.event_id, ":", eventTicketsCounts[el.event_id]);
+                            return (
                                 <div className={styles.ticket} key={index}>
                                     <div className={styles.image} style={{backgroundImage: `url(${el.event.poster})`}}></div>
                                     <div className={styles.info}>
@@ -196,7 +207,7 @@ const Profile = () => {
                                         </div>
                                     </div>
                                 </div>
-                            )) :
+                            )}) :
                                 <span className={styles.noTickets}>You have no tickets ;(</span>
                             }
                         </div>
@@ -277,3 +288,6 @@ const Profile = () => {
 }
 
 export default Profile
+
+
+
