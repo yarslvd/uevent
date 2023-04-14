@@ -130,7 +130,7 @@ const Profile = () => {
                                         <div className={styles.item} key={index}>
                                             <div className={styles.info}>
                                                 <Avatar className={styles.avatar} src={el.event.poster}></Avatar>
-                                                <Link to='/'>{el.event.title}</Link>
+                                                <Link to={`/event/${el.event_id}`}>{el.event.title}</Link>
                                             </div>
                                             <div className={styles.like}>
                                                 <motion.div 
@@ -183,7 +183,7 @@ const Profile = () => {
                                                     <span>{(new Date(el.event.date)).toLocaleString('uk-UK', dateOptions).toUpperCase().slice(0, -3)}</span>
                                                 </div>
                                             </div>
-                                            <Link to={`/event/`}>More</Link>
+                                            <Link to={`/event/${el.event_id}`}>More</Link>
                                         </div>
                                         <div className={styles.right}>
                                             <motion.div 
@@ -216,9 +216,12 @@ const Profile = () => {
                                             />
                                         </div>
                                         <div className={styles.info}>
-                                            <h3>{userInfo.organizers[0].name}</h3>
+                                            <Link to={`/organization/${userInfo.organizers[0].id}`} className={styles.orgName}><h3>{userInfo.organizers[0].name}</h3></Link>
                                             <p>{userInfo.organizers[0].description}</p>
-                                            <div>
+                                            <div className={styles.email}>
+                                                <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="EmailIcon">
+                                                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"></path>
+                                                </svg>
                                                 <a href={`mailto:${userInfo.organizers[0].email}`}>{userInfo.organizers[0].email}</a>
                                             </div>
                                         </div>

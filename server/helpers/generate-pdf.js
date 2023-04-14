@@ -26,10 +26,11 @@ const generatePdf = async (template, data) => {
   // Create a new page
   const page = await browser.newPage();
 
+  const css = 'body { background-color: yellow }';
   await page.setContent(filledTemplate, { waitUntil: 'domcontentloaded' });
   
   await page.emulateMediaType('screen');
-
+  await page.addStyleTag({ content: css });
   // Downlaod the PDF
   const pdf = await page.pdf({
     path: 'result.pdf',

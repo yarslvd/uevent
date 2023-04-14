@@ -170,9 +170,18 @@
                 .info {
                     margin-top: 20px;
 
-                    h3 {
+                    .orgName {
                         font-size: 24px;
-                        margin: 0;
+                        text-decoration: none;
+                        color: $base-dark-color;
+
+                        h3 {
+                            margin: 0;
+                        }
+
+                        &:hover {
+                            text-decoration: underline;
+                        }
                     }
 
                     p {
@@ -180,9 +189,18 @@
                         margin-bottom: 20px;
                     }
 
-                    a {
-                        color: $base-dark-color;
-                        font-weight: 600;
+                    .email {
+                        display: flex;
+                        gap: 5px;
+
+                        a {
+                            color: $base-dark-color;
+                            font-weight: 600;    
+                        }
+
+                        svg {
+                            width: 25px;
+                        }
                     }
                 }
             }

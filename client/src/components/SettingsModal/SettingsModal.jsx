@@ -22,7 +22,7 @@ const SettingsModal = ({ open, handleClose, image, username, full_name }) => {
     const [updateUser] = useUpdateUserMutation();
     const [avatar, setAvatar] = useState(null);
 
-    const { userInfo, error } = useSelector((state) => state.auth);
+    const { error } = useSelector((state) => state.auth);
 
     const { register, handleSubmit, formState: { errors }, watch } = useForm({
         defaultValues: {
@@ -65,12 +65,11 @@ const SettingsModal = ({ open, handleClose, image, username, full_name }) => {
         <Modal
             open={open}
             onClose={handleClose}
-            aria-labelledby="settings-title"
+            aria-labelledby="User settings"
             aria-describedby="Manage your personal settings"
         >
             <div className={styles.container}>
                 <div className={styles.heading}>
-                    {/* <IconButton onClick={handleClose} aria-label='go back' className={styles.backBtn}><ArrowBackIcon/></IconButton> */}
                     <h1>Settings</h1>
                     <div onClick={handleClose} className={styles.close_btn}>
                         <svg focusable="true" aria-hidden="true" viewBox="0 0 24 24">
@@ -80,7 +79,7 @@ const SettingsModal = ({ open, handleClose, image, username, full_name }) => {
                 </div>
                 <form onSubmit={handleSubmit(onSubmit)}>
 
-                    {!Object.keys(errors).length == 0 && <Alert severity="warning" className={styles.errmsg}>{Object.values(errors)[0].message}</Alert>}
+                    {/* {!Object.keys(errors).length == 0 && <Alert severity="warning" className={styles.errmsg}>{Object.values(errors)[0].message}</Alert>} */}
                     {error && <Alert severity="error" className={styles.errmsg}>{error}</Alert>}
 
                     <div className={styles.updateAvatar}>
@@ -114,7 +113,7 @@ const SettingsModal = ({ open, handleClose, image, username, full_name }) => {
                                     id="username"
                                     minLength={3}
                                     {...register("username")}
-                                    placeholder='Create username'
+                                    placeholder='Update username'
                                 />
                             </div>
                         </div>
@@ -130,7 +129,7 @@ const SettingsModal = ({ open, handleClose, image, username, full_name }) => {
                                         message: "Please, enter your real name",
                                     },
                                 })}
-                                placeholder='Your name'
+                                placeholder='Change full name'
                             />
                             </div>
                         </div>
@@ -152,7 +151,7 @@ const SettingsModal = ({ open, handleClose, image, username, full_name }) => {
                             </div>
                         </div>
                         <div className={styles.form}>
-                            <label htmlFor="password">Password</label>
+                            <label htmlFor="password">New password</label>
                             <div className={styles.field}>
                             <input
                                 type="password"
@@ -168,7 +167,7 @@ const SettingsModal = ({ open, handleClose, image, username, full_name }) => {
                             </div>
                         </div>
                         <div className={styles.form}>
-                            <label htmlFor="confirm">Repeat Password</label>
+                            <label htmlFor="confirm">Repeat new password</label>
                             <div className={styles.field}>
                             <input
                                 type="password"

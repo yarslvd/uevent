@@ -142,7 +142,20 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
                     }
                 </div>
                 {userInfo ?
-                    <FormControlLabel control={<Checkbox checked={showVisitor} />} label="Show as a visitor" onChange={(e) => setShowVisitor(e.target.checked)}/>
+                    <FormControlLabel 
+                        control={
+                            <Checkbox checked={showVisitor}
+                                sx={{
+                                    color: "#000",
+                                    '&.Mui-checked': {
+                                    color: "#000",
+                                    },
+                                }}
+                            />
+                        }
+                        label="Show as a visitor"
+                        onChange={(e) => setShowVisitor(e.target.checked)}
+                    />
                     :
                     <div className={styles.promocode}>
                         <h3>Email</h3>
