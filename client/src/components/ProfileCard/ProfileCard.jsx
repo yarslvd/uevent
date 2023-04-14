@@ -7,7 +7,7 @@ import SettingsModal from "../SettingsModal/SettingsModal";
 
 import styles from "./ProfileCard.module.scss";
 
-const ProfileCard = ({ first_name, last_name, username, image }) => {
+const ProfileCard = (userinfo) => {
     const navigate = useNavigate();
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -23,11 +23,11 @@ const ProfileCard = ({ first_name, last_name, username, image }) => {
 
     return (
         <div className={styles.container}>
-            <Avatar src={image} alt={first_name} className={styles.avatar}></Avatar>
+            <Avatar src={userinfo.image} alt={userinfo.first_name} className={styles.avatar}></Avatar>
             <div className={styles.displayContainer}>
                 <div className={styles.text}>
-                    <h3>{`${first_name} ${last_name}`}</h3>
-                    <span>@{username}</span>
+                    <h3>{`${userinfo.first_name} ${userinfo.last_name}`}</h3>
+                    <span>@{userinfo.username}</span>
                 </div>
                 <div className={styles.buttons}>
                     <Button variant='contained' className={styles.settingsBtn} onClick={() => setModalOpen(true)}>Settings</Button>
@@ -37,9 +37,7 @@ const ProfileCard = ({ first_name, last_name, username, image }) => {
             <SettingsModal
                 open={modalOpen}
                 handleClose={handleClose}
-                image={image}
-                fullname={`${first_name} ${last_name}`}
-                username={username}
+                user={userinfo}
             />
         </div>
     );

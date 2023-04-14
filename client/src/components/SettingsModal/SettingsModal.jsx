@@ -1,11 +1,12 @@
 import { useRef, useState } from 'react'
 import { Modal, Button, Alert } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import styles from './SettingsModal.module.scss';
 
 import { useUpdateUserMutation, useUploadAvatarMutation } from '../../redux/api/fetchAuthApi';
+import {fetchLogin, fetchUpdate} from "../../redux/slices/authSlice";
 
 function removeEmptyFields(data) {
     Object.keys(data).forEach(key => {
@@ -15,21 +16,22 @@ function removeEmptyFields(data) {
     });
   }
 
-const SettingsModal = ({ open, handleClose, image, username, full_name }) => {
+const SettingsModal = ({ open, handleClose, user }) => {
     const inputFileRef = useRef(null);
-    const [imageUrl, setImageUrl] = useState("");
+    const [imageUrl, setImageUrl] = useState(user?user.image:"");
     const [uploadAvatar] = useUploadAvatarMutation();
     const [updateUser] = useUpdateUserMutation();
     const [avatar, setAvatar] = useState(null);
-
+    const dispatch = useDispatch()
     const { userInfo, error } = useSelector((state) => state.auth);
 
     const { register, handleSubmit, formState: { errors }, watch } = useForm({
         defaultValues: {
-            login: '',
+            username: user?user.username:"",
+            email:user?user.email:"",
             password: '',
             passwordRepeat: '',
-            fullname: ''
+            name: user?user.first_name+" "+user.last_name:"",
         },
         mode: 'onSubmit'
     });
@@ -54,11 +56,12 @@ const SettingsModal = ({ open, handleClose, image, username, full_name }) => {
         }
 
         if (Object.keys(values).length > 0) {
-            await updateUser(values);
+            let {data} = await updateUser(values);
+            //data.error + 409 status code- if username is taken
         }
 
         handleClose();
-        window.location.reload();
+        // window.location.reload();
     }
 
     return (
@@ -79,13 +82,11 @@ const SettingsModal = ({ open, handleClose, image, username, full_name }) => {
                     </div>
                 </div>
                 <form onSubmit={handleSubmit(onSubmit)}>
-
-                    {!Object.keys(errors).length == 0 && <Alert severity="warning" className={styles.errmsg}>{Object.values(errors)[0].message}</Alert>}
-                    {error && <Alert severity="error" className={styles.errmsg}>{error}</Alert>}
+                    {error && <Alert severity="error" >{error}</Alert>}
 
                     <div className={styles.updateAvatar}>
                         <div className={styles.previewAvatar} style={{
-                            backgroundImage:`url(${imageUrl ? imageUrl : image})`,
+                            backgroundImage:`url(${imageUrl ? imageUrl : user.image})`,
                             backgroundSize: 'cover',
                         }}></div>
                         <Button variant="outlined" onClick={() => {console.log(inputFileRef.current);inputFileRef.current.click();}} className={styles.btn}>Upload</Button>
@@ -124,7 +125,7 @@ const SettingsModal = ({ open, handleClose, image, username, full_name }) => {
                             <input
                                 type="text"
                                 id="name"
-                                {...register("full_name", {
+                                {...register("name", {
                                     pattern: {
                                         value: /^([\w]{2,})+\s+([\w\s]{2,})+$/i,
                                         message: "Please, enter your real name",
@@ -139,6 +140,7 @@ const SettingsModal = ({ open, handleClose, image, username, full_name }) => {
                             <div className={styles.field}>
                             <input
                                 type="email"
+                                disabled={true}
                                 id="email"
                                 {...register("email", {
                                     pattern: {
@@ -168,11 +170,11 @@ const SettingsModal = ({ open, handleClose, image, username, full_name }) => {
                             </div>
                         </div>
                         <div className={styles.form}>
-                            <label htmlFor="confirm">Repeat Password</label>
+                            <label htmlFor="passwordRepeat">Repeat Password</label>
                             <div className={styles.field}>
                             <input
                                 type="password"
-                                id="confirm"
+                                id="passwordRepeat"
                                 {...register("passwordRepeat", {
                                     validate: (value) => {
                                         if (watch("password") !== value) {

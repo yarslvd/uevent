@@ -65,6 +65,15 @@ const update = async (req, res) => {
             toUpdate.password = hashPassword(toUpdate.password);
         }
 
+        if (toUpdate.username) {
+            let user = await db.users.findOne({ where: { username: toUpdate.username } });
+            if (user !== null) {
+                return res.status(StatusCodes.CONFLICT).json ({
+                    error : "This username is already taken"
+                });
+            }
+        }
+
         await db.users.update(toUpdate, {where: { id: userId}, plain: true });
 
         return res.status(StatusCodes.NO_CONTENT).send();

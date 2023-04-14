@@ -105,8 +105,39 @@ const get = async (req, res) => {
     }
 }
 
+const getOne = async (req, res) => {
+    try {
+        const organizerId = req.params.organizer_id;
+
+        const subscription = await db.organizers.findOne({
+            where: {
+                organizer_id : organizerId,
+                user_id : req.user.id,
+            },
+            include: [
+                {
+                    model: db.organizers,
+                    as: 'organizer',
+                    attributes: ['id', 'name', 'description', 'email', 'user_id']
+                },
+            ]
+        });
+
+        return res.status(StatusCodes.OK).json({
+            subscription
+        })
+    }
+    catch(error) {
+        console.log("Some error while getting subscription: ", error.message);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json ({
+            error : "Some error while getting subscription: " + error.message
+        });
+    }
+}
+
 module.exports = {
     subscribe,
     unsubscribe,
     get,
+    getOne,
 }
