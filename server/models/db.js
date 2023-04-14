@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const { startTokensCleaner } = require('../runners/tokens-cleaner');
 const {setDefaultData} = require("../helpers/default-data");
+const { startPaymentChecker } = require('../runners/payment-checker');
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
   host: process.env.DB_HOST,
@@ -53,6 +54,7 @@ events.hasMany(payments, {as: 'payments', foreignKey: 'event_id'});
     .then(() => {
         console.log('DB was created');
         startTokensCleaner(tokens);
+        startPaymentChecker(payments, users, events, tickets);
         setDefaultData({
             sequelize : sequelize,
             users : users,

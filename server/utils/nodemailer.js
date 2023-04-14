@@ -8,14 +8,16 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-function sendLetter(email, subject, text) {
+function sendLetter(email, subject, text, options) {
     let message = {
         from: `achaika <${process.env.EMAIL_USER}>`,
         to: email,
         subject: subject,
         html: text,
+        ...(options ? options : {})
     };
     // nodemailer
+    console.log({message})
     transporter.sendMail(message, (error, info) => {
         if (error) {
             console.log(error);
@@ -25,4 +27,4 @@ function sendLetter(email, subject, text) {
     });
 }
 
-module.exports = sendLetter;
+module.exports = {sendLetter};

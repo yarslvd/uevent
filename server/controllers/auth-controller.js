@@ -7,7 +7,7 @@ const {getUserByToken}  = require ("../helpers/get-user-by-token");
 const {createToken}  = require( "../helpers/create-token");
 const {users}  = require( "../models/db");
 const db = require('../models/db.js');
-const sendLetter = require('../utils/nodemailer');
+const {sendLetter} = require('../utils/nodemailer');
 const axios = require('axios');
 const register = async (req, res) => {
     try {
