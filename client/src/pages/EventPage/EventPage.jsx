@@ -21,7 +21,7 @@ import { useGetTicketsQuery } from '../../redux/api/fetchTicketsApi';
 import { useGetEventsQuery } from '../../redux/api/fetchEventsApi';
 
 import styles from './EventPage.module.scss';
-import { useLazyCheckPaymentQuery } from '../../redux/api/fetchPaymentApi';
+import { useLazyCheckPaymentQuery, useCheckPaymentUnauthMutation } from '../../redux/api/fetchPaymentApi';
 import { useEffect } from 'react';
 import {useUpdateUserMutation} from "../../redux/api/fetchAuthApi";
 
@@ -39,6 +39,7 @@ const EventPage = () => {
   const matches = useMediaQuery('(max-width:500px)');
   const [searchParams] = useSearchParams();
   const [checkPayment] = useLazyCheckPaymentQuery();
+  const [checkPaymentUnauth] = useCheckPaymentUnauthMutation();
   
   const [addEventComment] = useAddEventCommentMutation();
 
@@ -92,8 +93,16 @@ const EventPage = () => {
     setPage(p - 1);
   }
 
-  const checkEventPayment = async () => {
-    let data = await checkPayment(id).unwrap()
+  const checkEventPayment = async (orderId) => {
+    let data;
+    
+    if (!orderId){
+      data = await checkPayment(id).unwrap()
+    }
+    else {
+      console.log(orderId);
+      data = await checkPaymentUnauth({id, orderId}).unwrap();
+    }
     console.log(data);
   }
 
@@ -106,9 +115,10 @@ const EventPage = () => {
 
   useEffect(() => {
     if (!!searchParams.get('check-payment')) {
+      let orderId = searchParams.get('orderId');
       window.history.replaceState({}, 'uevent', window.location.href.split("?")[0]);
 
-      checkEventPayment();
+      checkEventPayment(orderId);
     }
   }, [])
 

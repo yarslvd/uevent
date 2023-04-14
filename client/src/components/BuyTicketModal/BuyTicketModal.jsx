@@ -7,18 +7,26 @@ import { useValidatePromoMutation } from '../../redux/api/fetchPromoApi';
 import { useGetEventInfoQuery } from '../../redux/api/fetchEventsApi';
 
 import styles from './BuyTicketModal.module.scss';
+import { useLazyBuyTicketsQuery, useLazyBuyTicketsUnauthQuery } from '../../redux/api/fetchTicketsApi';
+import { useSelector } from 'react-redux';
 
 const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
     const { id } = useParams();
 
+    const [email, setEmail] = useState('');
     const [promocode, setPromocode] = useState('');
     const [total, setTotal] = useState(0);
+    const [discount, setDiscount] = useState(0);
     const [itemCount, setItemCount] = useState(1);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [showVisitor, setShowVisitor] = useState(true);
 
     const [validatePromocode] = useValidatePromoMutation();
+    const [buyTickets] = useLazyBuyTicketsQuery();
+    const [buyTicketsUnauth] = useLazyBuyTicketsUnauthQuery();
+
+    const { userInfo } = useSelector((state) => state.auth);
 
     useEffect(() => {
         setTotal(+price);
@@ -41,6 +49,7 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
         try {
             const promo = await validatePromocode({event_id: +id, promo_text: promocode});
             console.log(promo.data.promo.discount);
+            setDiscount((+promo.data.promo.discount / 100));
             setTotal(total * (1 - (+promo.data.promo.discount / 100)));
             setSuccess('Promo was successfully applied!');
         }
@@ -55,16 +64,48 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
     const handleIncrease = () => {
         if(itemCount < 10) {
             setItemCount((current) => current + 1);
-            setTotal((previous) => previous + +price);
+            setTotal((previous) => previous + +price *(1 - discount));
         }
     }
 
     const handleDecrease = () => {
         if(itemCount > 1) {
             setItemCount((current) => current - 1);
-            setTotal((previous) => previous - +price);
+            setTotal((previous) => previous - +price *(1 - discount));
         }
     }
+
+    const handlePayment = async (e) => {
+        e.preventDefault();
+        let payment;
+        if (userInfo) {
+            const ticket = {
+                event_id: +id,
+                count: itemCount,
+                promo: success ? promocode : '',
+                can_show: showVisitor,
+                redirect_url: window.location.href + '?check-payment=true'
+            }
+            payment = await buyTickets(ticket).unwrap();
+        }
+        else {
+            const ticket = {
+                event_id: +id,
+                count: itemCount,
+                promo: success ? promocode : '',
+                email: email,
+                redirect_url: window.location.href + '?check-payment=true'
+            }
+            payment = await buyTicketsUnauth(ticket).unwrap();
+        }
+ 
+        e.target[1].value = payment.data;
+        e.target[2].value = payment.signature;
+        e.target.submit();
+        
+        return true;
+    }
+
 
     return (
         <Modal
@@ -100,16 +141,36 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
                         </div>
                     }
                 </div>
-                <FormControlLabel control={<Checkbox checked={showVisitor} />} label="Show as a visitor" onChange={(e) => setShowVisitor(e.target.checked)}/>
+                {userInfo ?
+                    <FormControlLabel control={<Checkbox checked={showVisitor} />} label="Show as a visitor" onChange={(e) => setShowVisitor(e.target.checked)}/>
+                    :
+                    <div className={styles.promocode}>
+                        <h3>Email</h3>
+                        <div className={styles.validate} style={{height: "48px"}}>
+                            <input
+                                type="email"
+                                id="email"
+                                placeholder='Enter email'
+                                className={styles.inputPromo}
+                                onChange={(e) => {setEmail(e.target.value);}}
+                            />
+                        </div>
+                    </div>
+                }
+                
                 <div className={styles.countContainer}>
                     <Button className={styles.countBtn} onClick={handleDecrease}>-</Button>
                     <span>{itemCount}</span>
                     <Button className={styles.countBtn} onClick={handleIncrease}>+</Button>
                 </div> 
-                <div className={styles.bottom}>
-                    <Button variant='contained' className={styles.checkoutBtn}>Checkout</Button>
-                    <span className={styles.price}>{total ? total : price} {iso_currency}</span>
-                </div> 
+                <form method="POST" action="https://www.liqpay.ua/api/3/checkout" onSubmit={handlePayment} acceptCharset="utf-8">
+                    <div className={styles.bottom}>
+                        <Button variant='contained' className={styles.checkoutBtn} type="submit">Checkout</Button>
+                        <span className={styles.price}>{total ? Number(total)?.toFixed(2) : Number(price)?.toFixed(2)} {iso_currency}</span>
+                        <input type="hidden" name="data" value=""/>
+                        <input type="hidden" name="signature" value=""/>
+                    </div>
+                </form> 
             </div>
         </Modal>
     )

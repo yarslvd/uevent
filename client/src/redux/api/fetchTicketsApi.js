@@ -35,11 +35,19 @@ export const fetchTicketsApi = createApi({
                 body: ticket
             })
         }),
+        buyTicketsUnauth: build.query({
+            query: (ticket) => ({
+                url: `/unauthorized`, 
+                method:"POST",
+                body: ticket
+            })
+        }),
     })
 });
 
 export const {
     useGetTicketsQuery,
     useGetEventTicketsQuery,
-    useLazyBuyTicketsQuery
+    useLazyBuyTicketsQuery,
+    useLazyBuyTicketsUnauthQuery
 } = fetchTicketsApi;

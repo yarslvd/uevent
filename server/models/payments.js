@@ -10,7 +10,7 @@ module.exports = function(sequelize) {
         },
         payer_id: {
             type: DataTypes.BIGINT,
-            allowNull: false,
+            allowNull: true,
             references: {
                 model: 'users',
                 key: 'id'
@@ -39,6 +39,9 @@ module.exports = function(sequelize) {
         timestamp: {
             type: DataTypes.DATE,
         },
+        email: {
+            type: DataTypes.STRING,
+        }
     }, {
         sequelize,
         tableName: 'payments',

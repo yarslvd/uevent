@@ -43,7 +43,96 @@ const create = async (req, res) => {
             })
         }
 
-        const paymentObj = await createPayment(event, req.user.id, request.count, request.redirect_url);
+        let price = event.price;
+        if (req.body.promo && req.body.promo.length > 0) {
+            let promo = await db.promos.findByPk(req.body.promo);
+            if (!promo || promo.event_id != event.id) {
+                return res.status(StatusCodes.FORBIDDEN).json({
+                    error: "No such promo"
+                })
+            }
+            price *= (1 - +promo.discount/100)
+        }
+        
+        const paymentObj = await createPayment(event, req.user.id, request.count, price, request.redirect_url, req.user.email);
+    
+        // const paymentStatus = await waitTx("pending", paymentObj.orderId)
+        // if (paymentStatus === "reverted") {
+        //     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        //         error : "Failed to make transaction"
+        //     })
+        // }
+
+        event.dataValues.ticket_amount -= request.count;
+        await db.events.update(event.dataValues, {where: {id: event.dataValues.id}, plain: true})
+
+        const can_show = req.body.hasOwnProperty("can_show") ? Boolean(req.body.can_show) : true;
+        console.log({can_show})
+        for (let i = 0; i < request.count; i++) {
+            await db.tickets.create({
+                event_id : request.event_id,
+                user_id : req.user.id,
+                payment_id: paymentObj.paymentId,
+                can_show: can_show
+            });
+        }
+
+        res.json(paymentObj);
+    }
+    catch(error) {
+        console.log("Some error while creating ticket: ", error.message);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json ({
+            error : "Some error while creating ticket: " + error.message
+        });
+    }
+}
+
+const createUnauth = async (req, res) => {
+    try {
+        console.log(req.body)
+        const request = checkFields(req.body, [
+            'event_id',
+            'email',
+            'count',
+            'redirect_url'
+        ])
+        if (!request) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                error: "Some fields are missed",
+            });
+        }
+
+        let event = await db.events.findByPk(request.event_id);
+        if (!event) {
+            return res.status(StatusCodes.NOT_FOUND).json({
+                error : "No such event"
+            })
+        }
+
+        if (event.ticket_amount <= 0) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                error : "Tickets are out of stock"
+            })
+        }
+
+        if (event.dataValues.ticket_amount - request.count < 0) {
+            return res.status(StatusCodes.FORBIDDEN).json({
+                error : "Not enough tickets on sale"
+            })
+        }
+
+        let price = event.price;
+        if (req.body.promo && req.body.promo.length > 0) {
+            let promo = await db.promos.findByPk(req.body.promo);
+            if (!promo || promo.event_id != event.id) {
+                return res.status(StatusCodes.FORBIDDEN).json({
+                    error: "No such promo"
+                })
+            }
+            price *= (1 - +promo.discount/100)
+        }
+        
+        const paymentObj = await createPayment(event, null, request.count, price, request.redirect_url, request.email);
     
         // const paymentStatus = await waitTx("pending", paymentObj.orderId)
         // if (paymentStatus === "reverted") {
@@ -58,8 +147,8 @@ const create = async (req, res) => {
         for (let i = 0; i < request.count; i++) {
             await db.tickets.create({
                 event_id : request.event_id,
-                user_id : req.user.id,
-                payment_id: paymentObj.paymentId
+                payment_id: paymentObj.paymentId,
+                can_show: false
             });
         }
 
@@ -119,12 +208,13 @@ const get = async (req, res) => {
         }
 
         let tickets = await db.tickets.findAll({
-                where: { event_id: req.query.event_id },
-                include: [ {
-                    model:db.users,
-                    as: 'user',
-                    attributes: ['id', 'image', 'first_name', 'last_name', 'username', 'birthdate']
-                } ]
+            attributes: ["user_id", "can_show", "event_id"],
+            where: { event_id: req.query.event_id, can_show: true },
+            include: [ {
+                model:db.users,
+                as: 'user',
+                attributes: ['id', 'image', 'first_name', 'last_name', 'username', 'birthdate']
+            } ]
         })
         
         return res.json ({
@@ -243,6 +333,7 @@ const getPdf = async (req, res) => {
 module.exports = {
     get,
     create,
+    createUnauth,
     getUserTickets,
     getPdf
 }

@@ -6,6 +6,8 @@ const router = express.Router();
 
 //  /api/payments/
 router.post(controller.confirmPay); // for liqpay server
+router.get('/:event_id/unauthorized', controller.checkPaymentUnauth);  
 router.get('/:event_id', jwtMiddleware, controller.checkPayment);  
+
 
 module.exports = router;

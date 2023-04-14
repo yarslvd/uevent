@@ -8,7 +8,8 @@ const router = express.Router();
 router.route('/')
     .post(jwtMiddleware, controller.create)
     .get(controller.get)
-    
+
+router.post('/unauthorized', controller.createUnauth);    
 router.get('/user-tickets', jwtMiddleware, controller.getUserTickets);
 router.get('/pdf', jwtMiddleware, controller.getPdf);
 

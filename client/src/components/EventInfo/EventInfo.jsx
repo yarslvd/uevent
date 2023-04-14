@@ -27,32 +27,15 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
 
     const parsedDate = !isLoading && new Date(date);
 
-    const [buyTickets] = useLazyBuyTicketsQuery();
     const [addFavourite] = useAddFavouriteMutation();
     const [deleteFavourite] = useDeleteFavouriteMutation();
     const { refetch } = useGetFavouritesQuery();
     const { isLoading: isLoadingTickets, data: dataTickets, error: errorTickets } = useGetEventTicketsQuery({event_id:id});
-    console.log(visibility);
+    // console.log(visibility);
 
     //console.log(isLoadingTickets, dataTickets, errorTickets)
 
     //fetch data of organization by id;
-
-    const handlePayment = async (e) => {
-        e.preventDefault();
-        
-        const ticket = {
-            event_id: +id,
-            count: 1,
-            redirect_url: window.location.href + '?check-payment=true'
-        }
-        const payment = await buyTickets(ticket).unwrap();
- 
-        e.target[1].value = payment.data;
-        e.target[2].value = payment.signature;
-        e.target.submit();
-        return true;
-    }
 
     const handleClose = () => {
         setModalOpen(false);
@@ -119,7 +102,8 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                     <div className={styles.visitors}>
                         <span>Підуть</span>
                         <div className={styles.avatars}>
-                            {[...new Set(dataTickets?.tickets)].map((el, index) => {
+                            {[...new Set(dataTickets?.tickets.map(el => JSON.stringify(el)))].map((el, index) => {
+                                el = JSON.parse(el);
                                 if (index < 18 && el.can_show) {
                                     return <Link to={`/user/${el.user.id}`} key={index}>
                                         <Avatar
@@ -141,17 +125,13 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                     </div>
                 }
                 <div className={styles.button_section}>
-                    <form method="POST" action="https://www.liqpay.ua/api/3/checkout" onSubmit={handlePayment} acceptCharset="utf-8">
-                        <Button variant='contained' onClick={() => setModalOpen(true)} className={styles.buy_btn}>Купити</Button>
-                        <BuyTicketModal
-                            open={modalOpen}
-                            handleClose={handleClose}
-                            price={price}
-                            iso_currency={iso_currency}
-                        />
-                        <input type="hidden" name="data" value=""/>
-                        <input type="hidden" name="signature" value=""/>
-                    </form>
+                    <Button variant='contained' onClick={() => setModalOpen(true)} className={styles.buy_btn}>Купити</Button>
+                    <BuyTicketModal
+                        open={modalOpen}
+                        handleClose={handleClose}
+                        price={price}
+                        iso_currency={iso_currency}
+                    />
                     <motion.div 
                         className={styles.like_btn}
                         whileTap={{ scale: 0.8 }}

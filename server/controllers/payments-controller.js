@@ -38,7 +38,7 @@ const confirmPay = (req, res) => {
   if (isValid) {
       const paymentInfo = JSON.parse(Buffer.from(data, 'base64').toString());
 
-      // Далі ви можете виконати будь-які дії з отриманими даними платежу
+      
       console.log(paymentInfo);
   }
 
@@ -47,9 +47,11 @@ const confirmPay = (req, res) => {
 
 const checkPayment = async (req,res) => {
   try{
+      console.log("auth");
       const eventId = req.params.event_id;
       const payments = await db.payments.findAll({
-        include: [{
+        include: [
+          {
             model: db.users,
             as: "payer",
             where: {
@@ -63,55 +65,11 @@ const checkPayment = async (req,res) => {
               id: eventId
             }
           }
-        ]
+        ],
       });
-      let resultPayments = [];
-      const checkPayments = async () => {
-        for (let payment of payments) {
-          if(payment.status === 'success') {
-            resultPayments.push({
-              id: payment.id,
-              status: "success"
-            })
-            continue;
-          }
-          let liqpayCheck = () => new Promise((resolve) => {
-            liqpay.api("request", {
-              "action"   : "status",
-              "version"  : "3",
-              "order_id" : payment.order_id
-            }, async (data) => {
-              console.log("check:", data);
-              payment.error = data.err_description;
-              switch(data.status) {
-              case "success": {
-                await db.payments.update({status: "success"}, {where:{id: payment.id}, plain: true});
-                payment.status = "success"
-                break;
-              }
-              case "processing":
-              case "prepared":
-                await db.payments.update({status: "pending"}, {where:{id: payment.id}, plain: true});
-                payment.status = "pending";
-                break;
-              default:
-                await db.payments.update({status: "reverted"}, {where:{id: payment.id}, plain: true});
-                payment.status = "reverted"
-                payment.error = data.err_description;
-              }
-              resultPayments.push({
-                id: payment.id,
-                status: payment.status,
-                error: payment.error
-              })
-              resolve();
-            });
-          })
-
-          await liqpayCheck();
-        }
-      }
-      await checkPayments()
+      
+      
+      let resultPayments = await checkPayments(payments);
 
       res.json({payments: resultPayments})
   }
@@ -123,8 +81,89 @@ const checkPayment = async (req,res) => {
   }
 }
 
+const checkPaymentUnauth = async (req, res) => {
+  try{
+    console.log("unauth");
+    const eventId = req.params.event_id;
+    const orderId = req.query.orderId;
+    console.log({eventId, orderId});
+    const payments = await db.payments.findAll({
+      where: {order_id: orderId},
+      include: [
+        {
+          model: db.events,
+          as: "event",
+          where: {
+            id: eventId
+          }
+        }
+      ],
+    });
+    
+    console.log(payments);
+    let resultPayments = await checkPayments(payments);
+
+    res.json({payments: resultPayments})
+  }
+  catch(error) {
+      console.log("Some error while checking payment: ", error.message);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json ({
+          error : "Some error while checking payment: " + error.message
+      });
+  }
+}
+
+const checkPayments = async (payments) => {
+  let resultPayments = [];
+  for (let payment of payments) {
+    if(payment.status === 'success') {
+      resultPayments.push({
+        id: payment.id,
+        status: "success"
+      })
+      continue;
+    }
+    let liqpayCheck = () => new Promise((resolve) => {
+      liqpay.api("request", {
+        "action"   : "status",
+        "version"  : "3",
+        "order_id" : payment.order_id
+      }, async (data) => {
+        console.log("check:", data);
+        payment.error = data.err_description;
+        switch(data.status) {
+        case "success": {
+          await db.payments.update({status: "success"}, {where:{id: payment.id}, plain: true});
+          payment.status = "success"
+          break;
+        }
+        case "processing":
+        case "prepared":
+          await db.payments.update({status: "pending"}, {where:{id: payment.id}, plain: true});
+          payment.status = "pending";
+          break;
+        default:
+          await db.payments.update({status: "reverted"}, {where:{id: payment.id}, plain: true});
+          payment.status = "reverted"
+          payment.error = data.err_description;
+        }
+        resultPayments.push({
+          id: payment.id,
+          status: payment.status,
+          error: payment.error
+        })
+        resolve();
+      });
+    })
+
+    await liqpayCheck();
+  }
+  return resultPayments;
+}
+
 module.exports = {
   getPayment,
   confirmPay,
-  checkPayment
+  checkPayment,
+  checkPaymentUnauth
 }

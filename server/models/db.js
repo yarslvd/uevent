@@ -36,7 +36,7 @@ favorites.belongsTo(users, { as: "user", foreignKey: "user_id"});
 users.hasMany(favorites, { as: "favorites", foreignKey: "user_id"});
 organizers.belongsTo(users, { as: "user", foreignKey: "user_id"});
 users.hasMany(organizers, { as: "organizers", foreignKey: "user_id"});
-payments.belongsTo(users, { as: "payer", foreignKey: "payer_id"});
+payments.belongsTo(users, { as: "payer", foreignKey: {name: "payer_id", allowNull: true}});
 users.hasMany(payments, { as: "payments", foreignKey: "payer_id"});
 subscriptions.belongsTo(users, { as: "user", foreignKey: "user_id"});
 users.hasMany(subscriptions, { as: "subscriptions", foreignKey: "user_id"});
