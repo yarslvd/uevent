@@ -1,12 +1,11 @@
 import { useRef, useState } from 'react'
 import { Modal, Button, Alert } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import {useDispatch, useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import styles from './SettingsModal.module.scss';
 
 import { useUpdateUserMutation, useUploadAvatarMutation } from '../../redux/api/fetchAuthApi';
-import {fetchLogin, fetchUpdate} from "../../redux/slices/authSlice";
 
 function removeEmptyFields(data) {
     Object.keys(data).forEach(key => {
@@ -22,7 +21,7 @@ const SettingsModal = ({ open, handleClose, user }) => {
     const [uploadAvatar] = useUploadAvatarMutation();
     const [updateUser] = useUpdateUserMutation();
     const [avatar, setAvatar] = useState(null);
-    const dispatch = useDispatch()
+
     const { userInfo, error } = useSelector((state) => state.auth);
 
     const { register, handleSubmit, formState: { errors }, watch } = useForm({
@@ -61,7 +60,7 @@ const SettingsModal = ({ open, handleClose, user }) => {
         }
 
         handleClose();
-        // window.location.reload();
+        window.location.reload();
     }
 
     return (
@@ -73,7 +72,6 @@ const SettingsModal = ({ open, handleClose, user }) => {
         >
             <div className={styles.container}>
                 <div className={styles.heading}>
-                    {/* <IconButton onClick={handleClose} aria-label='go back' className={styles.backBtn}><ArrowBackIcon/></IconButton> */}
                     <h1>Settings</h1>
                     <div onClick={handleClose} className={styles.close_btn}>
                         <svg focusable="true" aria-hidden="true" viewBox="0 0 24 24">
@@ -115,7 +113,7 @@ const SettingsModal = ({ open, handleClose, user }) => {
                                     id="username"
                                     minLength={3}
                                     {...register("username")}
-                                    placeholder='Create username'
+                                    placeholder='Update username'
                                 />
                             </div>
                         </div>
@@ -131,7 +129,7 @@ const SettingsModal = ({ open, handleClose, user }) => {
                                         message: "Please, enter your real name",
                                     },
                                 })}
-                                placeholder='Your name'
+                                placeholder='Change full name'
                             />
                             </div>
                         </div>
@@ -154,7 +152,7 @@ const SettingsModal = ({ open, handleClose, user }) => {
                             </div>
                         </div>
                         <div className={styles.form}>
-                            <label htmlFor="password">Password</label>
+                            <label htmlFor="password">New password</label>
                             <div className={styles.field}>
                             <input
                                 type="password"
@@ -170,7 +168,7 @@ const SettingsModal = ({ open, handleClose, user }) => {
                             </div>
                         </div>
                         <div className={styles.form}>
-                            <label htmlFor="passwordRepeat">Repeat Password</label>
+                            <label htmlFor="passwordRepeat">Repeat new password</label>
                             <div className={styles.field}>
                             <input
                                 type="password"

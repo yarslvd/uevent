@@ -66,7 +66,7 @@ const Main = () => {
                     {!isLoadingUpComming && !isErrorUpComming && dataUpComming.events.rows.map((el, index) => (
                         matches ?
                             <Card {...el} key={index}/> :
-                            <WideCard {...el} key={index}/> 
+                            <WideCard {...el} key={index}/>
                     ))}
                     <Link to="/events" className='more-link'>Більше</Link>
                 </div>

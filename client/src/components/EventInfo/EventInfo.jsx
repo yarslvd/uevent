@@ -72,7 +72,7 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                         <span>{!isLoading && !error && parsedDate.toLocaleString('uk-UK', dateOptions).toUpperCase().slice(0, -3)}</span>
                     </div>
                     <div className={styles.clock}>
-                        <img src="/assets/clock_icon.png" alt="Time" />
+                        <img src="/assets/clock_icon.png" alt="Time" className={styles.icon} />
                         <span>
                             {!isLoading && !error && parsedDate.toLocaleString('uk-UK', timeOptions)}
                         </span>
@@ -84,15 +84,15 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                 </div>
                 <div className={styles.details}>
                     <div className={styles.item}>
-                        <img src="/assets/location_black_icon.png" alt="Location" />
+                        <img src="/assets/location_black_icon.png" alt="Location" className={styles.icon} />
                         <span>{!isLoading && !error && location}</span>
                     </div>
                     <div className={styles.item}>
-                        <img src="/assets/user_black_icon.png" alt="Company" />
+                        <img src="/assets/user_black_icon.png" alt="Company" className={styles.icon} />
                         <Link to={`/organization/${organizer_id}`}>{!isLoading && !error && organizer?.name}</Link>
                     </div>
                     <div className={styles.item}>
-                        <img src="/assets/price_black_icon.png" alt="Location" />
+                        <img src="/assets/price_black_icon.png" alt="Location" className={styles.icon} />
                         <span>{!isLoading && !error && `${price} ${iso_currency}`}</span>
                     </div>
                 </div>
@@ -107,9 +107,11 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                                 if (index < 18 && el.can_show) {
                                     return <Link to={`/user/${el.user.id}`} key={index}>
                                         <Avatar
-                                            alt={el.user.first_name+el.user.last_name}
-                                            src={el.user.image?el.user.image:`/static/images/avatar/1.jpg`}
+                                            variant="circular"
+                                            src={el.user.image}
+                                            alt={el.user.first_name + el.user.last_name}
                                             className={styles.avatar}
+                                            sizes="40px"
                                         />
                                     </Link>
                                 }

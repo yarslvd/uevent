@@ -1,75 +1,163 @@
 @import '../../styles/mixins.scss';
 
-.header {
-    height: 350px; 
-    display: flex;
-    background-color: $base-lightgray-color;
-    border-radius: 38px;
-    margin-bottom: 200px;
-    margin-top: 36px;
-
-    .image {
-        width: 350px;
-        height: 350px;
-        background-position: center;
-        background-size: cover;
+.container {
+    .header {
+        height: 350px; 
+        display: flex;
+        background-color: $base-lightgray-color;
         border-radius: 38px;
-    }
-
-    .info {
-        padding: 30px 20px;
-        width: calc(100% - 230px);
-        display: grid;
-        grid-template-columns: 6fr 2fr;
-
-        .left {
+        margin-bottom: 50px;
+        margin-top: 36px;
+    
+        .image {
+            width: 350px;
+            height: 350px;
+            background-position: center;
+            background-size: cover;
+            border-radius: 38px;
+        }
+    
+        .info {
+            padding: 30px 20px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-
-            a {
-                @include reset-link-dark;
-                align-self: flex-start;
-                padding: 10px 55px;
-                border-radius: 9px;
-                cursor: pointer;
-                background-color: transparent;
-                font-size: 16px;
-                border: 2px solid #1f1f1f;
-                transition: all ease-in-out 0.4s;
-
-                &:hover {
-                    background-color: #1f1f1f;
-                    color: #fff;
-                }
-            }
-            .details {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-
+    
+            .content {
                 h3 {
                     font-size: 28px;
                     font-weight: 700;
                     margin: 0;
                 }
-                .time {
-                    @include flex-align-center;
-                    gap: 6px;
-                    img {
-                        width: 20px;
-                        height: 20px;
+    
+                .description {
+                    font-size: 16px;
+                    display: block;
+                    margin-bottom: 30px;
+                }
+    
+                .email {
+                    display: flex;
+                    gap: 5px;
+    
+                    a {
+                        color: #1f1f1f;
+                    }
+    
+                    svg {
+                        width: 25px;
                     }
                 }
-                .location {
-                    @include flex-align-center;
-                    gap: 6px;
-                    svg {
-                        fill: $base-dark-color;
-                        width: 20px;
+            }
+    
+            .followBtn {
+                @include reset-link-dark;
+                // align-self: flex-start;
+                // padding: 10px 55px;
+                // border-radius: 9px;
+                // cursor: pointer;
+                // background-color: transparent;
+                // font-size: 16px;
+                // border: 2px solid #1f1f1f;
+                // transition: all ease-in-out 0.4s;
+    
+                // &:hover {
+                //     background-color: #1f1f1f;
+                //     color: #fff;
+                // }
+            }
+    
+            .left {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+    
+                .details {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+    
+                    h3 {
+                        font-size: 28px;
+                        font-weight: 700;
+                        margin: 0;
+                    }
+                    .time {
+                        @include flex-align-center;
+                        gap: 6px;
+                        img {
+                            width: 20px;
+                            height: 20px;
+                        }
+                    }
+                    .location {
+                        @include flex-align-center;
+                        gap: 6px;
+                        svg {
+                            fill: $base-dark-color;
+                            width: 20px;
+                        }
                     }
                 }
             }
         }
     }
+
+    .outerContainer {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        gap: 20px;
+        position: relative;
+        margin-top: 36px;
+        margin-bottom: 200px;
+
+        .title{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            h2 {
+                font-size: 32px;
+                margin: 0;
+            }
+
+            img {
+                width: 300px;
+                height: 300px;
+            }
+        }
+    
+        .events_container {
+    
+            .events {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                margin-bottom: 40px;
+            }
+        }
+    }
 }
+
+@media screen and (max-width: 968px) {
+    .container {
+        .outerContainer {
+            display: block;
+    
+            .title {
+                display: none;
+            }
+        }
+
+        .header {
+            flex-direction: column;
+            height: 100%;
+
+            .image {
+                width: 100%;
+                height: 350px;
+            }
+        }
+    }
+}
+

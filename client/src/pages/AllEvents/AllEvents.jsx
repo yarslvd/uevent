@@ -9,7 +9,6 @@ import { useGetEventsQuery } from '../../redux/api/fetchEventsApi';
 
 import styles from './AllEvents.module.scss';
 
-import { dateOptions, timeOptions } from '../../data/variables';
 import { useMemo } from 'react';
 
 // const popularEvents = [
