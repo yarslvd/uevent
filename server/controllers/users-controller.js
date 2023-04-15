@@ -16,7 +16,7 @@ const getOne = async (req, res) => {
     const userId = req.params.id;
     
     const user = await db.users.findByPk(userId, {
-        attributes: ['id', 'first_name', 'last_name', 'username', 'birthdate', 'email'],
+        attributes: ['id', 'first_name', 'last_name', 'username', 'birthdate', 'email', 'image'],
         include: [
             {
                 model: db.organizers,

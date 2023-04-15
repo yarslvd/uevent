@@ -9,9 +9,11 @@ import { useGetEventInfoQuery } from '../../redux/api/fetchEventsApi';
 import styles from './BuyTicketModal.module.scss';
 import { useLazyBuyTicketsQuery, useLazyBuyTicketsUnauthQuery } from '../../redux/api/fetchTicketsApi';
 import { useSelector } from 'react-redux';
+import {useTranslation} from "react-i18next";
 
 const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
     const { id } = useParams();
+    const { t } = useTranslation();
 
     const [email, setEmail] = useState('');
     const [promocode, setPromocode] = useState('');
@@ -115,7 +117,7 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
             aria-describedby="Choose number of tickets and apply promo"
         >
             <div className={styles.container}>
-                <h1>Order summary</h1>
+                <h1>t('buyTicketModal.title')</h1>
                 <div style={{ height: '49px', margin: '10px 0' }}>
                     {success && <Alert severity="success">{success}</Alert>}
                     {error && <Alert severity="error">Promocode is invalid</Alert>}
