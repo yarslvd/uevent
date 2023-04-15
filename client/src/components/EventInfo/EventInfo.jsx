@@ -31,9 +31,6 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
     const [deleteFavourite] = useDeleteFavouriteMutation();
     const { refetch } = useGetFavouritesQuery();
     const { isLoading: isLoadingTickets, data: dataTickets, error: errorTickets } = useGetEventTicketsQuery({event_id:id});
-    // console.log(visibility);
-
-    //console.log(isLoadingTickets, dataTickets, errorTickets)
 
     //fetch data of organization by id;
 
@@ -50,7 +47,6 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
         const event_id = +id;
 
         if(!isLikeActive) {
-            console.log('add');
             addFavourite({event_id})
                 .unwrap()
                 .then(() => {
@@ -58,7 +54,6 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                 })
         }
         else {
-            console.log('delete');
             deleteFavourite(event_id).unwrap();
         }
     }
@@ -93,7 +88,7 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                     </div>
                     <div className={styles.item}>
                         <img src="/assets/price_black_icon.png" alt="Location" className={styles.icon} />
-                        <span>{!isLoading && !error && `${price} ${iso_currency}`}</span>
+                        <span>{!isLoading && !error && price != 0 ? `${price} ${iso_currency}` : "Безкоштовно"}</span>
                     </div>
                 </div>
             </div>
@@ -127,20 +122,23 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                     </div>
                 }
                 <div className={styles.button_section}>
-                    <Button variant='contained' onClick={() => setModalOpen(true)} className={styles.buy_btn}>Купити</Button>
-                    <BuyTicketModal
-                        open={modalOpen}
-                        handleClose={handleClose}
-                        price={price}
-                        iso_currency={iso_currency}
-                    />
-                    <motion.div 
-                        className={styles.like_btn}
-                        whileTap={{ scale: 0.8 }}
-                        onClick={handleLike}
-                    >
-                        <img src={isLikeActive ? "/assets/heart_filled_icon.png" : "/assets/heart_empty_icon.png"} alt="Like Event" />
-                    </motion.div>
+                    <div>
+                        <Button variant='contained' onClick={() => setModalOpen(true)} className={styles.buy_btn}>Купити</Button>
+                        <BuyTicketModal
+                            open={modalOpen}
+                            handleClose={handleClose}
+                            price={price}
+                            iso_currency={iso_currency}
+                        />
+                        <motion.div 
+                            className={styles.like_btn}
+                            whileTap={{ scale: 0.8 }}
+                            onClick={handleLike}
+                        >
+                            <img src={isLikeActive ? "/assets/heart_filled_icon.png" : "/assets/heart_empty_icon.png"} alt="Like Event" />
+                        </motion.div>
+                    </div>
+                    <span>{ticket_amount} tickets left</span>
                 </div>
             </div>
         </div>

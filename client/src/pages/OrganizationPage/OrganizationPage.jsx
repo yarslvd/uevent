@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import {useNavigate, useParams} from 'react-router-dom';
+import { useState, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom';
 import { Button, useMediaQuery, Pagination } from '@mui/material';
 import { useSelector } from 'react-redux';
 
@@ -7,29 +7,45 @@ import Layout from '../../components/Layout/Layout';
 import Card from '../../components/Card/Card';
 import WideCard from '../../components/WideCard/WideCard';
 import { useGetOrganizationQuery } from '../../redux/api/fetchOrganizersApi';
-import { useGetSubscriptionOneQuery } from '../../redux/api/fetchSubscriptionsApi';
+import { useGetSubscriptionOneQuery, useAddSubscriptionMutation, useDeleteSubscriptionMutation } from '../../redux/api/fetchSubscriptionsApi';
 import { useGetEventsQuery } from '../../redux/api/fetchEventsApi';
 
 import styles from './OrganizationPage.module.scss';
 
 const OrganizationPage = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const { id } = useParams();
     const matches = useMediaQuery('(max-width:800px)');
 
-    const { userInfo } = useSelector((state) => state.auth);
-    const { data: dataSubscriptions, isLoading: isLoadingSubscriptions, isError: isErrorSubscriptions, refetch: refetchSubscriptions } = useGetSubscriptionOneQuery(userInfo.id, 1000, 0);
-    const { data: dataEvents, isLoading: isLoadingEvents, isError: isErrorEvents } = useGetEventsQuery({ limit: 4, id: +id });
-    const { isLoading, isError, data } = useGetOrganizationQuery(id);
-
-    console.log(data);
-
-    const [follow, setFollow] = useState(false);
     const [page, setPage] = useState(1);
 
+    const { userInfo } = useSelector((state) => state.auth);
+    const { data: dataSubscriptions, isLoading: isLoadingSubscriptions, isError: isErrorSubscriptions, refetch } = useGetSubscriptionOneQuery({ organizer_id: id, user_id: userInfo.id });
+    const { data: dataEvents, isLoading: isLoadingEvents, isError: isErrorEvents } = useGetEventsQuery({ limit: 4, id: +id, page: page });
+    const { isLoading, isError, data } = useGetOrganizationQuery(id);
+
+    const [addSubscription] = useAddSubscriptionMutation();
+    const [deleteSubscription] = useDeleteSubscriptionMutation();
+
+    const [follow, setFollow] = useState(false);
+    
     const handleFollow = () => {
         setFollow(!follow);
-        console.log(follow)
+        
+        if(follow) {
+            deleteSubscription(+id)
+                .unwrap()
+                .then(() => {
+                    refetch();
+                })
+        }
+        else {
+            addSubscription({organizer_id: +id})
+                .unwrap()
+                .then(() => {
+                    refetch();
+                })
+        }
     };
 
     const handlePageChange = (e, p) => {
@@ -40,6 +56,12 @@ const OrganizationPage = () => {
           behavior: 'smooth'
         });
     }
+
+    useEffect(() => {
+        if (dataSubscriptions?.subscription) {
+            setFollow(true);
+        }
+    }, [!isLoadingSubscriptions, dataSubscriptions != null]);
 
     if (!isLoading && !data.organizer) {
         navigate("/404")
@@ -73,7 +95,7 @@ const OrganizationPage = () => {
                             className={styles.followBtn}
                             onClick={handleFollow}
                         >
-                            Follow
+                            {follow ? 'Unfollow' : 'Follow'}
                         </Button>
                     </div>
                 </div>

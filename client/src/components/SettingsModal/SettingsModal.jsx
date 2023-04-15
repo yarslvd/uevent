@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { Modal, Button, Alert } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
@@ -19,10 +19,11 @@ const SettingsModal = ({ open, handleClose, user }) => {
     const inputFileRef = useRef(null);
     const [imageUrl, setImageUrl] = useState(user?user.image:"");
     const [uploadAvatar] = useUploadAvatarMutation();
-    const [updateUser] = useUpdateUserMutation();
+    const [updateUser, { error: mutationError }] = useUpdateUserMutation();
     const [avatar, setAvatar] = useState(null);
+    const [displayError, setDisplayError] = useState("");
 
-    const { userInfo, error } = useSelector((state) => state.auth);
+    const { userInfo } = useSelector((state) => state.auth);
 
     const { register, handleSubmit, formState: { errors }, watch } = useForm({
         defaultValues: {
@@ -46,22 +47,36 @@ const SettingsModal = ({ open, handleClose, user }) => {
             formData.append('avatar', avatar);
             await uploadAvatar({file: formData});
         }
-        
+
         removeEmptyFields(values);
-        if (values.full_name) {
-            const splitted = values.full_name.split(" ");
+        if (values.name) {
+            const splitted = values.name.split(" ");
             values.first_name = splitted[0]
             values.last_name = splitted[1];
         }
 
         if (Object.keys(values).length > 0) {
-            let {data} = await updateUser(values);
             //data.error + 409 status code- if username is taken
-        }
+            if(values.username === userInfo.username) {
+                delete values.username;
+            }
 
-        handleClose();
-        window.location.reload();
+            let data = await updateUser(values);
+
+            if(!data.error) {
+                handleClose();
+                window.location.reload();
+            }
+        }
     }
+
+    useEffect(() => {
+        setDisplayError(mutationError?.data?.error);
+    }, [updateUser, mutationError != undefined]);
+
+    useEffect(() => {
+        setDisplayError('');
+    }, [Object.entries(errors).length > 0]);
 
     return (
         <Modal
@@ -80,7 +95,6 @@ const SettingsModal = ({ open, handleClose, user }) => {
                     </div>
                 </div>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    {error && <Alert severity="error" >{error}</Alert>}
 
                     <div className={styles.updateAvatar}>
                         <div className={styles.previewAvatar} style={{
@@ -104,6 +118,7 @@ const SettingsModal = ({ open, handleClose, user }) => {
                                     {Object.values(errors)[0].message}
                                 </Alert>
                             )}
+                            {displayError && <Alert severity="error" style={{ borderRadius: '10px'}}>{displayError}</Alert>}
                         </div>
                         <div className={styles.form}>
                             <label htmlFor="username">Username</label>

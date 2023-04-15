@@ -14,7 +14,6 @@ import { useUploadPosterMutation, useCreateEventMutation, useUpdateEventMutation
 import { useAddPromoMutation, useDeletePromoMutation } from '../../redux/api/fetchPromoApi';
 
 import styles from './CreateEventPage.module.scss';
-import { useRef } from 'react';
 
 const themes = [
   'Business',

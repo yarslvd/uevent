@@ -20,7 +20,7 @@ const subscribe = async (req, res) => {
             });
         }
 
-        let result = checkUserAndOrganizer(res, request.organizer_id, req.user.id)
+        let result = await checkUserAndOrganizer(res, request.organizer_id, req.user.id)
         if (result === null) {
             return
         }
@@ -30,6 +30,7 @@ const subscribe = async (req, res) => {
             organizer_id : result.organizer.dataValues.id,
             user_id : result.user.dataValues.id,
         });
+        console.log(subscription);
 
         return res.status(StatusCodes.CREATED).json({
             subscription

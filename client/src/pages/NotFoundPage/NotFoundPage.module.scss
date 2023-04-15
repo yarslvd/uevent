@@ -7,21 +7,21 @@
     align-items: center;
     height: 100vh;
     background-color: #f8f8f8;
-}
+    
+    h1 {
+        font-size: 3rem;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
 
-h1 {
-    font-size: 3rem;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 1rem;
-}
+    p {
+        font-size: 1.5rem;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
 
-p {
-    font-size: 1.5rem;
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.redirect_btn {
-    @include default-btn
+    .redirect_btn {
+        @include default-btn;
+    }
 }

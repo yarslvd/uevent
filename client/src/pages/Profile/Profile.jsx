@@ -10,9 +10,8 @@ import OrganizationModal from '../../components/OrganizationCreateModal/Organiza
 import { selectIsAuthMe } from '../../redux/slices/authSlice';
 import { useGetFavouritesQuery } from '../../redux/api/fetchFavouritesApi';
 import {
-    fetchSubscriptionApi,
     useDeleteSubscriptionMutation,
-    useGetSubscriptionOneQuery
+    useGetProfileSubscriptionsQuery
 } from "../../redux/api/fetchSubscriptionsApi";
 import { useDeleteFavouriteMutation } from '../../redux/api/fetchFavouritesApi';
 import { useGetTicketsQuery } from '../../redux/api/fetchTicketsApi';
@@ -60,7 +59,7 @@ const Profile = () => {
     const [modalOpen, setModalOpen] = useState(false);
 
     const { data: dataFavourites, isLoading: isLoadingFavourites, isError: isErrorFavourites, refetch: refetchFavourites } = useGetFavouritesQuery();
-    const { data: dataSubscriptions, isLoading: isLoadingSubscriptions, isError: isErrorSubscriptions, refetch: refetchSubscriptions } = useGetSubscriptionOneQuery(userInfo.id, 1000, 0);
+    const { data: dataSubscriptions, isLoading: isLoadingSubscriptions, isError: isErrorSubscriptions, refetch: refetchSubscriptions } = useGetProfileSubscriptionsQuery(userInfo.id, 1000, 0);
     const { data: dataTickets, isLoading: isLoadingTickets, isError: isErrorTickets } = useGetTicketsQuery(auth && { user_id: +userInfo.id });
     const { data: dataEvents, isLoading: isLoadingEvents, isError: isErrorEvents } = useGetEventsQuery({ limit: 1000, id: userInfo?.organizers && userInfo.organizers[0]?.id });
 
@@ -153,7 +152,7 @@ const Profile = () => {
                                         <div className={styles.item} key={index}>
                                             <div className={styles.info}>
                                                 <Avatar className={styles.avatar} src={el.organizer.image}></Avatar>
-                                                <Link to={`/organizers/${el.organizer.id}`}>{el.organizer.name}</Link>
+                                                <Link to={`/organization/${el.organizer.id}`}>{el.organizer.name}</Link>
                                             </div>
                                             <div className={styles.like}>
                                                 <Button variant='contained' onClick={() => deleteSubs(el.organizer.id)}>Unfollow</Button>
@@ -172,6 +171,7 @@ const Profile = () => {
                                 rest.event = restEvent;
                                 
                                 eventTicketsCounts[rest.event_id] = eventTicketsCounts[rest.event_id] ? ++eventTicketsCounts[rest.event_id] : 1;
+                                console.log(eventTicketsCounts)
                                 return JSON.stringify(rest)
                             }))].map((el, index) => {
                             el = JSON.parse(el);
@@ -204,6 +204,7 @@ const Profile = () => {
                                             >
                                                 <img src={'/assets/download.png'} alt="Download Ticket" />
                                             </motion.div>
+                                            <span>Amount: {eventTicketsCounts[el.event_id]}</span>
                                         </div>
                                     </div>
                                 </div>
