@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pagination, Button, useMediaQuery } from '@mui/material';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
+import {Link, useNavigate, useParams, useSearchParams} from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import parse from 'html-react-parser';
@@ -24,6 +24,7 @@ import styles from './EventPage.module.scss';
 import { useLazyCheckPaymentQuery, useCheckPaymentUnauthMutation } from '../../redux/api/fetchPaymentApi';
 import { useEffect } from 'react';
 import {useUpdateUserMutation} from "../../redux/api/fetchAuthApi";
+import NotFoundPage from "../NotFoundPage/NotFoundPage";
 
 const newEvents = [
   { title: 'Harry Styles', location: 'Палац студентів НТУ “ХПІ”', time: '16:00', date: '28 КВІ 2023', price: 400 ,image_url: 'https://media.architecturaldigest.com/photos/623e05e0b06d6c32457e4358/master/pass/FINAL%20%20PFHH-notextwlogo.jpg' },
@@ -33,6 +34,7 @@ const newEvents = [
 ];
 
 const EventPage = () => {
+  const navigate = useNavigate()
   const { t } = useTranslation();
   const { id } = useParams();
   const isAuth = useSelector(selectIsAuthMe);
@@ -122,18 +124,25 @@ const EventPage = () => {
     }
   }, [])
 
+  if (!isLoadingInfo && !dataInfo) {
+    navigate("/404")
+  }
+
   return (
+      <>
+      {
+    !isLoadingInfo && dataInfo &&
     <Layout>
       <div className={styles.header}>
         <div
-          className={styles.image}
-          style={{
-            backgroundImage:
-              `url(${!isLoadingInfo && !errorInfo && dataInfo.event?.poster})`,
-          }}
+            className={styles.image}
+            style={{
+              backgroundImage:
+                  `url(${!isLoadingInfo && !errorInfo && dataInfo.event?.poster})`,
+            }}
         ></div>
         <div className={styles.info}>
-          <EventInfo {...dataInfo?.event} event_id={dataInfo?.id} isLoading={isLoadingInfo} error={errorInfo} />
+          <EventInfo {...dataInfo?.event} event_id={dataInfo?.id} isLoading={isLoadingInfo} error={errorInfo}/>
         </div>
         <div className={styles.content}>
           <div className={styles.description}>
@@ -143,78 +152,82 @@ const EventPage = () => {
             </div>
           </div>
           <div className={styles.embed}>
-            { !isLoadingInfo && !errorInfo && dataInfo.event.spotify_id &&
-              <iframe
-              title="spotify"
-              src={`https://open.spotify.com/embed/artist/${dataInfo.event.spotify_id}?utm_source=generator`}
-              width="100%"
-              height="352"
-              frameBorder="0"
-              allowFullScreen=""
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              loading="lazy"
-              ></iframe>
+            {!isLoadingInfo && !errorInfo && dataInfo.event.spotify_id &&
+                <iframe
+                    title="spotify"
+                    src={`https://open.spotify.com/embed/artist/${dataInfo.event.spotify_id}?utm_source=generator`}
+                    width="100%"
+                    height="352"
+                    frameBorder="0"
+                    allowFullScreen=""
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy"
+                ></iframe>
             }
 
             <iframe
-              title='map'
-              style={{ border: 0, borderRadius: '10px', marginTop: '6px' }}
-              src={`https://www.google.com/maps/embed/v1/place?key=${process.env.REACT_APP_GOOGLEMAPS_API_KEY}&q=${!isLoadingInfo && !errorInfo && dataInfo.event?.address}&language=${t('eventPage.lang')}`}
-              width="100%"
-              height="450"
-              allowFullScreen=""
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
+                title='map'
+                style={{border: 0, borderRadius: '10px', marginTop: '6px'}}
+                src={`https://www.google.com/maps/embed/v1/place?key=${process.env.REACT_APP_GOOGLEMAPS_API_KEY}&q=${!isLoadingInfo && !errorInfo && dataInfo.event?.address}&language=${t('eventPage.lang')}`}
+                width="100%"
+                height="450"
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
             ></iframe>
           </div>
           <div className={styles.comments}>
             <h2>Коментарі</h2>
             <div className={styles.wrapper}>
               {!isLoadingComments && !errorComments && dataComments?.comments.rows !== 0 ? <>
-                {dataComments?.comments.rows.map((el, index) => (
-                  <Comment {...el} setEditing={setEditing} deleteComment={deleteCommentFunction} key={index} />
-                ))}
-                {dataComments?.comments.pages > 1 && <Pagination count={dataComments?.comments.pages} size={matches ? 'small' : 'large'} onChange={handlePaginationChange}/>}
-              </> :
-                <span>Поки що немає коментарів</span>
+                    {dataComments?.comments.rows.map((el, index) => (
+                        <Comment {...el} setEditing={setEditing} deleteComment={deleteCommentFunction} key={index}/>
+                    ))}
+                    {dataComments?.comments.pages > 1 &&
+                        <Pagination count={dataComments?.comments.pages} size={matches ? 'small' : 'large'}
+                                    onChange={handlePaginationChange}/>}
+                  </> :
+                  <span>Поки що немає коментарів</span>
               }
             </div>
             {
-              isAuth &&
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <div className={styles.textarea}>
-                  <textarea
-                    name="comment"
-                    id="comment"
-                    rows="7"
-                    placeholder='Твій коментар...'
-                    {...register('content', {
-                      required: true,
-                      minLength: 5
-                    })}
-                    onChange={(e) => editing ? setEditingText(e.target.value): setCommentInput(e.target.value)}
-                    value={editing ? editing.content : commentInput}
-                  ></textarea>
-                  <Button variant='contained' type='submit'>Опубліковати</Button>
-                </div>
-              </form>
+                isAuth &&
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <div className={styles.textarea}>
+                      <textarea
+                          name="comment"
+                          id="comment"
+                          rows="7"
+                          placeholder='Твій коментар...'
+                          {...register('content', {
+                            required: true,
+                            minLength: 5
+                          })}
+                          onChange={(e) => editing ? setEditingText(e.target.value) : setCommentInput(e.target.value)}
+                          value={editing ? editing.content : commentInput}
+                      ></textarea>
+                    <Button variant='contained' type='submit'>Опубліковати</Button>
+                  </div>
+                </form>
             }
           </div>
         </div>
       </div>
       {!isLoadingEvents && !errorEvents && dataEvents?.events.rows &&
-        <>
-          <h2 className={styles.heading}>Афіші подій організатора</h2>
-          <div className={styles.events}>
-            {dataEvents.events.rows.map((el, index) => (
-              <Card {...el} key={index}/>
-            ))}
-          </div>
-          <Link to={`/organizer`} className={styles.more_link}>Більше</Link>
-        </>
+          <>
+            <h2 className={styles.heading}>Афіші подій організатора</h2>
+            <div className={styles.events}>
+              {dataEvents.events.rows.map((el, index) => (
+                  <Card {...el} key={index}/>
+              ))}
+            </div>
+            <Link to={`/organizer`} className={styles.more_link}>Більше</Link>
+          </>
       }
     </Layout>
-  );
+      }
+      </>
+)
 };
 
 export default EventPage;
