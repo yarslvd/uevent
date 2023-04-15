@@ -5,11 +5,12 @@ import './WideCard.scss';
 
 import { dateOptions, timeOptions } from '../../data/variables';
 
-const WideCard = ({ poster, title, location, date, price, id }) => {
+const WideCard = ({ poster, title, location, date, price, id, iso_currency }) => {
     const { t } = useTranslation();
     const parsedDate = new Date(date);
 
-    let convertedPrice = `${t('wideCard.price')} ${price} ₴`
+    let convertedPrice = `${t('wideCard.price')} ${price} ${iso_currency}`
+
     if (Number(price) === 0) {
         convertedPrice = `${t('wideCard.free')}`
     }

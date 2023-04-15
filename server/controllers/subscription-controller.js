@@ -123,6 +123,9 @@ const getOne = async (req, res) => {
             ]
         });
 
+        console.log(subscription);
+        console.log('----------------------------------------------------------------------')
+
         return res.status(StatusCodes.OK).json({
             subscription
         })

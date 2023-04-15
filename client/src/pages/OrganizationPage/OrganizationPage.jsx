@@ -16,15 +16,14 @@ const OrganizationPage = () => {
     const { id } = useParams();
     const matches = useMediaQuery('(max-width:800px)');
 
-    const { userInfo } = useSelector((state) => state.auth);
-    const { data: dataSubscriptions, isLoading: isLoadingSubscriptions, isError: isErrorSubscriptions, refetch: refetchSubscriptions } = useGetSubscriptionOneQuery(userInfo.id, 1000, 0);
-    const { data: dataEvents, isLoading: isLoadingEvents, isError: isErrorEvents } = useGetEventsQuery({ limit: 4, id: +id });
-    const { isLoading, isError, data } = useGetOrganizationQuery(id);
-
-    console.log(data);
-
-    const [follow, setFollow] = useState(false);
     const [page, setPage] = useState(1);
+    const [follow, setFollow] = useState(false);
+
+    const { userInfo } = useSelector((state) => state.auth);
+    const { data: dataSubscriptions, isLoading: isLoadingSubscriptions, isError: isErrorSubscriptions } = useGetSubscriptionOneQuery(+id);
+    const { data: dataEvents, isLoading: isLoadingEvents, isError: isErrorEvents } = useGetEventsQuery({ limit: 4, id: +id, page: page });
+    const { isLoading, isError, data } = useGetOrganizationQuery(id);
+    console.log(dataSubscriptions);
 
     const handleFollow = () => {
         setFollow(!follow);

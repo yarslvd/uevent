@@ -32,7 +32,7 @@ export const fetchSubscriptionApi = createApi({
             })
         }),
         getSubscriptionOne: build.query({
-            query: (user_id, limit, page) => `/?user_id=${user_id}&limit=${limit}&page=${page}`
+            query: (id) => `/${id}`
         })
     })
 });
