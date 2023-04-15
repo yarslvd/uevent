@@ -9,7 +9,7 @@ const NotFoundPage = () => {
         <div className={styles.container}>
             <h1>Oops! The page you're looking for cannot be found.</h1>
             <p>Please check the URL or go to the homepage.</p>
-            <Button className={styles.btn} variant='contained' onClick={() => navigate('/')}>Go main</Button>
+            <Button variant='contained' className={styles.redirect_btn} onClick={() => navigate('/')}>Go main</Button>
         </div>
     );
 };
