@@ -28,6 +28,9 @@ export const fetchAuthApi = createApi({
                 method: 'POST',
                 body: file
             })
+        }),
+        getPublicUser: build.query({
+            query: (id) => `/${id}`
         })
     })
 });
@@ -35,4 +38,5 @@ export const fetchAuthApi = createApi({
 export const {
     useUpdateUserMutation,
     useUploadAvatarMutation,
+    useGetPublicUserQuery,
 } = fetchAuthApi;

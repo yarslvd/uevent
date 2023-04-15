@@ -115,19 +115,25 @@
         }
 
         .button_section {
-            @include flex-align-center;
-            gap: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
 
-            .buy_btn {
-                @include default-btn;
-            }
+            div {
+                @include flex-align-center;
+                gap: 15px;
 
-            .like_btn {
-                cursor: pointer;
-
-                img {
-                    width: 20px;
-                    height: 20px;
+                .buy_btn {
+                    @include default-btn;
+                }
+    
+                .like_btn {
+                    cursor: pointer;
+    
+                    img {
+                        width: 20px;
+                        height: 20px;
+                    }
                 }
             }
         }

@@ -1,10 +1,11 @@
+import {useSelector} from "react-redux";
+import {useState} from "react";
+import { Link } from "react-router-dom";
 import {Avatar, Button, Modal,} from '@mui/material';
 import ModeIcon from '@mui/icons-material/Mode';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import styles from './Comment.module.scss';
-import {useSelector} from "react-redux";
-import {useState} from "react";
 
 const Comment = ({ id, comment, user, setEditing, deleteComment }) => {
     const { userInfo } = useSelector((state) => state.auth);
@@ -39,7 +40,7 @@ const Comment = ({ id, comment, user, setEditing, deleteComment }) => {
                         <Avatar alt={user.first_name} src={user.image?user.image:"/static/images/avatar/1.jpg"} />
                     </div>
                     <div className={styles.text}>
-                        <span className={styles.username}>{`${user.first_name} ${user.last_name}`}</span>
+                        <Link className={styles.username} to={`/user/${user.id}`}>{`${user.first_name} ${user.last_name}`}</Link>
                         <p className={styles.comment}>{comment}</p>
                     </div>
                     {(userInfo.id === user.id) && (

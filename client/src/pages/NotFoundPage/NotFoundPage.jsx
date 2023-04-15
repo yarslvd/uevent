@@ -1,6 +1,6 @@
 import styles from './NotFoundPage.module.scss';
-import {useNavigate} from "react-router-dom";
-import {Button} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
 
 const NotFoundPage = () => {
     const navigate = useNavigate()

@@ -16,6 +16,7 @@ import ConfirmEmail from './pages/ConfirmEmail/ConfirmEmail';
 import AllEvents from './pages/AllEvents/AllEvents';
 import Profile from './pages/Profile/Profile';
 import OrganizationPage from './pages/OrganizationPage/OrganizationPage';
+import PublicProfile from './pages/PublicProfile/PublicProfile';
 import { fetchAuthMe, selectIsAuthMe } from "./redux/slices/authSlice";
 
 import Test from './pages/Test/Test'
@@ -79,6 +80,10 @@ const router = createBrowserRouter([
   {
     path: '/organization/:id',
     element: <OrganizationPage />
+  },
+  {
+    path: '/user/:id',
+    element: <PublicProfile />
   },
   {
     path: '*',

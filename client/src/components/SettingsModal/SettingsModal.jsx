@@ -47,18 +47,23 @@ const SettingsModal = ({ open, handleClose, user }) => {
             formData.append('avatar', avatar);
             await uploadAvatar({file: formData});
         }
-        
+
         removeEmptyFields(values);
-        if (values.full_name) {
-            const splitted = values.full_name.split(" ");
+        if (values.name) {
+            const splitted = values.name.split(" ");
             values.first_name = splitted[0]
             values.last_name = splitted[1];
         }
 
         if (Object.keys(values).length > 0) {
             //data.error + 409 status code- if username is taken
+            if(values.username === userInfo.username) {
+                delete values.username;
+            }
+
             let data = await updateUser(values);
-            if(!data.error || values.username === userInfo.username) {
+
+            if(!data.error) {
                 handleClose();
                 window.location.reload();
             }

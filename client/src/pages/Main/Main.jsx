@@ -28,15 +28,11 @@ const newEvents = [
 const Main = () => {
     const { t } = useTranslation();
     const matches = useMediaQuery('(max-width:800px)');
-
-    const [popular, setPopular] = useState([]);
-    const [upComming, setUpComming] = useState([]);
-    const [recent, setRecent] = useState([]);
-
-    const filters = { 'price_between[from]': 10, 'price_between[to]': 100 }
+    
+    const filters = { 'price_between[from]': 50, 'price_between[to]': 100 }
 
     const { isLoading: isLoadingPopular, isError: isErrorPopular, data: dataPopular } = useGetEventsQuery({ limit: 3 });
-    const { isLoading: isLoadingUpComming, isError: isErrorUpComming, data: dataUpComming } = useGetEventsQuery({ limit: 3,  filters });
+    const { isLoading: isLoadingUpComming, isError: isErrorUpComming, data: dataUpComming } = useGetEventsQuery({ limit: 4,  filters });
 
     return (
         <Layout>
@@ -76,7 +72,7 @@ const Main = () => {
                     <h2>Новинки</h2>
                 </div>
                 <div className="events_new">
-                    {newEvents.map((el, index) => (
+                    {!isLoadingUpComming && !isErrorUpComming && dataUpComming.events.rows.map((el, index) => (
                         <Card {...el} key={index}/>
                     ))}
                 </div>
