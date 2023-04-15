@@ -79,5 +79,8 @@ export const en = {
     eventPage: {
         lang: 'en'
     },
+    butTicketModal: {
+        title: "Order summary"
+    },
     welcome: "Welcome to React",
 };

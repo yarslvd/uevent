@@ -159,6 +159,7 @@ const CreateEventPage = () => {
 
         navigate(`/event/${res?.event?.id || id}`);
     }
+    console.log("Edit data:", data)
 
     const handleDeletePromo = (chipIdToDelete) => {
         setPromocodeList((prevChips) =>
@@ -214,6 +215,11 @@ const CreateEventPage = () => {
 
     const isEditEvent = () => {
         return id && window.location.href.includes('/edit');
+    }
+
+
+    if (id && !isLoading && !data) {
+        navigate("/404")
     }
 
     return (

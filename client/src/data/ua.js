@@ -79,5 +79,8 @@ export const ua = {
     eventPage: {
         lang: 'uk'
     },
+    butTicketModal: {
+        title: "Order summary"
+    },
     welcome: 'Привіт козаче',
 };
