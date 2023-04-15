@@ -107,12 +107,19 @@ const get = async (req, res) => {
 
 const getOne = async (req, res) => {
     try {
-        const organizerId = req.params.organizer_id;
+        const request = checkFields(req.query, [
+            'organizer_id', 'user_id'
+        ])
+        if (!request) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                error: "Some fields are missed",
+            });
+        }
 
-        const subscription = await db.organizers.findOne({
+        const subscription = await db.subscriptions.findOne({
             where: {
-                organizer_id : organizerId,
-                user_id : req.user.id,
+                organizer_id : request.organizer_id,
+                user_id : request.user_id,
             },
             include: [
                 {

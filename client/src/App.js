@@ -21,6 +21,7 @@ import { fetchAuthMe, selectIsAuthMe } from "./redux/slices/authSlice";
 import Test from './pages/Test/Test'
 
 import './styles/App.scss';
+import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 
 const router = createBrowserRouter([
   {
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
   {
     path: '/organization/:id',
     element: <OrganizationPage />
+  },
+  {
+    path: '*',
+    element: <NotFoundPage />
   }
 ]);
 
