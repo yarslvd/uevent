@@ -53,7 +53,7 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
             console.log(promo.data.promo.discount);
             setDiscount((+promo.data.promo.discount / 100));
             setTotal(total * (1 - (+promo.data.promo.discount / 100)));
-            setSuccess('Promo was successfully applied!');
+            setSuccess(t('buyTicketModal.success_promo'));
         }
         catch(err) {
             console.log(err);
@@ -117,29 +117,29 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
             aria-describedby="Choose number of tickets and apply promo"
         >
             <div className={styles.container}>
-                <h1>t('buyTicketModal.title')</h1>
+                <h1>{t('buyTicketModal.title')}</h1>
                 <div style={{ height: '49px', margin: '10px 0' }}>
                     {success && <Alert severity="success">{success}</Alert>}
-                    {error && <Alert severity="error">Promocode is invalid</Alert>}
+                    {error && <Alert severity="error">{t('buyTicketModal.wrong_promo')}</Alert>}
                 </div>
                 <div className={styles.promocode}>
-                    <h3>Promo code</h3>
+                    <h3>{t('buyTicketModal.promo')}</h3>
                     <div className={styles.validate}>
                         <input
                             type="text"
                             id="promocode"
-                            placeholder='Enter promocode'
+                            placeholder={t('buyTicketModal.enter_promo')}
                             className={styles.inputPromo}
                             onChange={(e) => {setPromocode(e.target.value); setSuccess(''); setError('');}}
                         />
-                        <Button variant='contained' className={styles.applyButton} onClick={validatePromo}>Apply</Button>
+                        <Button variant='contained' className={styles.applyButton} onClick={validatePromo}>{t('buyTicketModal.apply')}</Button>
                     </div>
                 </div>
                 <div style={{ height: '50px'}}>
                     {success &&
                         <div style={{ backgroundColor: '#e9e9e9', display: 'inline-block', padding: '5px 15px',
                                     borderRadius: '30px', marginTop: '10px' }}>
-                            <span><b>{promocode}</b></span> applied
+                            <span><b>{promocode}</b></span> {t('buyTicketModal.applied')}
                         </div>
                     }
                 </div>
@@ -155,7 +155,7 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
                                 }}
                             />
                         }
-                        label="Show as a visitor"
+                        label={t('buyTicketModal.as_visitor')}
                         onChange={(e) => setShowVisitor(e.target.checked)}
                     />
                     :
@@ -165,7 +165,7 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
                             <input
                                 type="email"
                                 id="email"
-                                placeholder='Enter email'
+                                placeholder={t('buyTicketModal.enter_email')}
                                 className={styles.inputPromo}
                                 onChange={(e) => {setEmail(e.target.value);}}
                             />
@@ -180,7 +180,7 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
                 </div> 
                 <form method="POST" action="https://www.liqpay.ua/api/3/checkout" onSubmit={handlePayment} acceptCharset="utf-8">
                     <div className={styles.bottom}>
-                        <Button variant='contained' className={styles.checkoutBtn} type="submit">Checkout</Button>
+                        <Button variant='contained' className={styles.checkoutBtn} type="submit">{t('buyTicketModal.checkout')}</Button>
                         <span className={styles.price}>{total ? Number(total)?.toFixed(2) : Number(price)?.toFixed(2)} {iso_currency}</span>
                         <input type="hidden" name="data" value=""/>
                         <input type="hidden" name="signature" value=""/>

@@ -79,8 +79,17 @@ export const en = {
     eventPage: {
         lang: 'en'
     },
-    butTicketModal: {
-        title: "Order summary"
+    buyTicketModal: {
+        title: "Order summary",
+        wrong_promo : "Promo-code is invalid",
+        promo: "Promo code",
+        enter_promo: "Enter promo code",
+        enter_email: "Enter email",
+        apply: "Apply",
+        applied: "applied",
+        as_visitor: "Show as visitor",
+        checkout: "Checkout",
+        success_promo: 'Promo was successfully applied!'
     },
     welcome: "Welcome to React",
 };

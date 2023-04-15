@@ -79,8 +79,17 @@ export const ua = {
     eventPage: {
         lang: 'uk'
     },
-    butTicketModal: {
-        title: "Order summary"
+    buyTicketModal: {
+        title: "Замовлення",
+        wrong_promo : "Неправильний промокод",
+        promo: "Промокод",
+        enter_promo: "Уведіть промокод",
+        enter_email: "Уведіть пошту",
+        apply: "Застосувати",
+        applied: "застосовано",
+        as_visitor: "Відображати, як відвідувача",
+        checkout: "Розрахуватися",
+        success_promo: 'Промокод було успішно застосовано!'
     },
     welcome: 'Привіт козаче',
 };
