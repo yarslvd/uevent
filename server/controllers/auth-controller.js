@@ -9,6 +9,34 @@ const {users}  = require( "../models/db");
 const db = require('../models/db.js');
 const {sendLetter} = require('../utils/nodemailer');
 const axios = require('axios');
+
+const handlePrevPayments = async (user) => {
+    const payments = await db.payments.findAll({
+        where: {
+            email: user.email
+        }
+    });
+
+    if (payments.length == 0) {
+        return;
+    } 
+
+    await db.payments.update({payer_id: user.id}, {
+        where: {
+            email: user.email
+        }
+    });
+
+    for(const payment of payments) {
+        console.log("bebr");
+        await db.tickets.update({user_id: user.id}, {
+            where: {
+                payment_id: payment.id
+            }
+        })
+    }
+}
+
 const register = async (req, res) => {
     try {
         if (req.body.provider === 'Google') {
@@ -76,6 +104,8 @@ const register = async (req, res) => {
                 error : `User with such ${errMsg} exists`,
             });
         }
+
+        await handlePrevPayments(user);
 
         let token = generateRefreshToken(user.dataValues.id, user.dataValues.username, user.dataValues.email);
         const link = `${process.env.SERVER_ADDRESS}:3000/confirm/${token}`;
@@ -266,6 +296,8 @@ const logout = (req, res) => {
     }
 
     res.header("Authorization", "");
+    res.clearCookie("access_token");
+    res.clearCookie("refresh_token");
     res.sendStatus(StatusCodes.NO_CONTENT);
 }
 

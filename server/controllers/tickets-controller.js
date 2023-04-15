@@ -132,7 +132,9 @@ const createUnauth = async (req, res) => {
             price *= (1 - +promo.discount/100)
         }
         
-        const paymentObj = await createPayment(event, null, request.count, price, request.redirect_url, request.email);
+        const existUser = await db.users.findOne({where: {email: request.email}});
+        const userId = existUser ? existUser.id : null;
+        const paymentObj = await createPayment(event, userId, request.count, price, request.redirect_url, request.email);
     
         // const paymentStatus = await waitTx("pending", paymentObj.orderId)
         // if (paymentStatus === "reverted") {
@@ -143,9 +145,10 @@ const createUnauth = async (req, res) => {
 
         event.dataValues.ticket_amount -= request.count;
         await db.events.update(event.dataValues, {where: {id: event.dataValues.id}, plain: true})
-
+        
         for (let i = 0; i < request.count; i++) {
             await db.tickets.create({
+                user_id: userId,
                 event_id : request.event_id,
                 payment_id: paymentObj.paymentId,
                 can_show: false
