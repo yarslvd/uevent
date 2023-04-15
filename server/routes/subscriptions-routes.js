@@ -7,7 +7,7 @@ const router = express.Router();
 // /api/subscriptions/
 router.post('/', jwtMiddleware, subscription.subscribe);
 router.delete('/:organizer_id', jwtMiddleware, subscription.unsubscribe);
-router.get('/:organizer_id', jwtMiddleware, subscription.getOne);
+router.get('/check', subscription.getOne);
 router.get( '/', jwtMiddleware, subscription.get);
 
 module.exports = router;
