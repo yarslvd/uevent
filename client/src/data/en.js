@@ -43,6 +43,8 @@ const about = [
 ];
 
 export const en = {
+    yes: "Yes",
+    no: "No",
     menu: {
         items,
         login: 'Sign in'
@@ -92,4 +94,11 @@ export const en = {
         success_promo: 'Promo was successfully applied!'
     },
     welcome: "Welcome to React",
+    event : {
+        title: 'Event title',
+        location: 'Location',
+        organizer: 'Organizer: {{name}}',
+        free: 'Free',
+        ticketsLeft: '{{count}} tickets left',
+    },
 };
