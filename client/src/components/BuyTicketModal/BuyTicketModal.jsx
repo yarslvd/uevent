@@ -80,7 +80,7 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
             payment = await buyTickets(ticket).unwrap();
         }
         else {
-            const ticket = {
+             const ticket = {
                 event_id: +id,
                 count: itemCount,
                 promo: success ? promocode : '',
@@ -91,12 +91,12 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
         }
 
         if(price == 0) {
-            userInfo && navigate("/profile");
+            userInfo && navigate("/profile?tab=1");
             return true;
         }
- 
-        e.target[1].value = payment.data;
-        e.target[2].value = payment.signature;
+
+        e.target.data.value = payment.data;
+        e.target.signature.value = payment.signature;
         e.target.submit();
         
         return true;
@@ -138,48 +138,49 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
                         </div>
                     }
                 </div>
-                {userInfo ?
-                    <FormControlLabel 
-                        control={
-                            <Checkbox checked={showVisitor}
-                                sx={{
-                                    color: "#000",
-                                    '&.Mui-checked': {
-                                    color: "#000",
-                                    },
-                                }}
-                            />
-                        }
-                        label={t('buyTicketModal.as_visitor')}
-                        onChange={(e) => setShowVisitor(e.target.checked)}
-                    />
-                    :
-                    <div className={styles.promocode}>
-                        <h3>Email</h3>
-                        <div className={styles.validate} style={{height: "48px"}}>
-                            <input
-                                type="email"
-                                id="email"
-                                placeholder={t('buyTicketModal.enter_email')}
-                                className={styles.inputPromo}
-                                onChange={(e) => {setEmail(e.target.value);}}
-                                required
-                            />
-                        </div>
-                    </div>
-                }
-                
-                <div className={styles.countContainer}>
-                    <Button className={styles.countBtn} onClick={handleDecrease}>-</Button>
-                    <span>{itemCount}</span>
-                    <Button className={styles.countBtn} onClick={handleIncrease}>+</Button>
-                </div> 
                 <form method="POST" action="https://www.liqpay.ua/api/3/checkout" onSubmit={handlePayment} acceptCharset="utf-8">
+                    {userInfo ?
+                        <FormControlLabel 
+                            control={
+                                <Checkbox checked={showVisitor}
+                                    sx={{
+                                        color: "#000",
+                                        '&.Mui-checked': {
+                                        color: "#000",
+                                        },
+                                    }}
+                                />
+                            }
+                            label={t('buyTicketModal.as_visitor')}
+                            onChange={(e) => setShowVisitor(e.target.checked)}
+                        />
+                        :
+                        <div className={styles.promocode}>
+                            <h3>Email</h3>
+                            <div className={styles.validate} style={{height: "48px"}}>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    placeholder={t('buyTicketModal.enter_email')}
+                                    className={styles.inputPromo}
+                                    onChange={(e) => {setEmail(e.target.value);}}
+                                    required
+                                />
+                            </div>
+                        </div>
+                    }
+                    
+                    <div className={styles.countContainer}>
+                        <Button className={styles.countBtn} onClick={handleDecrease}>-</Button>
+                        <span>{itemCount}</span>
+                        <Button className={styles.countBtn} onClick={handleIncrease}>+</Button>
+                    </div> 
+                
                     <div className={styles.bottom}>
                         <Button variant='contained' className={styles.checkoutBtn} type="submit">{t('buyTicketModal.checkout')}</Button>
                         <span className={styles.price}>{total ? Number(total)?.toFixed(2) : Number(price)?.toFixed(2)} {iso_currency}</span>
-                        <input type="hidden" name="data" value=""/>
-                        <input type="hidden" name="signature" value=""/>
+                        <input type="hidden" id="data" name="data" value=""/>
+                        <input type="hidden" id="signature" name="signature" value=""/>
                     </div>
                 </form> 
             </div>

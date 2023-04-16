@@ -13,7 +13,7 @@ async function createPayment(event, userId, count, price, redirect_url, email= "
     const payment = await db.payments.create({
       payer_id: userId,
       event_id: event.id,
-      order_id: "free",
+      order_id: order_id,
       signature: "free",
       status: "success",
       timestamp: Date.now(),
@@ -30,9 +30,10 @@ async function createPayment(event, userId, count, price, redirect_url, email= "
 
     console.log({userTickets})
 
-    let user = userId ? await db.users.findByPk(userId) : {username: payment.email.split("@")[0], first_name: "", last_name: "", email: payment.email}
-    let pdf = await generateTicketPdf(user, event, userTickets.length + count);
-    let options = {
+    const user = userId ? await db.users.findByPk(userId) : {username: payment.email.split("@")[0], first_name: "", last_name: "", email: payment.email}
+    const order = userId ? "" : `Order: ${order_id}`;
+    const pdf = await generateTicketPdf(user, event, userTickets.length + count, order);
+    const options = {
       attachments: [
         {
           filename: "tickets.pdf",
@@ -44,7 +45,7 @@ async function createPayment(event, userId, count, price, redirect_url, email= "
     sendLetter(payment.email, `uevent. Tickets for "${event.title}" event`, "", options);
 
     return {
-      orderId: "free",
+      orderId: order_id,
       paymentId: payment.id,
       data: "",
       signature: ""
