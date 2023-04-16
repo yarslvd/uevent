@@ -271,7 +271,6 @@ const EventInfoCreate = ({ register, control, setValue, eventInfo }) => {
                 </div>
             </div>
             <div className={styles.buttons}>
-                <Button variant='outlined' className={styles.saveDraftsBtn} type="submit">Save to Drafts</Button>
                 <Button variant='contained' className={styles.publishBtn} type="submit">Publish</Button>
             </div>
         </div>

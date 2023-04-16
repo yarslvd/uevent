@@ -9,7 +9,8 @@ const data = {
             email: 'john.doe@example.com',
             confirmed_email: true,
             username: 'johndoe',
-            password: hashPassword('password')
+            password: hashPassword('password'),
+            image: 'https://i.imgur.com/0V3xRbK.png'
         },
         {
             first_name: 'Jane',
@@ -27,7 +28,8 @@ const data = {
             email: 'bob.smith@example.com',
             confirmed_email: true,
             username: 'bobsmith',
-            password: hashPassword('password')
+            password: hashPassword('password'),
+            image: 'https://i.imgur.com/hfqoNvz.png'
         },
         {
             first_name: 'Alice',
@@ -36,7 +38,8 @@ const data = {
             email: 'alice.johnson@example.com',
             confirmed_email: true,
             username: 'alicejohnson',
-            password: hashPassword('password')
+            password: hashPassword('password'),
+            image: 'https://i.imgur.com/wbci1oY.png'
         },
         {
             first_name: 'Tom',
@@ -49,108 +52,228 @@ const data = {
         },
     ],
     organizers : [
-        {name: 'Organizer 1', description: 'Organizer 1 description', email: 'organizer1@example.com', user_id: 1},
-        {name: 'Organizer 2', description: 'Organizer 2 description', email: 'organizer2@example.com', user_id: 2},
-        {name: 'Organizer 5', description: 'Organizer 5 description', email: 'organizer5@example.com', user_id: 3},
+        {
+            name: 'ARTLIVE',
+            description: `ARTLIVE is a leading event management company that specializes in planning and organizing music concerts, festivals, and live entertainment events. Our team of experienced professionals works tirelessly to deliver exceptional events that exceed our clients' expectations.
+            From the initial planning phase to the execution of the event, our team provides end-to-end solutions to ensure that every aspect of the event is perfectly managed. We take pride in our ability to handle events of all sizes and complexities, and we work closely with our clients to understand their specific requirements and deliver customized solutions. 
+            Our services include venue selection, artist management, ticketing, event promotion, sound and lighting production, and event security. We work with a wide range of clients, including music promoters, festival organizers, corporate clients, and individual artists.
+            At Concerts Organizing Company, we are committed to providing a seamless and stress-free experience for our clients and their guests. We are dedicated to ensuring that every event we organize is a resounding success and leaves a lasting impression on all those who attend.`,
+            email: 'artlive@info.com',
+            user_id: 1
+        },
+        {
+            name: 'BestOne',
+            description: `Best One is a premier concert organizing company that specializes in creating unforgettable experiences for music lovers. With years of experience in the industry, Best One has a team of passionate p
+            From small local events to large international festivals, Best One has the expertise and resources to deliver a wide range of music events to suit any taste. They work closely with their clients to understand their vision and bring it to life with precision planning and flawless execution.
+            With their deep industry connections, Best One has access to some of the biggest and most sought-after music artists, ensuring that their events are always top-notch and in high demand. Their attention to detail and commitment to excellence is second to none, making them the go-to choice for anyone looking to host a world-class music event.`,
+            email: 'bestie@one.com',
+            user_id: 2
+        },
+        {
+            name: 'Jsnn',
+            description: `JSNN is a premier events organizer, focused on creating unique and unforgettable experiences for individuals and organizations alike. With a team of seasoned professionals and a passion for creativity, JSNN is dedicated to crafting events that reflect the personality and style of their clients.
+            From corporate events to private parties, JSNN offers a wide range of services tailored to meet the needs of their clients. They work closely with each client to understand their vision and bring it to life through careful planning, attention to detail, and innovative design.`,
+            email: 'contact@jsnn.com',
+            user_id: 3
+        },
     ],
+
     events : [
         {
-            title: 'Concert in the Park',
-            description: 'Come enjoy an evening of live music in the park!',
-            price: 10.00,
-            iso_currency: 'USD',
-            address: '123 Main St',
-            location: 'Central Park',
-            date: '2023-04-15 19:00:00-04',
+            title: 'СТЕПАН ГІГА. ЗОЛОТІ ХІТИ',
+            description: `<p>
+            <strong>Степан Гіга. Золоті хіти у Києві відбудеться завдяки ЗСУ! 1 травня у Жовтневому палаці у Києві відбудеться великий концерт зірки української естради Степана Гіги.</strong>
+            <br/><br/>
+            <strong>ЧОМУ ВАРТО ПІТИ НА КОНЦЕРТ СТЕПАНА ГІГИ У КИЄВІ?</strong><br/><br/>
+            1. Легендарний артист із величезною армією шанувальників. <br/>
+            2. Ексклюзивна програма із найкращих хітів співака.<br/>
+            3. Нові враження та незабутні спогади від яскравої події.<br/><br/>
+            <strong>СТЕПАН ГІГА ІЗ ВЕЛИКИМ КОНЦЕРТОМ У КИЄВІ</strong>
+            1 травня запрошуємо вас до Жовтневого палацу на яскравий концерт Народного артиста України, зірки вітчизняної сцени Степана Гіги! Виступ кумира українців відбудеться на численні прохання публіки.
+            Обирайте кращі місця у залі та замовляйте квитки вже сьогодні.<br/><br/>
+
+            <strong>УНІКАЛЬНА ПРОГРАМА «ЗОЛОТІ ХІТИ»: НА СЦЕНІ ЖОВТНЕВОГО ПАЛАЦУ – НЕПОВТОРНИЙ СТЕПАН ГІГА</strong><br/>
+            Любов до творчості Степана Гіги об’єднує тисячі людей, що є представниками різних поколінь. У репертуарі співака – десятки доленосних композицій, рядки з яких ви зможете разом із улюбленим виконавцем заспівати на концерті у столиці: «Золото Карпат», «Цей сон», «Яворина» та багато інших.
+            <br/><strong>Чекаємо на вас!</strong>
+            </p>`,
+            price: 300.00,
+            iso_currency: 'UAH',
+            address: 'Heroyiv Nebesnoyi Sotni Alley, 1, Kyiv, Ukraine, 02000',
+            location: 'МЦКМ (Жовтневий палац)',
+            date: '2023-04-29 12:00:00+03',
             publish_date: '2023-04-01 00:00:00-04',
             organizer_id: 1,
-            ticket_amount: 100,
+            ticket_amount: 250,
             visibility: 'public',
-            spotify_id: '1234567890'
+            spotify_id: '4d3xJkRPmqX0jfvI3pgeXh',
+            poster: 'https://i.imgur.com/xrpG2ei.png',
+            theme: 'Entertainment',
+            format: 'Concerts'
         },
         {
-            title: 'Charity Gala',
-            description: 'Support a good cause while enjoying an elegant evening.',
-            price: 75.00,
-            iso_currency: 'USD',
-            address: '456 Elm St',
-            location: 'Grand Ballroom',
-            date: '2023-05-01 18:00:00-04',
-            publish_date: '2023-04-15 00:00:00-04',
+            title: 'DOROFEEVA',
+            description: `<p>
+            <strong>Концерт DOROFEEVA у Києві відбудеться 28 квітня 2023 року о 19:00 в Osocor Residence.</strong>
+            <br/><br/>
+            <strong>ЧОМУ ВАРТО ПІТИ НА КОНЦЕРТ DOROFEEVA У КИЄВІ?</strong><br/><br/>
+            1. Суперпопулярна українська артистка. <br/>
+            2. Нова концертна програма із топових хітів.<br/>
+            3. Справжній відпочинок та тепле спілкування з улюбленою співачкою.<br/><br/>
+            <strong>КОНЦЕРТ DOROFEEVA У КИЄВІ</strong>
+            DOROFEEVA – яскрава зірка сучасного українського шоу-бізнесу, чия творчість об’єднує навколо себе сотні тисяч людей. Концерти співачки сьогодні збирають аншлаги, а квитки розбирають за лічені дні.<br/><br/>
+
+            <strong>ВЕЧІР, СПОВНЕНИЙ «СЕНСІВ», В OSOCOR RESIDENCE</strong><br/>
+            28 квітня ви зможете побачити нову неймовірну програму DOROFEEVA, яку артистка вже презентувала у 17 містах України. Це були абсолютні солд-аути в рамках благодійного туру. І тепер ви маєте унікальну нагоду почути «Сенси» наживо. «Думи», «Щоб не було», «вотсап» та інші проникливі та відверті пісні торкнуться ваших сердець. Неможливо пропустити! Під час концерту буде проведений благодійний аукціон для збору коштів на потреби українців. Резиденція Osocor має потужний генератор та надійне укриття. До зустрічі!
+            <br/><strong>Чекаємо на вас!</strong>
+            </p>`,
+            price: 700.00,
+            iso_currency: 'UAH',
+            address: 'Heroyiv Nebesnoyi Sotni Alley, 1, Kyiv, Ukraine, 02000',
+            location: 'Osocor Residence',
+            date: '2023-05-15 19:00:00+03',
+            publish_date: '2023-04-08 00:00:00-04',
             organizer_id: 2,
-            ticket_amount: 50,
-            visibility: 'private',
-            spotify_id: '0987654321'
+            ticket_amount: 140,
+            visibility: 'public',
+            spotify_id: '7wl1m5vgWkCP3cqYVj2noM',
+            poster: 'https://i.imgur.com/RgsqJx4.png',
+            theme: 'Entertainment',
+            format: 'Concerts'
         },
         {
-            title: 'Comedy Night',
-            description: 'Laugh the night away with some of the funniest comedians around!',
-            price: 20.00,
-            iso_currency: 'USD',
-            address: '789 Maple St',
-            location: 'The Comedy Club',
-            date: '2023-06-10 20:00:00-04',
-            publish_date: '2023-05-25 00:00:00-04',
+            title: 'Harry Styles. Love On Tour.',
+            description: `<p>
+            <strong>Love on Tour is the highly anticipated concert tour by the talented and charismatic Harry Styles. </strong>
+            <br/><br/>
+            The tour promises to be a celebration of love, music, and unity. Fans can expect an unforgettable experience as Harry takes the stage with his iconic style, electrifying energy, and soulful performances.
+            <br/><br/>
+            <strong>The concert will feature a mix of Harry's biggest hits</strong><br/>
+            As the lights dim and the music starts, fans will be transported to a magical world where they can sing, dance, and let loose. Every song will be infused with Harry's unique style and passion, leaving fans feeling inspired and uplifted.<br/><br/>
+
+            <strong>The show will be a showcase of Harry's incredible talent</strong><br/>
+            With his infectious charm and magnetic stage presence, Harry will engage the audience and create a special connection that is sure to be remembered long after the concert is over. Love on Tour is more than just a concert; it is an experience that fans will cherish for a lifetime. This tour promises to bring an unforgettable experience to audiences across the world. Fans will be treated to a one-of-a-kind concert event featuring Harry Styles' signature style and sound. Expect to be blown away by his electrifying performances of his hit songs, including "Watermelon Sugar," "Adore You," and "Golden." Don't miss out on this incredible experience of a lifetime. Get your tickets to the Love on Tour today and be prepared to be swept off your feet by the unstoppable force that is Harry Styles.
+            <br/><strong>Waiting for you!</strong>
+            </p>`,
+            price: 2000.00,
+            iso_currency: 'UAH',
+            address: "79, Palats Studentiv Khpi, Pushkins'ka St, Kharkiv, Kharkivs'ka oblast, Ukraine, 61000",
+            location: "Students' Palace of NTU KHPI",
+            date: '2023-06-06 20:00:00+03',
+            publish_date: '2023-04-08 00:00:00-04',
             organizer_id: 3,
-            ticket_amount: 75,
+            ticket_amount: 400,
             visibility: 'public',
-            spotify_id: '2468013579'
+            spotify_id: '6KImCVD70vtIoJWnq6nGn3',
+            poster: 'https://i.imgur.com/z0Dxi8g.jpg',
+            theme: 'Entertainment',
+            format: 'Concerts'
         },
         {
-            title: 'Movie Night',
-            description: 'Bring your lawn chairs and blankets for an outdoor movie under the stars.',
-            price: 0.00,
-            iso_currency: 'USD',
-            address: '321 Oak St',
-            location: 'Town Square',
-            date: '2023-07-05 21:00:00-04',
-            publish_date: '2023-06-20 00:00:00-04',
-            organizer_id: 2,
-            ticket_amount: 200,
+            title: 'Don Toliver Tour',
+            description: `<p>
+            <strong>Don Toliver is taking his electrifying sound on the road with his highly anticipated concert tour.</strong>
+            <br/><br/>
+            Fans of the Houston rapper can expect a high-energy show that is sure to get the crowd moving. With hits like "No Idea" and "After Party," Don Toliver has become one of the hottest names in hip hop, and his live performances are not to be missed.
+            <br/><br/>
+            <strong>From the moment the lights go down</strong><br/>
+            The excitement will be palpable as Don Toliver takes the stage, backed by a full band and dazzling light show. Fans can expect to hear all their favorite songs, as well as some surprises, as Don Toliver delivers a show that is both intimate and explosive. Get ready to experience the electrifying energy of his live show, where he'll perform his biggest hits and bring the house down with his infectious beats and mesmerizing stage presence. This is a concert you won't want to miss.
+            <br/><br/>
+            <strong>The show will be a showcase of Harry's incredible talent</strong><br/>
+            Don't miss your chance to see this rising star as he brings his unique sound to audiences across the country. Get your tickets now and experience the thrill of Don Toliver live in concert! Join us for an unforgettable night as Don Toliver takes the stage to showcase his incredible talent and leave the audience begging for more. Don't wait, get your tickets now before they sell out!
+            <br/><strong>Waiting for you!</strong>
+            </p>`,
+            price: 1400.00,
+            iso_currency: 'UAH',
+            address: "Sumska St, 25, Kharkiv, Kharkivs'ka oblast, Ukraine, 61000",
+            location: "Kharkiv State Academic Opera and Ballet Theatre",
+            date: '2023-06-01 19:00:00+03',
+            publish_date: '2023-04-08 00:00:00-04',
+            organizer_id: 3,
+            ticket_amount: 220,
             visibility: 'public',
-            spotify_id: null
+            spotify_id: '4Gso3d4CscCijv0lmajZWs',
+            poster: 'https://i.imgur.com/dcW6cUR.png',
+            theme: 'Entertainment',
+            format: 'Concerts'
+        },
+        {
+            title: 'After Hours Till Dawn',
+            description: `<p>
+            <strong>The Weeknd is back with his highly-anticipated tour, and it's a show you won't want to miss!</strong>
+            <br/><br/>
+            This spectacular event features an incredible stage setup, breathtaking visual effects, and of course, The Weeknd's signature soulful vocals. The Weeknd's dynamic range and powerful vocals, accompanied by stunning visuals and a state-of-the-art production that will transport you to another dimension. 
+            <br/><br/>
+            <strong>The show will include all of The Weeknd's biggest hits</strong><br/>
+            As well as some new and exclusive material that he's been working on just for this tour. From the electrifying energy of "Can't Feel My Face" to the emotional depth of "Blinding Lights," The Weeknd's performance is sure to leave you speechless. 
+            <br/><br/>
+            <strong>The Weeknd will keep you on the edge of your seat from start to finish</strong><br/>
+            Don't miss out on this once-in-a-lifetime opportunity to experience one of the most talented and unique performers of our time. Get your tickets now and get ready to be blown away by The Weeknd's incredible live show!
+            <br/><strong>Waiting for you!</strong>
+            </p>`,
+            price: 2500.00,
+            iso_currency: 'UAH',
+            address: "Sobornosti St, 58, Poltava, Poltavs'ka oblast, Ukraine, 36000",
+            location: "Palace of leisure 'Lystopad'",
+            date: '2023-05-17 18:00:00+03',
+            publish_date: '2023-04-08 00:00:00-04',
+            organizer_id: 3,
+            ticket_amount: 500,
+            visibility: 'public',
+            spotify_id: '1Xyo4u8uXC1ZmMpatF05PJ',
+            poster: 'https://i.imgur.com/7cVVGxf.png',
+            theme: 'Entertainment',
+            format: 'Concerts'
         },
         {
             title: 'Wine Tasting',
             description: 'Sip and savor some of the best wines from around the world.',
-            price: 50.00,
-            iso_currency: 'USD',
-            address: '987 Vine St',
+            price: 300.00,
+            iso_currency: 'UAH',
+            address: "Konstytutsii Square, 2/2, Kharkiv, Kharkivs'ka oblast, Ukraine, 61000",
             location: 'Wine Cellar',
-            date: '2023-08-20 14:00:00-04',
+            date: '2023-06-20 14:00:00+03',
             publish_date: '2023-08-01 00:00:00-04',
             organizer_id: 1,
             ticket_amount: 30,
             visibility: 'public',
-            spotify_id: null
+            spotify_id: null,
+            poster: 'https://i.imgur.com/CSWhDAP.png',
+            theme: 'Psychology',
+            format: 'Fests'
         },
         {
             title: 'Food Festival',
             description: 'Try delicious dishes from local restaurants and food trucks.',
             price: 0.00,
-            iso_currency: 'USD',
-            address: '456 Main St',
+            iso_currency: 'UAH',
+            address: 'Brovarskyi Ave, 7, Kyiv, Ukraine, 02000',
             location: 'City Square',
-            date: '2023-09-15 12:00:00-04',
+            date: '2023-07-15 12:00:00+03',
             publish_date: '2023-08-30 00:00:00-04',
             organizer_id: 2,
             ticket_amount: 500,
             visibility: 'public',
-            spotify_id: null
+            spotify_id: null,
+            poster: 'https://i.imgur.com/lhkYaF7.png',
+            theme: 'Sports',
+            format: 'Fests'
         },
         {
             title: 'Art Show',
             description: 'Admire the works of talented artists from all over the world.',
-            price: 5.00,
-            iso_currency: 'USD',
-            address: '789 Broadway',
+            price: 50.00,
+            iso_currency: 'UAH',
+            address: "Heroiv ATO St, 118/2к1, Poltava, Poltavs'ka oblast, Ukraine, 36000",
             location: 'Art Gallery',
-            date: '2023-10-20 10:00:00-04',
+            date: '2023-10-20 10:00:00+03',
             publish_date: '2023-10-01 00:00:00-04',
             organizer_id: 3,
             ticket_amount: 100,
             visibility: 'public',
-            spotify_id: null
+            spotify_id: null,
+            poster: 'https://i.imgur.com/Y3vXqhn.png',
+            theme: 'Science',
+            format: 'Workshops'
         },
         {
             title: 'Fashion Show',
@@ -159,26 +282,32 @@ const data = {
             iso_currency: 'USD',
             address: '1234 Fashion Ave',
             location: 'Convention Center',
-            date: '2023-11-15 19:00:00-04',
+            date: '2023-11-15 19:00:00+03',
             publish_date: '2023-11-01 00:00:00-04',
             organizer_id: 1,
             ticket_amount: 200,
             visibility: 'public',
-            spotify_id: null
+            spotify_id: null,
+            poster: 'https://i.imgur.com/nujTUGG.png',
+            theme: 'Business',
+            format: 'Conferences'
         },
         {
             title: 'Holiday Market',
             description: 'Shop for unique gifts and decorations at this festive market.',
             price: 0.00,
-            iso_currency: 'USD',
-            address: '567 Pine St',
+            iso_currency: 'UAH',
+            address: "Bohdana Khmel'nyts'koho St, 10а, L'viv, L'vivs'ka oblast, Ukraine, 79000",
             location: 'Town Square',
-            date: '2023-12-10 12:00:00-04',
+            date: '2023-12-10 12:00:00+03',
             publish_date: '2023-11-20 00:00:00-04',
             organizer_id: 1,
             ticket_amount: 1000,
             visibility: 'public',
-            spotify_id: null
+            spotify_id: null,
+            poster: 'https://i.imgur.com/zaz89e9.png',
+            theme: 'Entertainment',
+            format: 'Fests'
         },
         {
             title: 'New Year\'s Eve Party',
@@ -187,7 +316,7 @@ const data = {
             iso_currency: 'USD',
             address: '890 Oak St',
             location: 'Grand Ballroom',
-            date: '2023-12-31 21:00:00-04',
+            date: '2023-12-31 21:00:00+03',
             publish_date: '2023-12-15 00:00:00-04',
             organizer_id: 2,
             ticket_amount: 150,
@@ -201,7 +330,7 @@ const data = {
             iso_currency: 'USD',
             address: '789 Oak St',
             location: 'Fairgrounds',
-            date: '2023-08-25 12:00:00-04',
+            date: '2023-08-25 12:00:00+03',
             publish_date: '2023-07-15 00:00:00-04',
             organizer_id: 3,
             ticket_amount: 500,
@@ -215,7 +344,7 @@ const data = {
             iso_currency: 'USD',
             address: '456 Elm St',
             location: 'Art Gallery',
-            date: '2023-09-15 10:00:00-04',
+            date: '2023-09-15 10:00:00+03',
             publish_date: '2023-08-25 00:00:00-04',
             organizer_id: 1,
             ticket_amount: 1000,
@@ -229,7 +358,7 @@ const data = {
             iso_currency: 'USD',
             address: '123 Main St',
             location: 'Fitness Center',
-            date: '2023-10-10 08:00:00-04',
+            date: '2023-10-10 08:00:00+03',
             publish_date: '2023-09-25 00:00:00-04',
             organizer_id: 1,
             ticket_amount: 50,

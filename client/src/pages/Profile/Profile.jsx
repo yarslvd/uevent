@@ -263,7 +263,7 @@ const Profile = () => {
                                                                 </div>
                                                                 <div className={styles.time}>
                                                                     <img src="/assets/clock_icon.png" alt="Time" />
-                                                                    <span>{el.date}</span>
+                                                                    <span>{new Date(el.date).toLocaleString('uk-UK', dateOptions).toUpperCase().slice(0, -3)}</span>
                                                                 </div>
                                                             </div>
                                                             <Link to={`/event/${el.id}/edit`}>Edit</Link>

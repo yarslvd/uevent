@@ -28,7 +28,8 @@ const themes = [
   'Politics',
   'Programming',
   'Sports',
-  'Science'
+  'Science',
+  'Entertainment'
 ];
 
 const formats = [
