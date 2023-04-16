@@ -15,7 +15,7 @@ const PublicProfile = () => {
     const { userInfo } = useSelector((state) => state.auth);
 
     useEffect(() => {
-        if(data?.user.id === userInfo.id) {
+        if(data?.user.id === userInfo?.id) {
             navigate('/profile');
         }
     }, [data, userInfo])

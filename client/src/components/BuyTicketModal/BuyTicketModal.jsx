@@ -29,23 +29,11 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
     const [buyTicketsUnauth] = useLazyBuyTicketsUnauthQuery();
 
     const { userInfo } = useSelector((state) => state.auth);
+    console.log(userInfo);
     const navigate = useNavigate();
     useEffect(() => {
         setTotal(+price);
     }, [price])
-
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-      } = useForm({
-        defaultValues: {
-          name: "",
-          email: "",
-          description: "",
-        },
-        mode: "onSubmit",
-    });
 
     const validatePromo = async () => {
         try {
@@ -79,6 +67,7 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
 
     const handlePayment = async (e) => {
         e.preventDefault();
+
         let payment;
         if (userInfo) {
             const ticket = {
@@ -121,7 +110,8 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
             aria-labelledby="Buy modal menu"
             aria-describedby="Choose number of tickets and apply promo"
         >
-            <div className={styles.container}>
+            <div className={styles.container} style={price == 0 && userInfo === null ? { height: '400px' } : userInfo === null ? { height: '550px' }
+                : price == 0 && userInfo ? { height: '370px' } : { height: '500px' }}>
                 <h1>{t('buyTicketModal.title')}</h1>
                 <div style={{ height: '49px', margin: '10px 0' }}>
                     {success && <Alert severity="success">{success}</Alert>}
@@ -140,7 +130,7 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
                         <Button variant='contained' className={styles.applyButton} onClick={validatePromo}>{t('buyTicketModal.apply')}</Button>
                     </div>
                 </div>}
-                <div style={{ height: '50px'}}>
+                <div style={price == 0 ? { display: 'none' } : { height: '50px' }}>
                     {success &&
                         <div style={{ backgroundColor: '#e9e9e9', display: 'inline-block', padding: '5px 15px',
                                     borderRadius: '30px', marginTop: '10px' }}>
@@ -173,6 +163,7 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
                                 placeholder={t('buyTicketModal.enter_email')}
                                 className={styles.inputPromo}
                                 onChange={(e) => {setEmail(e.target.value);}}
+                                required
                             />
                         </div>
                     </div>

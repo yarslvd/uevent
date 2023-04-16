@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pagination, Button, useMediaQuery } from '@mui/material';
+import { Pagination, Button, useMediaQuery, Modal } from '@mui/material';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
@@ -26,12 +26,12 @@ import { useEffect } from 'react';
 import {useUpdateUserMutation} from "../../redux/api/fetchAuthApi";
 import NotFoundPage from "../NotFoundPage/NotFoundPage";
 
-const newEvents = [
-  { title: 'Harry Styles', location: 'Палац студентів НТУ “ХПІ”', time: '16:00', date: '28 КВІ 2023', price: 400 ,image_url: 'https://media.architecturaldigest.com/photos/623e05e0b06d6c32457e4358/master/pass/FINAL%20%20PFHH-notextwlogo.jpg' },
-  { title: 'The Weeknd', location: 'Палац студентів НТУ “ХПІ”', time: '18:00', date: '29 БЕР 2023', price: 400 ,image_url: 'https://www.livenationentertainment.com/wp-content/uploads/2022/03/TR_NationalAsset_TheWeeknd_SG_1200x628.jpg' },
-  { title: 'Океан Ельзи. Світовий тур 2023', location: 'Стадіон Металіст', time: '18:00', date: '17 ЧЕР 2023', price: 550 ,image_url: 'https://vgorode.ua/img/article/11918/24_main-v1640936452.jpg' },
-  { title: 'Океан Ельзи. Світовий тур 2023', location: 'Стадіон Металіст', time: '18:00', date: '17 ЧЕР 2023', price: 550 ,image_url: 'https://vgorode.ua/img/article/11918/24_main-v1640936452.jpg' },
-];
+// const newEvents = [
+//   { title: 'Harry Styles', location: 'Палац студентів НТУ “ХПІ”', time: '16:00', date: '28 КВІ 2023', price: 400 ,image_url: 'https://media.architecturaldigest.com/photos/623e05e0b06d6c32457e4358/master/pass/FINAL%20%20PFHH-notextwlogo.jpg' },
+//   { title: 'The Weeknd', location: 'Палац студентів НТУ “ХПІ”', time: '18:00', date: '29 БЕР 2023', price: 400 ,image_url: 'https://www.livenationentertainment.com/wp-content/uploads/2022/03/TR_NationalAsset_TheWeeknd_SG_1200x628.jpg' },
+//   { title: 'Океан Ельзи. Світовий тур 2023', location: 'Стадіон Металіст', time: '18:00', date: '17 ЧЕР 2023', price: 550 ,image_url: 'https://vgorode.ua/img/article/11918/24_main-v1640936452.jpg' },
+//   { title: 'Океан Ельзи. Світовий тур 2023', location: 'Стадіон Металіст', time: '18:00', date: '17 ЧЕР 2023', price: 550 ,image_url: 'https://vgorode.ua/img/article/11918/24_main-v1640936452.jpg' },
+// ];
 
 const EventPage = () => {
   const navigate = useNavigate()
@@ -47,8 +47,10 @@ const EventPage = () => {
 
   const [page, setPage] = useState(0);
   const [commentInput, setCommentInput] = useState('');
+  const [editing, setEditing] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState(null);
 
-  const [editing, setEditing] = useState(null)
   const [updateComment] = useUpdateEventCommentMutation();
   const [deleteComment] = useDeleteEventCommentMutation();
 
@@ -67,6 +69,10 @@ const EventPage = () => {
     await deleteComment({id: commentId});
     refetch();
 
+  }
+
+  const handleClose = () => {
+    setOpenModal(false);
   }
 
   const onSubmit = async (values) => {
@@ -106,6 +112,7 @@ const EventPage = () => {
       data = await checkPaymentUnauth({id, orderId}).unwrap();
     }
     console.log(data);
+    return data;
   }
 
   const setEditingText = (text) => {
@@ -120,7 +127,13 @@ const EventPage = () => {
       let orderId = searchParams.get('orderId');
       window.history.replaceState({}, 'uevent', window.location.href.split("?")[0]);
 
-      checkEventPayment(orderId);
+      const fetchStatus = async () => {
+        let status = await checkEventPayment(orderId);
+        console.log(status);
+        setPaymentStatus(status);
+      }
+      fetchStatus().catch((err) => console.log(err));
+      setOpenModal(true);
     }
     console.log("refetch")
     refetchEventInfo(id);
@@ -166,7 +179,23 @@ const EventPage = () => {
                     loading="lazy"
                 ></iframe>
             }
-
+            <Modal
+                open={openModal}
+                onClose={handleClose}
+                aria-labelledby="Status"
+                aria-describedby="Status modal"
+            >
+              <div id={styles.containerModalStatus}>
+                {paymentStatus &&
+                  <>
+                    <img src={paymentStatus && paymentStatus.payments[paymentStatus.payments.length - 1].status === 'reverted' ? '/assets/error.png' : '/assets/success.png'} alt="Status Image" />
+                    <h1>{paymentStatus && paymentStatus.payments[paymentStatus.payments.length - 1].status === 'reverted' ?
+                      'Payment has not been found' : 'Successful payment'}</h1>
+                    <Button variant='contained' className={styles.modalBtn} onClick={handleClose}>Close</Button>
+                  </>
+                } 
+              </div>
+            </Modal>
             <iframe
                 title='map'
                 style={{border: 0, borderRadius: '10px', marginTop: '6px'}}

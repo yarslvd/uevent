@@ -204,7 +204,7 @@ const Profile = () => {
                                                 whileTap={{ scale: 0.8 }}
                                                 // onClick={handleLike}
                                             >
-                                                <a href={`${process.env.REACT_APP_BASE_URL}/api/tickets/pdf?event_id=${el.event_id}`} download><img src={'/assets/download.png'} alt="Download Ticket"/></a>
+                                                <a href={`${process.env.REACT_APP_BASE_URL}/api/tickets/pdf?event_id=${el.event_id}`} download target='_blank' rel="noreferrer"><img src={'/assets/download.png'} alt="Download Ticket"/></a>
                                             </motion.div>
                                             <span>Amount: {el.count}</span>
                                         </div>
