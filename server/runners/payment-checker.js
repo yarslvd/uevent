@@ -1,3 +1,4 @@
+const { Sequelize } = require("sequelize");
 const { checkPayment } = require("../helpers/check-payment");
 const { generateTicketPdf } = require("../helpers/generate-pdf");
 const { sendLetter } = require("../utils/nodemailer");
@@ -30,7 +31,7 @@ function startPaymentChecker(payments, users, events, tickets) {
         : 
         {username: payment.email.split("@")[0], first_name: "", last_name: "", email: payment.email}
         
-        let pdf = await generateTicketPdf(user, event, userTickets);
+        let pdf = await generateTicketPdf(user, event, userTickets.length);
         let options = {
           attachments: [
             {
@@ -43,12 +44,13 @@ function startPaymentChecker(payments, users, events, tickets) {
         sendLetter(payment.email, `uevent. Tickets for "${event.title}" event`, "", options);
       }
       if(result.status == 'reverted'){
-        await tickets.destroy({
+        let ticketsCount = await tickets.destroy({
           where: {
             payment_id: payment.id,
             event_id: payment.event_id
           }
         });
+        await events.update({ticket_amount: Sequelize.literal(`ticket_amount + ${ticketsCount}`)}, {where:{id: payment.event_id}, plain: true});
       }
       await payments.update({status: result.status}, {where:{id: payment.id}, plain: true});
     }

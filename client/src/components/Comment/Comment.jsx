@@ -45,7 +45,7 @@ const Comment = ({ id, comment, user, setEditing, deleteComment }) => {
                         <Link className={styles.username} to={`/user/${user.id}`}>{`${user.first_name} ${user.last_name}`}</Link>
                         <p className={styles.comment}>{comment}</p>
                     </div>
-                    {(userInfo.id === user.id) && (
+                    {(userInfo?.id === user.id) && (
                         <div className={styles.editButtons}>
                             <ModeIcon
                                 className={styles.editButton}

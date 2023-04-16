@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Modal, Button, Alert, FormControlLabel, Checkbox } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { useValidatePromoMutation } from '../../redux/api/fetchPromoApi';
 import { useGetEventInfoQuery } from '../../redux/api/fetchEventsApi';
@@ -29,23 +29,11 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
     const [buyTicketsUnauth] = useLazyBuyTicketsUnauthQuery();
 
     const { userInfo } = useSelector((state) => state.auth);
-
+    console.log(userInfo);
+    const navigate = useNavigate();
     useEffect(() => {
         setTotal(+price);
     }, [price])
-
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-      } = useForm({
-        defaultValues: {
-          name: "",
-          email: "",
-          description: "",
-        },
-        mode: "onSubmit",
-    });
 
     const validatePromo = async () => {
         try {
@@ -79,6 +67,7 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
 
     const handlePayment = async (e) => {
         e.preventDefault();
+
         let payment;
         if (userInfo) {
             const ticket = {
@@ -91,7 +80,7 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
             payment = await buyTickets(ticket).unwrap();
         }
         else {
-            const ticket = {
+             const ticket = {
                 event_id: +id,
                 count: itemCount,
                 promo: success ? promocode : '',
@@ -100,9 +89,14 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
             }
             payment = await buyTicketsUnauth(ticket).unwrap();
         }
- 
-        e.target[1].value = payment.data;
-        e.target[2].value = payment.signature;
+
+        if(price == 0) {
+            userInfo && navigate("/profile?tab=1");
+            return true;
+        }
+
+        e.target.data.value = payment.data;
+        e.target.signature.value = payment.signature;
         e.target.submit();
         
         return true;
@@ -116,13 +110,14 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
             aria-labelledby="Buy modal menu"
             aria-describedby="Choose number of tickets and apply promo"
         >
-            <div className={styles.container}>
+            <div className={styles.container} style={price == 0 && userInfo === null ? { height: '400px' } : userInfo === null ? { height: '550px' }
+                : price == 0 && userInfo ? { height: '370px' } : { height: '500px' }}>
                 <h1>{t('buyTicketModal.title')}</h1>
                 <div style={{ height: '49px', margin: '10px 0' }}>
                     {success && <Alert severity="success">{success}</Alert>}
                     {error && <Alert severity="error">{t('buyTicketModal.wrong_promo')}</Alert>}
                 </div>
-                <div className={styles.promocode}>
+                {price > 0 && <div className={styles.promocode}>
                     <h3>{t('buyTicketModal.promo')}</h3>
                     <div className={styles.validate}>
                         <input
@@ -134,8 +129,8 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
                         />
                         <Button variant='contained' className={styles.applyButton} onClick={validatePromo}>{t('buyTicketModal.apply')}</Button>
                     </div>
-                </div>
-                <div style={{ height: '50px'}}>
+                </div>}
+                <div style={price == 0 ? { display: 'none' } : { height: '50px' }}>
                     {success &&
                         <div style={{ backgroundColor: '#e9e9e9', display: 'inline-block', padding: '5px 15px',
                                     borderRadius: '30px', marginTop: '10px' }}>
@@ -143,47 +138,49 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
                         </div>
                     }
                 </div>
-                {userInfo ?
-                    <FormControlLabel 
-                        control={
-                            <Checkbox checked={showVisitor}
-                                sx={{
-                                    color: "#000",
-                                    '&.Mui-checked': {
-                                    color: "#000",
-                                    },
-                                }}
-                            />
-                        }
-                        label={t('buyTicketModal.as_visitor')}
-                        onChange={(e) => setShowVisitor(e.target.checked)}
-                    />
-                    :
-                    <div className={styles.promocode}>
-                        <h3>Email</h3>
-                        <div className={styles.validate} style={{height: "48px"}}>
-                            <input
-                                type="email"
-                                id="email"
-                                placeholder={t('buyTicketModal.enter_email')}
-                                className={styles.inputPromo}
-                                onChange={(e) => {setEmail(e.target.value);}}
-                            />
-                        </div>
-                    </div>
-                }
-                
-                <div className={styles.countContainer}>
-                    <Button className={styles.countBtn} onClick={handleDecrease}>-</Button>
-                    <span>{itemCount}</span>
-                    <Button className={styles.countBtn} onClick={handleIncrease}>+</Button>
-                </div> 
                 <form method="POST" action="https://www.liqpay.ua/api/3/checkout" onSubmit={handlePayment} acceptCharset="utf-8">
+                    {userInfo ?
+                        <FormControlLabel 
+                            control={
+                                <Checkbox checked={showVisitor}
+                                    sx={{
+                                        color: "#000",
+                                        '&.Mui-checked': {
+                                        color: "#000",
+                                        },
+                                    }}
+                                />
+                            }
+                            label={t('buyTicketModal.as_visitor')}
+                            onChange={(e) => setShowVisitor(e.target.checked)}
+                        />
+                        :
+                        <div className={styles.promocode}>
+                            <h3>Email</h3>
+                            <div className={styles.validate} style={{height: "48px"}}>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    placeholder={t('buyTicketModal.enter_email')}
+                                    className={styles.inputPromo}
+                                    onChange={(e) => {setEmail(e.target.value);}}
+                                    required
+                                />
+                            </div>
+                        </div>
+                    }
+                    
+                    <div className={styles.countContainer}>
+                        <Button className={styles.countBtn} onClick={handleDecrease}>-</Button>
+                        <span>{itemCount}</span>
+                        <Button className={styles.countBtn} onClick={handleIncrease}>+</Button>
+                    </div> 
+                
                     <div className={styles.bottom}>
                         <Button variant='contained' className={styles.checkoutBtn} type="submit">{t('buyTicketModal.checkout')}</Button>
                         <span className={styles.price}>{total ? Number(total)?.toFixed(2) : Number(price)?.toFixed(2)} {iso_currency}</span>
-                        <input type="hidden" name="data" value=""/>
-                        <input type="hidden" name="signature" value=""/>
+                        <input type="hidden" id="data" name="data" value=""/>
+                        <input type="hidden" id="signature" name="signature" value=""/>
                     </div>
                 </form> 
             </div>

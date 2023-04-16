@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Box, Tabs, Tab, Avatar, Button, useMediaQuery } from '@mui/material';
 
@@ -48,20 +48,21 @@ function a11yProps(index) {
 
 const Profile = () => {
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
     const auth = useSelector(selectIsAuthMe);
     const matches = useMediaQuery('(max-width:930px)');
     const { userInfo } = useSelector((state) => state.auth);
     console.log(userInfo);
-    let eventTicketsCounts = {}
 
     const [value, setValue] = useState(0);
     const [isLikeActive, setIsLikeActive] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
+    const [initialIndex, setInitialIndex] = useState(0);
 
     const { data: dataFavourites, isLoading: isLoadingFavourites, isError: isErrorFavourites, refetch: refetchFavourites } = useGetFavouritesQuery();
-    const { data: dataSubscriptions, isLoading: isLoadingSubscriptions, isError: isErrorSubscriptions, refetch: refetchSubscriptions } = useGetProfileSubscriptionsQuery(userInfo.id, 1000, 0);
-    const { data: dataTickets, isLoading: isLoadingTickets, isError: isErrorTickets } = useGetTicketsQuery(auth && { user_id: +userInfo.id });
-    const { data: dataEvents, isLoading: isLoadingEvents, isError: isErrorEvents } = useGetEventsQuery({ limit: 1000, id: userInfo?.organizers && userInfo.organizers[0]?.id });
+    const { data: dataSubscriptions, isLoading: isLoadingSubscriptions, isError: isErrorSubscriptions, refetch: refetchSubscriptions } = useGetProfileSubscriptionsQuery(userInfo?.id, 1000, 0);
+    const { data: dataTickets, isLoading: isLoadingTickets, isError: isErrorTickets, refetch: refetchTickets } = useGetTicketsQuery(auth && { user_id: +userInfo?.id });
+    const { data: dataEvents, isLoading: isLoadingEvents, isError: isErrorEvents, refetch: refetchEvents } = useGetEventsQuery({ limit: 1000, id: userInfo?.organizers && userInfo.organizers[0]?.id });
 
     const [deleteFavourite] = useDeleteFavouriteMutation();
     const [deleteSubscription] = useDeleteSubscriptionMutation();
@@ -95,7 +96,20 @@ const Profile = () => {
     useEffect(() => {
         if(!auth) {
             navigate('/login');
+            return;
         }
+        let selectedTab = searchParams.get("tab");
+        if (selectedTab) {
+            if (!isNaN(selectedTab)) {
+                setValue(+selectedTab);
+            }
+            window.history.replaceState({}, 'uevent', window.location.href.split("?")[0]);
+        }
+
+        refetchFavourites();
+        refetchSubscriptions();
+        refetchTickets();
+        refetchEvents();
     }, []);
 
     return (
@@ -115,6 +129,7 @@ const Profile = () => {
                                 '& .Mui-selected': { color: '#1f1f1f !important' },
                             }}
                             centered={matches}
+                            initialSelectedIndex={initialIndex}
                         >
                             <Tab label="Home" {...a11yProps(0)} />
                             <Tab label="My tickets" {...a11yProps(1)} />
@@ -165,13 +180,11 @@ const Profile = () => {
                     </TabPanel>
                     <TabPanel value={value} index={1}>
                         <div className={styles.ticketsContainer}>
-                            {!isLoadingTickets && !isErrorTickets && dataTickets.tickets.count !== 0 ? [...new Set(dataTickets.tickets.rows.map(el => {
+                            {!isLoadingTickets && !isErrorTickets && dataTickets.tickets.count !== 0 ? [...new Set(dataTickets.tickets.map(el => {
                                 const {id, payment_id, can_show, ...rest} = el;  
                                 const {ticket_amount, ...restEvent} = el.event;
                                 rest.event = restEvent;
                                 
-                                eventTicketsCounts[rest.event_id] = eventTicketsCounts[rest.event_id] ? ++eventTicketsCounts[rest.event_id] : 1;
-                                console.log(eventTicketsCounts)
                                 return JSON.stringify(rest)
                             }))].map((el, index) => {
                             el = JSON.parse(el);
@@ -202,9 +215,9 @@ const Profile = () => {
                                                 whileTap={{ scale: 0.8 }}
                                                 // onClick={handleLike}
                                             >
-                                                <img src={'/assets/download.png'} alt="Download Ticket" />
+                                                <a href={`${process.env.REACT_APP_BASE_URL}/api/tickets/pdf?event_id=${el.event_id}`} download target='_blank' rel="noreferrer"><img src={'/assets/download.png'} alt="Download Ticket"/></a>
                                             </motion.div>
-                                            <span>Amount: {eventTicketsCounts[el.event_id]}</span>
+                                            <span>Amount: {el.count}</span>
                                         </div>
                                     </div>
                                 </div>

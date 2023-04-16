@@ -33,6 +33,7 @@ module.exports = function(sequelize) {
     }, {
         sequelize,
         tableName: 'tickets',
+        freezeTableName: true,
         schema: 'public',
         timestamps: false
     });

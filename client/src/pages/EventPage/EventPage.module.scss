@@ -84,6 +84,36 @@
 
 }
 
+#containerModalStatus {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 500px;
+    width: 100%;
+    height: 250px;
+    border-radius: 45px;
+    padding: 50px 60px;
+    background-color: #fff;
+    color: $base-dark-color;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    img {
+        width: 50px;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 26px;
+    }
+
+    .modalBtn {
+        @include default-btn;
+    }
+}
+
 .events {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));

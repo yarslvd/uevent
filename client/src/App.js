@@ -91,7 +91,7 @@ const router = createBrowserRouter([
   }
 ]);
 
-const userToken = Cookies.get("access_token") ? Cookies.get("access_token") : null;
+const userToken = () => {return Cookies.get("access_token") ? Cookies.get("access_token") : null};
 
 function App() {
   const [isLoading, setIsLoading] = useState(true)
@@ -105,7 +105,7 @@ function App() {
       try {
         console.log("waiting to fetch me", isLoading)
         setIsLoading(true)
-        await dispatch(fetchAuthMe(userToken));
+        await dispatch(fetchAuthMe(userToken()));
       }
       catch (e) {
         console.log("error while fetching me: ",e)

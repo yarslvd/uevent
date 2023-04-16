@@ -2,11 +2,55 @@
 const {uid} = require('uid');
 const LiqPay = require("../libs/liqpay/liqpay");
 const db = require('../models/db');
+const { sendLetter } = require('../utils/nodemailer');
+const { generateTicketPdf } = require('./generate-pdf');
 
 const liqpay = new LiqPay(process.env.LIQPAY_PUB, process.env.LIQPAY_PRIV);
 
 async function createPayment(event, userId, count, price, redirect_url, email= "") {
   const order_id = 'order-id-' + uid();
+  if (price == 0) {
+    const payment = await db.payments.create({
+      payer_id: userId,
+      event_id: event.id,
+      order_id: order_id,
+      signature: "free",
+      status: "success",
+      timestamp: Date.now(),
+      email: email
+    });
+
+    // let event = await db.events.findByPk(payment.event_id);
+    let userTickets = await db.tickets.findAll({
+      where: {
+        event_id: event.id,
+        ...(userId ? {user_id: userId} : {payment_id: payment.id})
+      }
+    });
+
+    console.log({userTickets})
+
+    const user = userId ? await db.users.findByPk(userId) : {username: payment.email.split("@")[0], first_name: "", last_name: "", email: payment.email}
+    const order = userId ? "" : `Order: ${order_id}`;
+    const pdf = await generateTicketPdf(user, event, userTickets.length + count, order);
+    const options = {
+      attachments: [
+        {
+          filename: "tickets.pdf",
+          content: pdf,
+          contentType: "application/pdf"
+        }
+      ]
+    }
+    sendLetter(payment.email, `uevent. Tickets for "${event.title}" event`, "", options);
+
+    return {
+      orderId: order_id,
+      paymentId: payment.id,
+      data: "",
+      signature: ""
+    }
+  }
 
   const paymentOptions = {
       'action'         : 'pay',

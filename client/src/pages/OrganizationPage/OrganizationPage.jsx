@@ -75,7 +75,7 @@ const OrganizationPage = () => {
             <div className={styles.container}>
                 <div className={styles.header}>
                     <div className={styles.image}
-                         style={{backgroundImage: `url(${!isLoading && !isError && data.organizer.poster})`}}></div>
+                         style={{backgroundImage: `url(${!isLoading && !isError && data.organizer.image})`}}></div>
                     <div className={styles.info}>
                         <div className={styles.content}>
                             <h3>{!isLoading && !isError && data.organizer.name}</h3>
@@ -99,25 +99,27 @@ const OrganizationPage = () => {
                         </Button>
                     </div>
                 </div>
-                <div className={styles.outerContainer}>
-                    <div className={styles.title}>
-                        <h2>Organization Events</h2>
-                        <img src="/assets/popularEvents_illustration.svg" alt=""/>
-                    </div>
-                    <div className={styles.events_container}>
-                        <div className={styles.events}>
-                            {!isLoadingEvents && !isErrorEvents && dataEvents.events.rows.map((el, index) => (
-                                matches ?
-                                    <Card {...el} key={index}/> :
-                                    <WideCard {...el} key={index}/>
-                            ))}
+                {dataEvents?.events?.count > 0 &&
+                    <div className={styles.outerContainer}>
+                        <div className={styles.title}>
+                            <h2>Organization Events</h2>
+                            <img src="/assets/popularEvents_illustration.svg" alt=""/>
                         </div>
-                        {!isLoadingEvents && !isErrorEvents && dataEvents.events.pages > 1 &&
-                            <Pagination count={dataEvents.events.pages} size={matches ? 'small' : 'large'}
-                                        onChange={handlePageChange} className={styles.pagination}/>
-                        }
+                        <div className={styles.events_container}>
+                            <div className={styles.events}>
+                                {!isLoadingEvents && !isErrorEvents && dataEvents.events.rows.map((el, index) => (
+                                    matches ?
+                                        <Card {...el} key={index}/> :
+                                        <WideCard {...el} key={index}/>
+                                ))}
+                            </div>
+                            {!isLoadingEvents && !isErrorEvents && dataEvents.events.pages > 1 &&
+                                <Pagination count={dataEvents.events.pages} size={matches ? 'small' : 'large'}
+                                            onChange={handlePageChange} className={styles.pagination}/>
+                            }
+                        </div>
                     </div>
-                </div>
+                }
             </div>
         </Layout>
         }
