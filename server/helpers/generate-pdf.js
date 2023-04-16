@@ -42,7 +42,7 @@ const generatePdf = async (template, data) => {
   return pdf;
 }
 
-const generateTicketPdf = async (user, event, count) => {
+const generateTicketPdf = async (user, event, count, order = "") => {
   const parsedDate = new Date(event.date);
   const date = parsedDate.toLocaleString('en-US', dateOptions).toUpperCase();
   const time = parsedDate.toLocaleString('en-US', timeOptions);
@@ -63,6 +63,7 @@ const generateTicketPdf = async (user, event, count) => {
     first_name: user.first_name,
     last_name: user.last_name,
     email: user.email,
+    order: order,
     location_black_icon_binary: fs.readFileSync(path.resolve(__dirname, "../../client/public/assets/location_black_icon.png")).toString("base64"),
     clock_icon_binary: fs.readFileSync(path.resolve(__dirname, "../../client/public/assets/clock_icon.png")).toString("base64")
   }

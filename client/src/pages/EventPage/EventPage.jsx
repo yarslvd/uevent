@@ -54,6 +54,8 @@ const EventPage = () => {
   const [updateComment] = useUpdateEventCommentMutation();
   const [deleteComment] = useDeleteEventCommentMutation();
 
+  const { userInfo } = useSelector((state) => state.auth);
+
   const { register, handleSubmit } = useForm({
     defaultValues: {
       content: ''
@@ -191,7 +193,10 @@ const EventPage = () => {
                     <img src={paymentStatus && paymentStatus.payments[paymentStatus.payments.length - 1].status === 'reverted' ? '/assets/error.png' : '/assets/success.png'} alt="Status Image" />
                     <h1>{paymentStatus && paymentStatus.payments[paymentStatus.payments.length - 1].status === 'reverted' ?
                       'Payment has not been found' : 'Successful payment'}</h1>
-                    <Button variant='contained' className={styles.modalBtn} onClick={handleClose}>Close</Button>
+                      <Button variant='contained' className={styles.modalBtn} onClick={handleClose}>Close</Button>
+                      {/* {paymentStatus && paymentStatus.payments[paymentStatus.payments.length - 1].status === 'success' && userInfo && 
+                        <Button variant='contained' className={styles.modalBtn} onClick={() => navigate("/profile?tab=2")}>Your tickets</Button>
+                      } */}
                   </>
                 } 
               </div>

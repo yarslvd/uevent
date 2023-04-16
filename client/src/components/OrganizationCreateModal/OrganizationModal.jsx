@@ -53,6 +53,7 @@ const OrganizationModal = ({ open, handleClose, organizer }) => {
                 formData.append('avatar', avatar);
                 await uploadAvatar({file: formData, id: res.data.organizer.id});
             }
+            window.location.replace(window.location.href + '?tab=2');
         }
 
         handleClose();

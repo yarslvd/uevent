@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Box, Tabs, Tab, Avatar, Button, useMediaQuery } from '@mui/material';
 
@@ -48,6 +48,7 @@ function a11yProps(index) {
 
 const Profile = () => {
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
     const auth = useSelector(selectIsAuthMe);
     const matches = useMediaQuery('(max-width:930px)');
     const { userInfo } = useSelector((state) => state.auth);
@@ -56,6 +57,7 @@ const Profile = () => {
     const [value, setValue] = useState(0);
     const [isLikeActive, setIsLikeActive] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
+    const [initialIndex, setInitialIndex] = useState(0);
 
     const { data: dataFavourites, isLoading: isLoadingFavourites, isError: isErrorFavourites, refetch: refetchFavourites } = useGetFavouritesQuery();
     const { data: dataSubscriptions, isLoading: isLoadingSubscriptions, isError: isErrorSubscriptions, refetch: refetchSubscriptions } = useGetProfileSubscriptionsQuery(userInfo?.id, 1000, 0);
@@ -96,6 +98,14 @@ const Profile = () => {
             navigate('/login');
             return;
         }
+        let selectedTab = searchParams.get("tab");
+        if (selectedTab) {
+            if (!isNaN(selectedTab)) {
+                setValue(+selectedTab);
+            }
+            window.history.replaceState({}, 'uevent', window.location.href.split("?")[0]);
+        }
+
         refetchFavourites();
         refetchSubscriptions();
         refetchTickets();
@@ -119,6 +129,7 @@ const Profile = () => {
                                 '& .Mui-selected': { color: '#1f1f1f !important' },
                             }}
                             centered={matches}
+                            initialSelectedIndex={initialIndex}
                         >
                             <Tab label="Home" {...a11yProps(0)} />
                             <Tab label="My tickets" {...a11yProps(1)} />

@@ -24,7 +24,8 @@ const ShowVisitorsModal = ({ open, handleClose, tickets, isLoading }) => {
               </div>
           </div>
           <div className={styles.content}>
-            {!isLoading && tickets.map((el, index) => {
+            {!isLoading && [...new Set(tickets.map(el => JSON.stringify(el)))].map((el, index) => {
+              el = JSON.parse(el);
               if(el.can_show) {
                 return (
                   <Link to={`/user/${el.user.id}`} key={index}>

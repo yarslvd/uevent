@@ -43,6 +43,8 @@ const about = [
 ];
 
 export const ua = {
+    yes: "Так",
+    no: "Ні",
     menu: {
         items,
         login: 'Увійти'
@@ -92,4 +94,11 @@ export const ua = {
         success_promo: 'Промокод було успішно застосовано!'
     },
     welcome: 'Привіт козаче',
+    event : {
+        title: 'Назва події',
+        location: 'Місце проведення',
+        organizer: 'Організатор: {{name}}',
+        free: 'Бузкоштовно',
+        ticketsLeft: '{{count}} залишилось квитків',
+    },
 };

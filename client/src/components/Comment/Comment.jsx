@@ -6,8 +6,10 @@ import ModeIcon from '@mui/icons-material/Mode';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import styles from './Comment.module.scss';
+import {useTranslation} from "react-i18next";
 
 const Comment = ({ id, comment, user, setEditing, deleteComment }) => {
+    const { t } = useTranslation();
     const { userInfo } = useSelector((state) => state.auth);
     const [modalOpen, setModalOpen] = useState(false);
     const handleClose = () => {
@@ -25,10 +27,10 @@ const Comment = ({ id, comment, user, setEditing, deleteComment }) => {
                 <>
                     <div className={styles.modalContainer}>
                         <div className={styles.modal}>
-                            <p >Ви впевнені , що хочете видалити коментар?</p>
+                            <p>{t('deleteComment')}</p>
                             <div className={styles.modalButtons}>
-                                <Button variant='contained' onClick={() => {deleteComment(id);handleClose()}}>Так</Button>
-                                <Button variant='contained' onClick={() => handleClose()}>Ні</Button>
+                                <Button variant='contained' onClick={() => {deleteComment(id);handleClose()}}>{t('yes')}</Button>
+                                <Button variant='contained' onClick={() => handleClose()}>{t('no')}</Button>
                             </div>
                         </div>
                     </div>
@@ -55,7 +57,7 @@ const Comment = ({ id, comment, user, setEditing, deleteComment }) => {
                 <div className={styles.bottom}>
                     19.03.03
                 </div>
-              </div>
+            </div>
         </>
     );
 };

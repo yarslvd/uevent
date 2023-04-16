@@ -25,7 +25,7 @@
         >{{ eventTitle }}</h1>
     <span
         style="font-size: 20px;"
-        >{{eventDescription}}</span>
+        >{{format}}, {{theme}}</span>
     <div
         style="padding: 20px; background-color: #F7F7F7; width: calc(100% - 60px); margin-top: 100px; border-radius: 20px;"
         >
@@ -56,6 +56,11 @@
         <div>
             <span style="font-size: 24px;">Total price:</span>
             <h3 style="margin: 0; font-weight: 700; font-size: 50px;">{{totalPrice}} {{isoCurrency}}</h3>
+        </div>
+    </div>
+    <div>
+        <div>
+            <span>{{order}}</span>
         </div>
     </div>
   </body>
