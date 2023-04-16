@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Modal, Button, Alert, FormControlLabel, Checkbox } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { useValidatePromoMutation } from '../../redux/api/fetchPromoApi';
 import { useGetEventInfoQuery } from '../../redux/api/fetchEventsApi';
@@ -29,7 +29,7 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
     const [buyTicketsUnauth] = useLazyBuyTicketsUnauthQuery();
 
     const { userInfo } = useSelector((state) => state.auth);
-
+    const navigate = useNavigate();
     useEffect(() => {
         setTotal(+price);
     }, [price])
@@ -100,6 +100,11 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
             }
             payment = await buyTicketsUnauth(ticket).unwrap();
         }
+
+        if(price == 0) {
+            userInfo && navigate("/profile");
+            return true;
+        }
  
         e.target[1].value = payment.data;
         e.target[2].value = payment.signature;
@@ -122,7 +127,7 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
                     {success && <Alert severity="success">{success}</Alert>}
                     {error && <Alert severity="error">{t('buyTicketModal.wrong_promo')}</Alert>}
                 </div>
-                <div className={styles.promocode}>
+                {price > 0 && <div className={styles.promocode}>
                     <h3>{t('buyTicketModal.promo')}</h3>
                     <div className={styles.validate}>
                         <input
@@ -134,7 +139,7 @@ const BuyTicketModal = ({ open, handleClose, price, iso_currency }) => {
                         />
                         <Button variant='contained' className={styles.applyButton} onClick={validatePromo}>{t('buyTicketModal.apply')}</Button>
                     </div>
-                </div>
+                </div>}
                 <div style={{ height: '50px'}}>
                     {success &&
                         <div style={{ backgroundColor: '#e9e9e9', display: 'inline-block', padding: '5px 15px',

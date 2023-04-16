@@ -42,7 +42,7 @@ const generatePdf = async (template, data) => {
   return pdf;
 }
 
-const generateTicketPdf = async (user, event, tickets) => {
+const generateTicketPdf = async (user, event, count) => {
   const parsedDate = new Date(event.date);
   const date = parsedDate.toLocaleString('en-US', dateOptions).toUpperCase();
   const time = parsedDate.toLocaleString('en-US', timeOptions);
@@ -57,8 +57,8 @@ const generateTicketPdf = async (user, event, tickets) => {
     date: `${date} ${time}`,
     pricePerTicket: event.price,
     isoCurrency: event.iso_currency,
-    ticketsAmount: tickets.length,
-    totalPrice: tickets.length * event.price,
+    ticketsAmount: count,
+    totalPrice: count * event.price,
     username: user.username,
     first_name: user.first_name,
     last_name: user.last_name,

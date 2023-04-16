@@ -75,7 +75,7 @@ const OrganizationPage = () => {
             <div className={styles.container}>
                 <div className={styles.header}>
                     <div className={styles.image}
-                         style={{backgroundImage: `url(${!isLoading && !isError && data.organizer.poster})`}}></div>
+                         style={{backgroundImage: `url(${!isLoading && !isError && data.organizer.image})`}}></div>
                     <div className={styles.info}>
                         <div className={styles.content}>
                             <h3>{!isLoading && !isError && data.organizer.name}</h3>

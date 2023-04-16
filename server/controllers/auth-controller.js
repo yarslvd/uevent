@@ -28,7 +28,7 @@ const handlePrevPayments = async (user) => {
     });
 
     for(const payment of payments) {
-        console.log("bebr");
+        // console.log("bebr");
         await db.tickets.update({user_id: user.id}, {
             where: {
                 payment_id: payment.id
@@ -109,7 +109,6 @@ const register = async (req, res) => {
 
         let token = generateRefreshToken(user.dataValues.id, user.dataValues.username, user.dataValues.email);
         const link = `${process.env.SERVER_ADDRESS}:3000/confirm/${token}`;
-        console.log("check 3");
 
         let dbToken = await createToken(token, res)
         if (dbToken === null) {
@@ -173,7 +172,13 @@ const login = async (req, res) => {
         const user = await users.findOne({
             where: {
                 email : request.email
-            }
+            },
+            include: [
+                {
+                    model: db.organizers,
+                    as: "organizers"
+                }
+            ]
         });
 
         if (user === null) {
@@ -212,6 +217,7 @@ const login = async (req, res) => {
             email: user.dataValues.email,
             username: user.dataValues.username,
             image: user.dataValues.image,
+            organizers: user.dataValues.organizers,
             token: accessToken,
         })
     }
@@ -226,7 +232,6 @@ const login = async (req, res) => {
 const getMe = async (req, res) => {
     try {
       const info = await verifyToken(req.cookies.access_token, req.cookies.refresh_token, res);
-      console.log(info);
 
       if (!info) {
         res.clearCookie("token");
@@ -242,7 +247,7 @@ const getMe = async (req, res) => {
 
 const refresh = async (req, res) => {
     try {
-        console.log(req.body);
+        // console.log(req.body);
         const request = checkFields(req.body, ['refresh_token'])
         if (!request) {
             return res.status(StatusCodes.BAD_REQUEST).json({
@@ -304,9 +309,9 @@ const logout = (req, res) => {
 const emailConfirm = async (req, res) => {
     try {
         const token = req.params.confirm_token;
-        console.log(token)
+        // console.log(token)
         let user = await getUserByToken(token, res);
-        console.log(user);
+        // console.log(user);
         if (user === null) {
             return;
         }

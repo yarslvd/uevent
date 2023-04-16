@@ -29,7 +29,8 @@ module.exports = function(sequelize) {
       }
     },
     image: {
-      type: DataTypes.TEXT
+      type: DataTypes.TEXT,
+      defaultValue: "https://i.imgur.com/sg3yoI0.png"
     }
   }, {
     sequelize,

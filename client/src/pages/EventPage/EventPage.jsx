@@ -59,7 +59,7 @@ const EventPage = () => {
     mode: 'onChange'
   });
 
-  const { isLoading: isLoadingInfo, data: dataInfo, error: errorInfo } = useGetEventInfoQuery(id);
+  const { isLoading: isLoadingInfo, data: dataInfo, error: errorInfo, refetch: refetchEventInfo } = useGetEventInfoQuery(id);
   const { isLoading: isLoadingComments, data: dataComments, error: errorComments, refetch } = useGetEventCommentsQuery({id, page});
   const { isLoading: isLoadingEvents, data: dataEvents, error: errorEvents } = useGetEventsQuery({ limit: 4, page: 0, organizers: dataInfo?.event.organizer_id });
 
@@ -122,6 +122,8 @@ const EventPage = () => {
 
       checkEventPayment(orderId);
     }
+    console.log("refetch")
+    refetchEventInfo(id);
   }, [])
 
   if (!isLoadingInfo && !dataInfo) {

@@ -13,7 +13,7 @@ import {
 const OrganizationModal = ({ open, handleClose, organizer }) => {
     const inputFileRef = useRef(null);
     const [avatar, setAvatar] = useState(null);
-    const [imageUrl, setImageUrl] = useState(organizer?organizer.image:"");
+    const [imageUrl, setImageUrl] = useState(organizer?organizer.image:"https://i.imgur.com/sg3yoI0.png");
 
     const [newOrganization] = useNewOrganizationMutation();
     const [updateOrganization] = useUpdateOrganizationMutation();

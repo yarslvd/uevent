@@ -1,4 +1,5 @@
 const { StatusCodes } = require('http-status-codes');
+const { Sequelize } = require('sequelize');
 const {uid} = require('uid');
 const { generateTicketPdf } = require('../helpers/generate-pdf');
 const LiqPay = require("../libs/liqpay/liqpay");
@@ -49,7 +50,6 @@ const confirmPay = (req, res) => {
 
 const checkPayment = async (req,res) => {
   try{
-      console.log("auth");
       const eventId = req.params.event_id;
       const payments = await db.payments.findAll({
         include: [
@@ -72,7 +72,7 @@ const checkPayment = async (req,res) => {
       
       
       let resultPayments = await checkPayments(payments);
-
+      
       res.json({payments: resultPayments})
   }
   catch(error) {
@@ -147,7 +147,7 @@ const checkPayments = async (payments) => {
           });
 
           let user = payment.payer_id ? await db.users.findByPk(payment.payer_id) : {username: payment.email.split("@")[0], first_name: "", last_name: "", email: payment.email}
-          let pdf = await generateTicketPdf(user, event, userTickets);
+          let pdf = await generateTicketPdf(user, event, userTickets.length);
           let options = {
             attachments: [
               {
@@ -170,6 +170,13 @@ const checkPayments = async (payments) => {
           await db.payments.update({status: "reverted"}, {where:{id: payment.id}, plain: true});
           payment.status = "reverted"
           payment.error = data.err_description;
+          let ticketsCount = await db.tickets.destroy({
+            where: {
+              payment_id: payment.id,
+              event_id: payment.event_id
+            }
+          });
+          await db.events.update({ticket_amount: Sequelize.literal(`ticket_amount + ${ticketsCount}`)}, {where:{id: payment.event_id}, plain: true});
         }
         resultPayments.push({
           id: payment.id,
@@ -178,7 +185,7 @@ const checkPayments = async (payments) => {
         })
         resolve();
       });
-    })
+    }).catch((err) => {throw err})
 
     await liqpayCheck();
   }

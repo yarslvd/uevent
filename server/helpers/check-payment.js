@@ -20,6 +20,9 @@ let checkPayment = (payment) => new Promise((resolve) => {
       payment.status = "pending";
       break;
     default:
+      if(data.code == "payment_not_found") {
+        break;
+      }
       payment.status = "reverted"
       payment.error = data.err_description;
     }

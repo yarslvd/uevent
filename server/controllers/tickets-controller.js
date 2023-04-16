@@ -2,18 +2,19 @@ const fs = require('fs');
 const {checkFields} = require("../helpers/object-fields");
 const {StatusCodes} = require("http-status-codes");
 const db = require("../models/db");
-const {Op} = require("sequelize");
+const {Op, Sequelize} = require("sequelize");
 const {checkUserAndEvent} = require("../helpers/check-user-event");
 const { createPayment } = require("../helpers/create-payment");
 const {waitTx} = require("../helpers/wait-tx");
 const { createUrlParams } = require("../helpers/url-helpers");
 const { processPagination } = require("../helpers/db-helper");
-const { generatePdf } = require("../helpers/generate-pdf");
+const { generatePdf, generateTicketPdf } = require("../helpers/generate-pdf");
+const { sequelize } = require('../models/db');
 
 
 const create = async (req, res) => {
     try {
-        console.log(req.body)
+        console.log("tickets controller/create:", req.body);
         const request = checkFields(req.body, [
             'event_id',
             'count',
@@ -67,7 +68,7 @@ const create = async (req, res) => {
         await db.events.update(event.dataValues, {where: {id: event.dataValues.id}, plain: true})
 
         const can_show = req.body.hasOwnProperty("can_show") ? Boolean(req.body.can_show) : true;
-        console.log({can_show})
+        console.log({request});
         for (let i = 0; i < request.count; i++) {
             await db.tickets.create({
                 event_id : request.event_id,
@@ -235,28 +236,33 @@ const get = async (req, res) => {
 
 const getUserTickets = async (req, res) => {
     try {
-        console.log(req.query);
         let page = req.query.page ?? 0;
         let limit = req.query.limit ?? 15;
         page = Number(page);
         limit = Number(limit);
 
         let parameters = {
+            attributes: ["event_id",[Sequelize.fn("COUNT", "event_id"), "count"]],
             where: {
                 user_id: req.user.id
             },
             include: [
                 {
                     model: db.events,
-                    as: 'event'
+                    as: 'event',
+                    required: true,
+                    order: [[sequelize.col("tickets.id")]],
                 }
-            ]
+            ],
+            // raw:true,
+            group: ["event_id", "event.id"],
         }
 
-        let url = `${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`
-        let path = req.originalUrl.split('?')[0] + createUrlParams(req.query)
-        const tickets = await processPagination(url, path, db.tickets, limit, page, parameters);
-
+        const tickets = await db.tickets.findAll(parameters);
+        // let url = `${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`
+        // let path = req.originalUrl.split('?')[0] + createUrlParams(req.query)
+        // const tickets = await processPagination(url, path, db.tickets, limit, page, parameters);
+        // console.log(tickets.rows)
         res.json({
             tickets
         })
@@ -272,6 +278,7 @@ const getUserTickets = async (req, res) => {
 const getPdf = async (req, res) => {
     try {
         const userId = req.user.id;
+        console.log("getPDF")
         if (req.query.event_id === null) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 error: "Some fields are missed",
@@ -302,26 +309,15 @@ const getPdf = async (req, res) => {
             });
         }
 
-        const data = {
-            eventTitle: event.title,
-            eventDescription: event.description,
-            format: event.format,
-            theme: event.theme,
-            address: event.address,
-            location: event.location,
-            date: event.date,
-            pricePerTicket: event.price,
-            isoCurrency: event.iso_currency,
-            ticketsAmount: tickets.length,
-            totalPrice: tickets.length * event.price,
-            username: req.user.username,
-            first_name: req.user.first_name,
-            last_name: req.user.last_name,
-            email: req.user.email
-        }
+        let userTickets = await db.tickets.findAll({
+            where: {
+                event_id: event.id,
+                user_id: req.user.id
+            }
+        });
 
-        const template = fs.readFileSync("./assets/ticket.html", { encoding: "utf8" });
-        const pdf = await generatePdf(template, data);
+        let user = req.user;
+        let pdf = await generateTicketPdf(user, event, userTickets.length);
 
         return res.status(StatusCodes.OK).contentType("application/pdf").send(pdf);
     }
