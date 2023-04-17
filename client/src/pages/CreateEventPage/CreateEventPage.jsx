@@ -14,6 +14,7 @@ import { useUploadPosterMutation, useCreateEventMutation, useUpdateEventMutation
 import { useAddPromoMutation, useDeletePromoMutation } from '../../redux/api/fetchPromoApi';
 
 import styles from './CreateEventPage.module.scss';
+import { useTranslation } from 'react-i18next';
 
 const themes = [
   'Business',
@@ -34,11 +35,20 @@ const formats = [
   'Concerts'
 ];
 
+function getTimezoneOffset() {
+    function z(n){return (n<10? '0' : '') + n}
+    var offset = new Date().getTimezoneOffset();
+    var sign = offset < 0? '+' : '-';
+    offset = Math.abs(offset);
+    return sign + z(offset/60 | 0) + ":" + z(offset%60);
+  }
+
+
 const CreateEventPage = () => {
     const auth = useSelector(selectIsAuthMe);
     const { id } = useParams();
     const navigate = useNavigate();
-
+    const { t } = useTranslation();
     const { userInfo } = useSelector((state) => state.auth);
 
     //States
@@ -86,7 +96,10 @@ const CreateEventPage = () => {
     const getFullTime = (date, time) => {
         const dateNew = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
         const timeNew = `${time.getHours()}:${time.getMinutes()}`;
-        return `${dateNew} ${timeNew}:00+00`
+
+        const timezoneOffset = getTimezoneOffset();
+        
+        return `${dateNew} ${timeNew}:00${timezoneOffset}`
     }
 
     const onSubmit = async (values) => {
@@ -233,19 +246,21 @@ const CreateEventPage = () => {
                         `url(${imageUrl})`,
                     }}
                 >
-                    <span>No Image</span>
+                    <span>{t('createEvent.noImage')}</span>
                     <label htmlFor="img">
                         <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24">
-                            <path d="M19 7v2.99s-1.99.01-2 0V7h-3s.01-1.99 0-2h3V2h2v3h3v2h-3zm-3 4V8h-3V5H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8h-3zM5 19l3-4 2 3 3-4 4 5H5z"></path>
+                        <path d="M19 7v2.99s-1.99.01-2 0V7h-3s.01-1.99 0-2h3V2h2v3h3v2h-3zm-3 4V8h-3V5H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8h-3zM5 19l3-4 2 3 3-4 4 5H5z"></path>
                         </svg>
                     </label>
                     <input
                         type="file"
                         id='img'
                         accept="image/png, image/jpg, image/jpeg"
-                        {...register('image', {onChange: (e) => {
+                        {...register('image', {
+                        onChange: (e) => {
                             setImageUrl(URL.createObjectURL(e.target.files[0]));
-                        }})}
+                        }
+                        })}
                     />
                 </div>
                 <div className={styles.info}>
@@ -253,81 +268,92 @@ const CreateEventPage = () => {
                 </div>
                 <div className={styles.content}>
                     <div className={styles.details}>
-                        <h3>Деталі</h3>
+                        <h3>{t('createEvent.details.title')}</h3>
                         <div className={styles.all_details}>
-                            <div className={styles.content_details}>
-                                <div className={styles.promoCreator}>
-                                    <div className={styles.inputs}>
-                                        <TextField
-                                            id="promocode"
-                                            label="Promocode"
-                                            variant="standard"
-                                            value={promocode}
-                                            onChange={(e) => setPromocode(e.target.value)}
-                                        />
-                                        <TextField
-                                            label="%"
-                                            value={percentage}
-                                            onChange={(e) => setPercentage(e.target.value)}
-                                            type="number"
-                                            variant="standard"
-                                            inputProps={{
-                                                min: 0,
-                                                max: 100,
-                                                step: 1,
-                                            }}
-                                        />
-                                        <Button variant='contained' className={styles.add_btn} onClick={handleAddPromo}>Add</Button>
-                                    </div>
-                                </div>
-                                <Stack direction="row" spacing={1} sx={{ maxWidth: '920px', overflowX: 'auto', padding: '10px' }}>
-                                    {promocodeList.map((el, index) => (
-                                        <Chip label={el.promoLabel} color="default" onDelete={() => handleDeletePromo(el.promoLabel)} key={index} />
-                                    ))}
-                                </Stack>
+                        <div className={styles.content_details}>
+                            <div className={styles.promoCreator}>
+                            <div className={styles.inputs}>
+                                <TextField
+                                id="promocode"
+                                label={t('createEvent.details.promocodeLabel')}
+                                variant="standard"
+                                value={promocode}
+                                onChange={(e) => setPromocode(e.target.value)}
+                                />
+                                <TextField
+                                label="%"
+                                value={percentage}
+                                onChange={(e) => setPercentage(e.target.value)}
+                                type="number"
+                                variant="standard"
+                                inputProps={{
+                                    min: 0,
+                                    max: 100,
+                                    step: 1,
+                                }}
+                                />
+                                <Button variant='contained' className={styles.add_btn} onClick={handleAddPromo}>
+                                {t('createEvent.details.addButtonLabel')}
+                                </Button>
                             </div>
-                            <FormControl sx={{width: '100%', maxWidth: '280px', marginRight: '20px' }}>
-                                <InputLabel id="Theme">Theme</InputLabel>
-                                <Select
-                                    labelId="Theme"
-                                    id="Theme"
-                                    value={theme}
-                                    label="Theme"
-                                    {...register('theme', { required: !isEditEvent(), onChange: (e) => setTheme(e.target.value) })}
-                                >
-                                    {themes.map((el, index) => (
-                                        <MenuItem value={el} key={index}>{el}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                            <FormControl sx={{width: '100%', maxWidth: '280px', marginRight: '20px'}}>
-                                <InputLabel id="Format">Format</InputLabel>
-                                <Select
-                                    labelId="Format"
-                                    id="Format"
-                                    value={format}
-                                    label="Format"
-                                    {...register('format', { required: !isEditEvent()})}
-                                        onChange={(e) => setFormat(e.target.value)}
-                                    >
-                                    {formats.map((el, index) => (
-                                        <MenuItem value={el} key={index}>{el}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                            <FormControl sx={{width: '100%', maxWidth: '280px' }}>
-                                <InputLabel id="Visitors visibility">Visitors visibility</InputLabel>
-                                <Select
-                                    labelId="Visitors visibility"
-                                    id="Visitors visibility"
-                                    value={visibility}
-                                    label="Visitors visibility"
-                                    {...register('visibility', { required: !isEditEvent(), onChange:(e) => setVisibility(e.target.value) })}
-                                >
-                                    <MenuItem value={'public'}>Visible</MenuItem>
-                                    <MenuItem value={'private'}>Hidden</MenuItem>
-                                </Select>
-                            </FormControl>
+                            </div>
+                            <Stack direction="row" spacing={1} sx={{ maxWidth: '920px', overflowX: 'auto', padding: '10px' }}>
+                            {promocodeList.map((el, index) => (
+                                <Chip
+                                label={el.promoLabel}
+                                color="default"
+                                onDelete={() => handleDeletePromo(el.promoLabel)}
+                                key={index}
+                                />
+                            ))}
+                            </Stack>
+                        </div>
+                        <FormControl sx={{ width: '100%', maxWidth: '280px', marginRight: '20px' }}>
+                            <InputLabel id="Theme">{t('createEvent.details.themeLabel')}</InputLabel>
+                            <Select
+                            labelId="Theme"
+                            id="Theme"
+                            value={theme}
+                            label={t('createEvent.details.themeLabel')}
+                            {...register('theme', { required: !isEditEvent(), onChange: (e) => setTheme(e.target.value) })}
+                            >
+                            {themes.map((el, index) => (
+                                <MenuItem value={el} key={index}>
+                                {el}
+                                </MenuItem>
+                            ))}
+                            </Select>
+                        </FormControl>
+                        <FormControl sx={{ width: '100%', maxWidth: '280px', marginRight: '20px' }}>
+                            <InputLabel id="Format">{t('createEvent.details.formatLabel')}</InputLabel>
+                            <Select
+                            labelId="Format"
+                            id="Format"
+                            value={format}
+                            label={t('createEvent.details.formatLabel')}
+                            {...register('format', { required: !isEditEvent() })}
+                            onChange={(e) => setFormat(e.target.value)}
+                            >
+                            {formats.map((el, index) => (
+                                <MenuItem value={el} key={index}>
+                                {el}
+                                </MenuItem>
+                            ))}
+                            </Select>
+                        </FormControl>
+                        <FormControl sx={{ width: '100%', maxWidth: '280px' }}>
+                            <InputLabel id="Visitors visibility">{t('createEvent.details.visibilityLabel')}</InputLabel>
+                            <Select
+                            labelId="Visitors visibility"
+                            id="Visitors visibility"
+                            value={visibility}
+                            label={t('createEvent.details.visibilityLabel')}
+                            {...register('visibility', { required: !isEditEvent(), onChange: (e) => setVisibility(e.target.value) })}
+                            >
+                            <MenuItem value={'public'}>{t('createEvent.details.visibleOption')}</MenuItem>
+                            <MenuItem value={'private'}>{t('createEvent.details.hiddenOption')}</MenuItem>
+                            </Select>
+                        </FormControl>
                         </div>
                     </div>
                     <RichEditor name="description" control={control} defaultValue="" formState={formState} description={id && data && !isLoading && !error && data.event.description}/>

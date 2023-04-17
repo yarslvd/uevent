@@ -152,59 +152,80 @@ const EventPage = () => {
     <Layout>
       <div className={styles.header}>
         <div
-            className={styles.image}
-            style={{
-              backgroundImage:
-                  `url(${!isLoadingInfo && !errorInfo && dataInfo.event?.poster})`,
-            }}
+          className={styles.image}
+          style={{
+            backgroundImage: `url(${
+              !isLoadingInfo && !errorInfo && dataInfo.event?.poster
+            })`,
+          }}
         ></div>
         <div className={styles.info}>
-          <EventInfo {...dataInfo?.event} event_id={dataInfo?.id} isLoading={isLoadingInfo} error={errorInfo}/>
+          <EventInfo {...dataInfo?.event} event_id={dataInfo?.id} isLoading={isLoadingInfo} error={errorInfo} />
         </div>
         <div className={styles.content}>
           <div className={styles.description}>
-            <h2>Про подію</h2>
+            <h2>{t('eventPage.eventInfo.title')}</h2>
             <div className={styles.text}>
               {!isLoadingInfo && !errorInfo && parse(dataInfo.event?.description)}
             </div>
           </div>
           <div className={styles.embed}>
-            {!isLoadingInfo && !errorInfo && dataInfo.event.spotify_id &&
-                <iframe
-                    title="spotify"
-                    src={`https://open.spotify.com/embed/artist/${dataInfo.event.spotify_id}?utm_source=generator`}
-                    width="100%"
-                    height="352"
-                    frameBorder="0"
-                    allowFullScreen=""
-                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                    loading="lazy"
-                ></iframe>
-            }
+            {!isLoadingInfo && !errorInfo && dataInfo.event.spotify_id && (
+              <iframe
+                title="spotify"
+                src={`https://open.spotify.com/embed/artist/${dataInfo.event.spotify_id}?utm_source=generator`}
+                width="100%"
+                height="352"
+                frameBorder="0"
+                allowFullScreen=""
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                loading="lazy"
+              ></iframe>
+            )}
             <Modal
-                open={openModal}
-                onClose={handleClose}
-                aria-labelledby="Status"
-                aria-describedby="Status modal"
+              open={openModal}
+              onClose={handleClose}
+              aria-labelledby="Status"
+              aria-describedby="Status modal"
             >
               <div id={styles.containerModalStatus}>
-                {paymentStatus &&
+                {paymentStatus && (
                   <>
-                    <img src={paymentStatus && paymentStatus.payments[paymentStatus.payments.length - 1].status === 'reverted' ? '/assets/error.png' : '/assets/success.png'} alt="Status Image" />
-                    <h1>{paymentStatus && paymentStatus.payments[paymentStatus.payments.length - 1].status === 'reverted' ?
-                      'Payment has not been found' : 'Successful payment'}</h1>
-                      <Button variant='contained' className={styles.modalBtn} onClick={handleClose}>Close</Button>
-                      {/* {paymentStatus && paymentStatus.payments[paymentStatus.payments.length - 1].status === 'success' && userInfo && 
-                        <Button variant='contained' className={styles.modalBtn} onClick={() => navigate("/profile?tab=2")}>Your tickets</Button>
-                      } */}
+                    <img
+                      src={
+                        paymentStatus &&
+                        paymentStatus.payments[paymentStatus.payments.length - 1]
+                          .status === "reverted"
+                          ? "/assets/error.png"
+                          : "/assets/success.png"
+                      }
+                      alt="Status Image"
+                    />
+                    <h1>
+                      {paymentStatus &&
+                        paymentStatus.payments[paymentStatus.payments.length - 1]
+                          .status === "reverted"
+                        ? t('eventPage.modalWindow.paymentNotFound')
+                        : t('eventPage.modalWindow.paymentSuccessful')}
+                    </h1>
+                    <Button
+                      variant="contained"
+                      className={styles.modalBtn}
+                      onClick={handleClose}
+                    >
+                      {t('eventPage.modalWindow.closeBtn')}
+                    </Button>
+                    {/* {paymentStatus && paymentStatus.payments[paymentStatus.payments.length - 1].status === 'success' && userInfo && 
+                                <Button variant='contained' className={styles.modalBtn} onClick={() => navigate("/profile?tab=2")}>Your tickets</Button>
+                              } */}
                   </>
-                } 
+                )}
               </div>
             </Modal>
             <iframe
                 title='map'
                 style={{border: 0, borderRadius: '10px', marginTop: '6px'}}
-                src={`https://www.google.com/maps/embed/v1/place?key=${process.env.REACT_APP_GOOGLEMAPS_API_KEY}&q=${!isLoadingInfo && !errorInfo && dataInfo.event?.address}&language=${t('eventPage.lang')}`}
+                src={`https://www.google.com/maps/embed/v1/place?key=${process.env.REACT_APP_GOOGLEMAPS_API_KEY}&q=${!isLoadingInfo && !errorInfo && dataInfo.event?.address}&language=en`}
                 width="100%"
                 height="450"
                 allowFullScreen=""
@@ -213,7 +234,7 @@ const EventPage = () => {
             ></iframe>
           </div>
           <div className={styles.comments}>
-            <h2>Коментарі</h2>
+            <h2>{t('eventPage.comments.title')}</h2>
             <div className={styles.wrapper}>
               {!isLoadingComments && !errorComments && dataComments?.comments.rows !== 0 ? <>
                     {dataComments?.comments.rows.map((el, index) => (
@@ -223,7 +244,7 @@ const EventPage = () => {
                         <Pagination count={dataComments?.comments.pages} size={matches ? 'small' : 'large'}
                                     onChange={handlePaginationChange}/>}
                   </> :
-                  <span>Поки що немає коментарів</span>
+                  <span>{t('eventPage.comments.noComments')}</span>
               }
             </div>
             {
@@ -234,7 +255,7 @@ const EventPage = () => {
                           name="comment"
                           id="comment"
                           rows="7"
-                          placeholder='Твій коментар...'
+                          placeholder={t('eventPage.comments.placeholder')}
                           {...register('content', {
                             required: true,
                             minLength: 5
@@ -242,7 +263,7 @@ const EventPage = () => {
                           onChange={(e) => editing ? setEditingText(e.target.value) : setCommentInput(e.target.value)}
                           value={editing ? editing.content : commentInput}
                       ></textarea>
-                    <Button variant='contained' type='submit'>Опубліковати</Button>
+                    <Button variant='contained' type='submit'>{t('eventPage.comments.publish')}</Button>
                   </div>
                 </form>
             }
@@ -251,13 +272,13 @@ const EventPage = () => {
       </div>
       {!isLoadingEvents && !errorEvents && dataEvents?.events.rows &&
           <>
-            <h2 className={styles.heading}>Афіші подій організатора</h2>
+            <h2 className={styles.heading}>{t('eventPage.organizerEvents')}</h2>
             <div className={styles.events}>
               {dataEvents.events.rows.map((el, index) => (
-                  <Card {...el} key={index}/>
+                <Card {...el} key={index}/>
               ))}
             </div>
-            <Link to={`/organizer`} className={styles.more_link}>Більше</Link>
+            <Link to={`/organization/${dataEvents.events.rows[0].organizer_id}`} className={styles.more_link}>{t('eventPage.more')}</Link>
           </>
       }
     </Layout>

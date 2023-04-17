@@ -41,7 +41,7 @@ const Main = () => {
             </div>
             <div className='popularEvents mainEvents'>
                 <div className='title'>
-                    <h2>Популярні події</h2>
+                    <h2>{t('homepage.popularEvents.title')}</h2>
                     <img src="/assets/popularEvents_illustration.svg" alt="" />
                 </div>
                 <div className='events'>
@@ -50,12 +50,12 @@ const Main = () => {
                             <Card {...el} key={index}/> :
                             <WideCard {...el} key={index}/>
                     ))}
-                    <Link to="/events" className='more-link'>Більше</Link>
+                    <Link to="/events" className='more-link'>{t('homepage.popularEvents.moreLink')}</Link>
                 </div>
             </div>
             <div className="nearestEvents mainEvents">
                 <div className="title">
-                    <h2>Найближчі події</h2>
+                    <h2>{t('homepage.nearestEvents.title')}</h2>
                     <img src="/assets/upcommingEvents_illustration.svg" alt="" />
                 </div>
                 <div className="events">
@@ -64,19 +64,19 @@ const Main = () => {
                             <Card {...el} key={index}/> :
                             <WideCard {...el} key={index}/>
                     ))}
-                    <Link to="/events" className='more-link'>Більше</Link>
+                    <Link to="/events" className='more-link'>{t('homepage.nearestEvents.moreLink')}</Link>
                 </div>
             </div>
             <div className="new">
                 <div className="title_new">
-                    <h2>Новинки</h2>
+                    <h2>{t('homepage.new.title')}</h2>
                 </div>
                 <div className="events_new">
                     {!isLoadingUpComming && !isErrorUpComming && dataUpComming.events.rows.map((el, index) => (
                         <Card {...el} key={index}/>
                     ))}
                 </div>
-                <Link to="/events" className='more-link'>Більше</Link>
+                <Link to="/events" className='more-link'>{t('homepage.new.moreLink')}</Link>
             </div>
         </Layout>
     );

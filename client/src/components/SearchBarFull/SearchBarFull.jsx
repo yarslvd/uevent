@@ -31,7 +31,7 @@ const SearchBarFull = ({onChange}) => {
             <motion.input 
                 className='bar'
                 style={isOpen ? { display: 'block' } : { display: 'none' }}
-                placeholder={'Search...'}
+                placeholder={t('searchBar.placeholder') + "..."}
                 variants={variants}
                 animate={isOpen ? 'open' : 'close'}
                 onChange={hadleOnChange}

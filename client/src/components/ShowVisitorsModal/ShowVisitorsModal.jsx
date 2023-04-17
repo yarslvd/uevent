@@ -3,9 +3,11 @@ import { Modal, Avatar } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import styles from './ShowVisitorsModal.module.scss';
+import { useTranslation } from 'react-i18next';
 
 const ShowVisitorsModal = ({ open, handleClose, tickets, isLoading }) => {
   console.log(tickets);
+  const {t} = useTranslation();
 
   return (
     <Modal
@@ -16,7 +18,7 @@ const ShowVisitorsModal = ({ open, handleClose, tickets, isLoading }) => {
     >
         <div className={styles.container}>
           <div className={styles.header}>
-              <h2>Visitors</h2>
+              <h2>{t('eventPage.modalWindow.visitors')}</h2>
               <div onClick={handleClose} className={styles.close_btn}>
                   <svg focusable="true" aria-hidden="true" viewBox="0 0 24 24">
                       <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>

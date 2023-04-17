@@ -4,9 +4,11 @@ import { Controller } from "react-hook-form";
 import { Alert } from '@mui/material';
 
 import styles from './RichEditor.module.scss';
+import { useTranslation } from 'react-i18next';
 
 const RichEditor = ({ name, control, defaultValue, formState, description }) => {
     const editorRef = useRef(null);
+    const { t } = useTranslation();
     const [value, setValue] = useState('');
     const [editor, setEditor] = useState(null);
 
@@ -30,7 +32,7 @@ const RichEditor = ({ name, control, defaultValue, formState, description }) => 
 
     return (
         <div className={styles.container}>
-            <h3>Про подію</h3>
+            <h3>{t('createEvent.eventDetails.aboutEvent')}</h3>
             {formState.errors.description?.message && <Alert severity="warning">{formState.errors.description.message}</Alert>}
             <Controller
                 name={name}

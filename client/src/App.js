@@ -42,10 +42,6 @@ const router = createBrowserRouter([
     element: <Layout><div>closest</div></Layout>
   },
   {
-    path: '/pay/:id',
-    element: <Test></Test>
-  },
-  {
     path: '/login',
     element: <Signin />
   },

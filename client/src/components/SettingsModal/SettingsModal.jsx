@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import styles from './SettingsModal.module.scss';
 
 import { useUpdateUserMutation, useUploadAvatarMutation } from '../../redux/api/fetchAuthApi';
+import { useTranslation } from 'react-i18next';
 
 function removeEmptyFields(data) {
     Object.keys(data).forEach(key => {
@@ -22,6 +23,8 @@ const SettingsModal = ({ open, handleClose, user }) => {
     const [updateUser, { error: mutationError }] = useUpdateUserMutation();
     const [avatar, setAvatar] = useState(null);
     const [displayError, setDisplayError] = useState("");
+
+    const {t} = useTranslation();
 
     const { userInfo } = useSelector((state) => state.auth);
 
@@ -87,7 +90,7 @@ const SettingsModal = ({ open, handleClose, user }) => {
         >
             <div className={styles.container}>
                 <div className={styles.heading}>
-                    <h1>Settings</h1>
+                    <h1>{t('profile.user.settings')}</h1>
                     <div onClick={handleClose} className={styles.close_btn}>
                         <svg focusable="true" aria-hidden="true" viewBox="0 0 24 24">
                             <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
@@ -101,7 +104,7 @@ const SettingsModal = ({ open, handleClose, user }) => {
                             backgroundImage:`url(${imageUrl ? imageUrl : user.image})`,
                             backgroundSize: 'cover',
                         }}></div>
-                        <Button variant="outlined" onClick={() => {console.log(inputFileRef.current);inputFileRef.current.click();}} className={styles.btn}>Upload</Button>
+                        <Button variant="outlined" onClick={() => {console.log(inputFileRef.current);inputFileRef.current.click();}} className={styles.btn}>{t('profile.settings.upload')}</Button>
                         <input
                             id="avatar"
                             type='file'
@@ -121,19 +124,19 @@ const SettingsModal = ({ open, handleClose, user }) => {
                             {displayError && <Alert severity="error" style={{ borderRadius: '10px'}}>{displayError}</Alert>}
                         </div>
                         <div className={styles.form}>
-                            <label htmlFor="username">Username</label>
+                            <label htmlFor="username">{t('profile.settings.usernameLabel')}</label>
                             <div className={styles.field}>
                                 <input
                                     type="text"
                                     id="username"
                                     minLength={3}
                                     {...register("username")}
-                                    placeholder='Update username'
+                                    placeholder={t('profile.settings.updateUsernamePlaceholder')}
                                 />
                             </div>
                         </div>
                         <div className={styles.form}>
-                            <label htmlFor="name">Full Name</label>
+                            <label htmlFor="name">{t('profile.settings.fullNameLabel')}</label>
                             <div className={styles.field}>
                             <input
                                 type="text"
@@ -141,67 +144,67 @@ const SettingsModal = ({ open, handleClose, user }) => {
                                 {...register("name", {
                                     pattern: {
                                         value: /^([\w]{2,})+\s+([\w\s]{2,})+$/i,
-                                        message: "Please, enter your real name",
+                                        message: t('profile.settings.realNameErrorMessage'),
                                     },
                                 })}
-                                placeholder='Change full name'
+                                placeholder={t('profile.settings.changeFullNamePlaceholder')}
                             />
                             </div>
                         </div>
                         <div className={styles.form}>
-                            <label htmlFor="email">Email</label>
+                            <label htmlFor="email">{t('profile.settings.emailLabel')}</label>
                             <div className={styles.field}>
-                            <input
-                                type="email"
-                                disabled={true}
-                                id="email"
-                                {...register("email", {
-                                    pattern: {
-                                        value:
-                                        /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
-                                        message: "Please, enter a valid email",
-                                    },
-                                })}
-                                placeholder='user@example.com'
-                            />
+                                <input
+                                    type="email"
+                                    disabled={true}
+                                    id="email"
+                                    {...register("email", {
+                                        pattern: {
+                                            value:
+                                            /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+                                            message: t('profile.settings.emailPatternError'),
+                                        },
+                                    })}
+                                    placeholder={t('profile.settings.emailPlaceholder')}
+                                />
                             </div>
                         </div>
                         <div className={styles.form}>
-                            <label htmlFor="password">New password</label>
+                            <label htmlFor="password">{t('profile.settings.newPasswordLabel')}</label>
                             <div className={styles.field}>
-                            <input
-                                type="password"
-                                id="password"
-                                {...register("password", {
-                                    pattern: {
-                                        value: /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
-                                        message: "Password is not strong enough",
-                                    },
-                                })}
-                                placeholder='Create password'
-                            />
+                                <input
+                                    type="password"
+                                    id="password"
+                                    {...register("password", {
+                                        pattern: {
+                                            value: /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
+                                            message: t('profile.settings.passwordPatternError'),
+                                        },
+                                    })}
+                                    placeholder={t('profile.settings.newPasswordPlaceholder')}
+                                />
                             </div>
                         </div>
                         <div className={styles.form}>
-                            <label htmlFor="passwordRepeat">Repeat new password</label>
+                            <label htmlFor="passwordRepeat">{t('profile.settings.repeatPasswordLabel')}</label>
                             <div className={styles.field}>
-                            <input
-                                type="password"
-                                id="passwordRepeat"
-                                {...register("passwordRepeat", {
-                                    validate: (value) => {
-                                        if (watch("password") !== value) {
-                                        return "Your passwords do no match";
-                                        }
-                                    },
-                                })}
-                                placeholder='Repeat password'
-                            />
+                                <input
+                                    type="password"
+                                    id="passwordRepeat"
+                                    {...register("passwordRepeat", {
+                                        validate: (value) => {
+                                            if (watch("password") !== value) {
+                                            return t('profile.settings.passwordMatchError');
+                                            }
+                                        },
+                                    })}
+                                    placeholder={t('profile.settings.repeatPasswordPlaceholder')}
+                                />
                             </div>
-                        </div>
+                        </div> 
                     </div>
                     <div>
-                        <Button variant="contained" type='submit' className={styles.button}>Save</Button>
+                        <Button variant="contained" type='submit' className={styles.button}>{t('profile.settings.save')}</Button>
                     </div>
                 </form>
             </div>

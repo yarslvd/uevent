@@ -14,12 +14,20 @@ import { useDeleteFavouriteMutation } from '../../redux/api/fetchFavouritesApi';
 import { useGetFavouriteOneQuery } from '../../redux/api/fetchFavouritesApi';
 import { useGetFavouritesQuery } from '../../redux/api/fetchFavouritesApi';
 import { useLazyCheckPaymentQuery } from '../../redux/api/fetchPaymentApi';
+import { useTranslation } from 'react-i18next';
 
 // Implement follow/unfollow
 
 const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, ticket_amount, isLoading, error, organizer, visibility }) => {
     const { id } = useParams();
     const { data } = useGetFavouriteOneQuery(id);
+    const { t, i18n } = useTranslation();
+    const locales = {
+        "en": "en-US",
+        "ua": "uk-UK"
+    }
+
+    const currentLocale = locales[i18n.language];
 
     const [isLikeActive, setIsLikeActive] = useState(data ? true : false);
     const [modalOpen, setModalOpen] = useState(false);
@@ -64,12 +72,12 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                 <div className={styles.time}>
                     <div className={styles.date}>
                         {/* //{parsedDate.getDate()} */}
-                        <span>{!isLoading && !error && parsedDate.toLocaleString('uk-UK', dateOptions).toUpperCase().slice(0, -3)}</span>
+                        <span>{!isLoading && !error && parsedDate.toLocaleString(currentLocale, dateOptions)}</span>
                     </div>
                     <div className={styles.clock}>
                         <img src="/assets/clock_icon.png" alt="Time" className={styles.icon} />
                         <span>
-                            {!isLoading && !error && parsedDate.toLocaleString('uk-UK', timeOptions)}
+                            {!isLoading && !error && parsedDate.toLocaleString(currentLocale, timeOptions)}
                         </span>
                     </div>
                 </div>
@@ -88,14 +96,14 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                     </div>
                     <div className={styles.item}>
                         <img src="/assets/price_black_icon.png" alt="Location" className={styles.icon} />
-                        <span>{!isLoading && !error && price != 0 ? `${price} ${iso_currency}` : "Безкоштовно"}</span>
+                        <span>{!isLoading && !error && price != 0 ? `${price} ${iso_currency}` : t('eventPage.eventDetails.free')}</span>
                     </div>
                 </div>
             </div>
             <div className={styles.bottom}>
-                {!errorTickets && !isLoadingTickets && visibility != 'private' &&
+                {!errorTickets && !isLoadingTickets && visibility !== 'private' &&
                     <div className={styles.visitors}>
-                        <span>Підуть</span>
+                        <span>{t('eventPage.eventDetails.visitors')}</span>
                         <div className={styles.avatars}>
                             {[...new Set(dataTickets?.tickets.map(el => JSON.stringify(el)))].map((el, index) => {
                                 el = JSON.parse(el);
@@ -111,7 +119,7 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                                     </Link>
                                 }
                             })}
-                            {dataTickets.tickets.length > 1 && <div onClick={() => setModalUsersOpen(true)} className={styles.moreVisitors}>ще</div>}
+                            {dataTickets.tickets.length > 1 && <div onClick={() => setModalUsersOpen(true)} className={styles.moreVisitors}>{t('eventPage.eventDetails.moreVisitors')}</div>}
                             <ShowVisitorsModal
                                 open={modalUsersOpen}
                                 handleClose={handleUsersClose}
@@ -123,7 +131,7 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                 }
                 <div className={styles.button_section}>
                     <div>
-                        <Button variant='contained' onClick={() => setModalOpen(true)} className={styles.buy_btn}>Купити</Button>
+                        <Button variant='contained' onClick={() => setModalOpen(true)} className={styles.buy_btn}>{t('eventPage.eventDetails.buy')}</Button>
                         <BuyTicketModal
                             open={modalOpen}
                             handleClose={handleClose}
@@ -135,10 +143,10 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
                             whileTap={{ scale: 0.8 }}
                             onClick={handleLike}
                         >
-                            <img src={isLikeActive ? "/assets/heart_filled_icon.png" : "/assets/heart_empty_icon.png"} alt="Like Event" />
+                            <img src={isLikeActive ? "/assets/heart_filled_icon.png" : "/assets/heart_empty_icon.png"} alt={t('eventPage.eventDetails.like')} />
                         </motion.div>
                     </div>
-                    <span>{ticket_amount} tickets left</span>
+                    <span>{ticket_amount} {t('eventPage.eventDetails.ticketsLeft')}</span>
                 </div>
             </div>
         </div>
