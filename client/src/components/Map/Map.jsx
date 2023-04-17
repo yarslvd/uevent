@@ -2,6 +2,7 @@ import { useState, memo, useRef, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader, StandaloneSearchBox, Marker } from '@react-google-maps/api';
 
 import styles from './Map.module.scss';
+import { useTranslation } from 'react-i18next';
 
 const libraries = ['places'];
 
@@ -11,7 +12,7 @@ const Map = ({ register, setValue, eventAddress }) => {
     const [center, setCenter] = useState({ lat: 49.9935, lng: 36.2304 });
     const [map, setMap] = useState(null);
     const searchBox = useRef(null);
-
+    const {t} = useTranslation();
     const onMapLoad = (map) => setMap(map);
     const onSBLoad = (ref) => searchBox.current = ref;
 
@@ -92,7 +93,7 @@ const Map = ({ register, setValue, eventAddress }) => {
 
     return (
       <div>
-        <h3 className={styles.heading}>Місце події</h3>
+        <h3 className={styles.heading}>{t('createEvent.eventPlace.title')}</h3>
         {isLoaded &&
           <div className={styles.mapContainer}>
             <GoogleMap

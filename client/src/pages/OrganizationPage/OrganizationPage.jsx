@@ -11,12 +11,13 @@ import { useGetSubscriptionOneQuery, useAddSubscriptionMutation, useDeleteSubscr
 import { useGetEventsQuery } from '../../redux/api/fetchEventsApi';
 
 import styles from './OrganizationPage.module.scss';
+import { useTranslation } from 'react-i18next';
 
 const OrganizationPage = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const matches = useMediaQuery('(max-width:800px)');
-
+    const {t} = useTranslation();
     const [page, setPage] = useState(1);
 
     const { userInfo } = useSelector((state) => state.auth);
@@ -95,14 +96,14 @@ const OrganizationPage = () => {
                             className={styles.followBtn}
                             onClick={handleFollow}
                         >
-                            {follow ? 'Unfollow' : 'Follow'}
+                            {follow ? t('organization.unfollowBtn') : t('organization.followBtn')}
                         </Button>
                     </div>
                 </div>
                 {dataEvents?.events?.count > 0 &&
                     <div className={styles.outerContainer}>
                         <div className={styles.title}>
-                            <h2>Organization Events</h2>
+                            <h2>{t('organization.orgEventsTitle')}</h2>
                             <img src="/assets/popularEvents_illustration.svg" alt=""/>
                         </div>
                         <div className={styles.events_container}>

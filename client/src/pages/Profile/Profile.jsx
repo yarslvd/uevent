@@ -19,6 +19,7 @@ import { useGetEventsQuery } from '../../redux/api/fetchEventsApi';
 import { dateOptions, timeOptions } from '../../data/variables';
 
 import styles from './Profile.module.scss';
+import { useTranslation } from 'react-i18next';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -51,8 +52,15 @@ const Profile = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const auth = useSelector(selectIsAuthMe);
     const matches = useMediaQuery('(max-width:930px)');
+    const {t,i18n} = useTranslation();
     const { userInfo } = useSelector((state) => state.auth);
     console.log(userInfo);
+    const locales = {
+        "en": "en-US",
+        "ua": "uk-UK"
+    }
+
+    const currentLocale = locales[i18n.language];
 
     const [value, setValue] = useState(0);
     const [isLikeActive, setIsLikeActive] = useState(true);
@@ -131,15 +139,15 @@ const Profile = () => {
                             centered={matches}
                             initialSelectedIndex={initialIndex}
                         >
-                            <Tab label="Home" {...a11yProps(0)} />
-                            <Tab label="My tickets" {...a11yProps(1)} />
-                            <Tab label="Company" {...a11yProps(2)} />
+                            <Tab label={t('profile.tabs.home')} {...a11yProps(0)} />
+                            <Tab label={t('profile.tabs.myTickets')} {...a11yProps(1)} />
+                            <Tab label={t('profile.tabs.company')} {...a11yProps(2)} />
                         </Tabs>
                     </Box>
                     <TabPanel value={value} index={0}>
                         <div className={styles.homeContainer}>
                             <div className={styles.colContainer}>
-                                <h3>Favourites</h3>
+                            <h3>{t('profile.home.favouritesTitle')}</h3>
                                 <div className={styles.itemsContainer}>
                                     {!isLoadingFavourites && !isErrorFavourites && dataFavourites.favourites.rows.map((el, index) => (
                                         <div className={styles.item} key={index}>
@@ -161,7 +169,7 @@ const Profile = () => {
                                 </div>
                             </div>
                             <div className={styles.colContainer}>
-                                <h3>Subscriptions</h3>
+                            <h3>{t('profile.home.subscriptionsTitle')}</h3>
                                 <div className={styles.itemsContainer}>
                                     {!isLoadingSubscriptions && !isErrorSubscriptions && dataSubscriptions.subscriptions.rows.map((el, index) => (
                                         <div className={styles.item} key={index}>
@@ -170,7 +178,7 @@ const Profile = () => {
                                                 <Link to={`/organization/${el.organizer.id}`}>{el.organizer.name}</Link>
                                             </div>
                                             <div className={styles.like}>
-                                                <Button variant='contained' onClick={() => deleteSubs(el.organizer.id)}>Unfollow</Button>
+                                                <Button variant='contained' onClick={() => deleteSubs(el.organizer.id)}>{t('profile.home.unsubscribeButton')}</Button>
                                             </div>
                                         </div>
                                     ))}
@@ -204,10 +212,10 @@ const Profile = () => {
                                                 </div>
                                                 <div className={styles.time}>
                                                     <img src="/assets/clock_icon.png" alt="Time" />
-                                                    <span>{(new Date(el.event.date)).toLocaleString('uk-UK', dateOptions).toUpperCase().slice(0, -3)}</span>
+                                                    <span>{(new Date(el.event.date)).toLocaleString(currentLocale, dateOptions)}</span>
                                                 </div>
                                             </div>
-                                            <Link to={`/event/${el.event_id}`}>More</Link>
+                                            <Link to={`/event/${el.event_id}`}>{t('profile.ticket.more')}</Link>
                                         </div>
                                         <div className={styles.right}>
                                             <motion.div 
@@ -217,12 +225,12 @@ const Profile = () => {
                                             >
                                                 <a href={`${process.env.REACT_APP_BASE_URL}/api/tickets/pdf?event_id=${el.event_id}`} download target='_blank' rel="noreferrer"><img src={'/assets/download.png'} alt="Download Ticket"/></a>
                                             </motion.div>
-                                            <span>Amount: {el.count}</span>
+                                            <span>{t('profile.ticket.amount')}: {el.count}</span>
                                         </div>
                                     </div>
                                 </div>
                             )}) :
-                                <span className={styles.noTickets}>You have no tickets ;(</span>
+                                <span className={styles.noTickets}>{t('profile.ticket.noTickets')}</span>
                             }
                         </div>
                     </TabPanel>
@@ -233,7 +241,7 @@ const Profile = () => {
                                     <div className={styles.card}>
                                         <div className={styles.avatarContainer}>
                                             <Avatar src={userInfo.organizers[0].image} className={styles.avatar}></Avatar>
-                                            <Button variant='contained' onClick={() => setModalOpen(true)} className={styles.editBtn}>Edit</Button>
+                                            <Button variant='contained' onClick={() => setModalOpen(true)} className={styles.editBtn}>{t('profile.organization.edit')}</Button>
                                             <OrganizationModal
                                                 open={modalOpen}
                                                 handleClose={handleClose}
@@ -253,9 +261,9 @@ const Profile = () => {
                                     </div>
                                     <div className={styles.eventsContainer}>
                                         <div className={styles.bar}>
-                                            <h3>Your Events</h3>
+                                            <h3>{t('profile.organization.events')}</h3>
                                             <Button variant='outlined'>
-                                                <Link to={'/event/new'}>New Event</Link>
+                                                <Link to={'/event/new'}>{t('profile.organization.newEvent')}</Link>
                                             </Button>
                                         </div>
                                         <div className={styles.events}>
@@ -277,7 +285,7 @@ const Profile = () => {
                                                                     <span>{new Date(el.date).toLocaleString('uk-UK', dateOptions).toUpperCase().slice(0, -3)}</span>
                                                                 </div>
                                                             </div>
-                                                            <Link to={`/event/${el.id}/edit`}>Edit</Link>
+                                                            <Link to={`/event/${el.id}/edit`}>{t('profile.organization.edit')}</Link>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -286,7 +294,7 @@ const Profile = () => {
                                     </div>
                                 </div> :
                                 <div className={styles.noCompany}>
-                                    <Button variant='contained' onClick={() => setModalOpen(true)} className={styles.newBtn}>Create new organization</Button>
+                                    <Button variant='contained' onClick={() => setModalOpen(true)} className={styles.newBtn}>{t('profile.organization.createNew')}</Button>
                                     <OrganizationModal
                                         open={modalOpen}
                                         handleClose={handleClose}

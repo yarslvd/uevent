@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import styles from './SpotifySearch.module.scss';
 
@@ -7,7 +8,8 @@ const SpotifySearch = ({ register, setValue, id, editRadio }) => {
     const [artist, setArtist] = useState([]);
     const [token, setToken] = useState(null);
     const [radio, setRadio] = useState('');
-
+    const {t} = useTranslation();
+    
     useEffect(() => {
         setValue('spotify_id', radio);
     },[radio, setValue]);
@@ -118,7 +120,7 @@ const SpotifySearch = ({ register, setValue, id, editRadio }) => {
 
     return (
         <div>
-            <h3 className={styles.heading}>Прев'ю виконавця</h3>
+            <h3 className={styles.heading}>{t('createEvent.previewArtist.heading')}</h3>
             <div className={styles.container}>
                 <input type="text" onChange={(e) => setQuery(e.target.value)} className={styles.search} placeholder='Search for artist...'/>
                 <div className={styles.artistContainer}>
@@ -162,7 +164,7 @@ const SpotifySearch = ({ register, setValue, id, editRadio }) => {
                         allow="encrypted-media"
                     ></iframe> :
                     <div className={styles.iframe}>
-                        <span>Choose Performer</span>
+                        <span>{t('createEvent.previewArtist.choosePerformer')}</span>
                     </div>
                 }
             </div>

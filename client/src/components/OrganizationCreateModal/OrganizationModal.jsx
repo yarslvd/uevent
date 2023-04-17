@@ -9,6 +9,8 @@ import {
     useUpdateOrganizationMutation,
     useUploadAvatarMutation
 } from '../../redux/api/fetchOrganizersApi';
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 const OrganizationModal = ({ open, handleClose, organizer }) => {
     const inputFileRef = useRef(null);
@@ -18,6 +20,7 @@ const OrganizationModal = ({ open, handleClose, organizer }) => {
     const [newOrganization] = useNewOrganizationMutation();
     const [updateOrganization] = useUpdateOrganizationMutation();
     const [uploadAvatar] = useUploadAvatarMutation();
+    const { t } = useTranslation();
     const {
         register,
         handleSubmit,
@@ -73,7 +76,7 @@ const OrganizationModal = ({ open, handleClose, organizer }) => {
         >
             <div className={styles.container}>
                 <div className={styles.header}>
-                    <h2> {organizer ? `Update` : `Create`} Organization</h2>
+                    <h2> {organizer ? t('profile.organization.update') : t('profile.organization.create')} {t('profile.organization.heading')}</h2>
                     <div onClick={handleClose} className={styles.close_btn}>
                         <svg focusable="true" aria-hidden="true" viewBox="0 0 24 24">
                             <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
@@ -87,7 +90,9 @@ const OrganizationModal = ({ open, handleClose, organizer }) => {
                                 backgroundImage:`url(${imageUrl})`,
                                 backgroundSize: 'cover',
                             }}></div>
-                            <Button variant="outlined" onClick={() => {console.log(inputFileRef.current);inputFileRef.current.click();}} className={styles.btn}>Upload</Button>
+                            <Button variant="outlined" onClick={() => {console.log(inputFileRef.current);inputFileRef.current.click();}} className={styles.btn}>
+                                {t('profile.organization.uploadButton')}
+                            </Button>
                             <input
                                 id="avatar"
                                 type='file'
@@ -96,67 +101,65 @@ const OrganizationModal = ({ open, handleClose, organizer }) => {
                                 onChange={(e)=>{handleChangeFile(e)}}
                                 ref={inputFileRef}
                             />
-                        </div>
-                        <div className={styles.inputs}>
-
-                            <div className={styles.errors}>
-                                {!Object.keys(errors).length == 0 && (
+                            </div>
+                            <div className={styles.inputs}>
+                                <div className={styles.errors}>
+                                    {!Object.keys(errors).length == 0 && (
                                     <Alert severity="warning" style={{ borderRadius: '10px'}}>
                                         {Object.values(errors)[0].message}
                                     </Alert>
-                                )}
-                            </div>
-
-                            <div className={styles.form}>
-                                <label htmlFor="name">Organization Name</label>
-                                <div className={styles.field}>
+                                    )}
+                                </div>
+                                <div className={styles.form}>
+                                    <label htmlFor="name">{t('profile.organization.nameLabel')}</label>
+                                    <div className={styles.field}>
                                     <input
                                         type="text"
                                         id="name"
                                         required
                                         minLength={3}
                                         {...register("name")}
-                                        placeholder='Create name'
+                                        placeholder={t('profile.organization.namePlaceholder')}
                                     />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className={styles.form}>
-                                <label htmlFor="email">Organization Email</label>
-                                <div className={styles.field}>
+                                <div className={styles.form}>
+                                    <label htmlFor="email">{t('profile.organization.emailLabel')}</label>
+                                    <div className={styles.field}>
                                     <input
                                         type="email"
                                         id="email"
                                         required
                                         {...register("email", {
-                                            pattern: {
-                                                value:
-                                                /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
-                                                message: "Please, enter a valid email",
-                                            },
+                                        pattern: {
+                                            value:
+                                            /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+                                            message: t('profile.organization.invalidEmailError'),
+                                        },
                                         })}
-                                        placeholder='user@example.com'
+                                        placeholder={t('profile.organization.emailPlaceholder')}
                                     />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className={styles.form}>
-                                <label htmlFor="email">Description</label>
-                                <div className={`${styles.field} ${styles.fieldTextarea}`}>
+                                <div className={styles.form}>
+                                    <label htmlFor="email">{t('profile.organization.descriptionLabel')}</label>
+                                    <div className={`${styles.field} ${styles.fieldTextarea}`}>
                                     <textarea
                                         name="description"
                                         id="description"
                                         required
-                                        placeholder='Information about organization'
+                                        placeholder={t('profile.organization.descriptionPlaceholder')}
                                         className={styles.textarea}
                                         {...register("description")}
                                     >
                                     </textarea>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         <div>
-                            <Button variant="contained" type='submit' className={styles.button}>
-                                {organizer ? `Update` : `Save`}
-                            </Button>
+                        <Button variant="contained" type='submit' className={styles.button}>
+                            {organizer ? t('profile.organization.update') : t('profile.organization.save')}
+                        </Button>
                         </div>
                     </form>
                 </div>

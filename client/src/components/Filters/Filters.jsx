@@ -6,6 +6,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useForm } from 'react-hook-form';
 
 import styles from './Filters.module.scss';
+import { useTranslation } from 'react-i18next';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -57,6 +58,8 @@ const Filters = ({setFilters}) => {
   const [dateFrom, setDateFrom] = React.useState(null);
   const [dateTo, setDateTo] = React.useState(null);
 
+  const {t} = useTranslation();
+
   const { register, handleSubmit, formState, control } = useForm({
     mode: 'onChange'
   });
@@ -106,104 +109,105 @@ const Filters = ({setFilters}) => {
 
   return (
     <div className={styles.container}>
-      <h3 className={styles.title}>Filters</h3>
+      <h3 className={styles.title}>{t('filters.title')}</h3>
       <div className={styles.inputs}>
-        <FormControl sx={{width: '100%', maxWidth: '287px'}}>
-          <Select
-            multiple
-            displayEmpty
-            value={theme}
-            onChange={handleChangeTheme}
-            input={<OutlinedInput />}
-            renderValue={(selected) => {
-              if (selected.length === 0) {
-                return <em>Choose Theme</em>;
-              }
+      <FormControl sx={{width: '100%', maxWidth: '287px'}}>
+        <Select
+          multiple
+          displayEmpty
+          value={theme}
+          onChange={handleChangeTheme}
+          input={<OutlinedInput />}
+          renderValue={(selected) => {
+            if (selected.length === 0) {
+              return <em>{t('filters.chooseTheme')}</em>;
+            }
 
-              return selected.join(', ');
-            }}
-            MenuProps={MenuProps}
-            inputProps={{ 'aria-label': 'Without label' }}
-          >
-            <MenuItem disabled value="">
-              <em>Choose Theme</em>
+            return selected.join(', ');
+          }}
+          MenuProps={MenuProps}
+          inputProps={{ 'aria-label': 'Without label' }}
+        >
+          <MenuItem disabled value="">
+            <em>{t('filters.chooseTheme')}</em>
+          </MenuItem>
+          {themes.map((name) => (
+            <MenuItem
+              key={name}
+              value={name}
+              style={getStyles(name, theme, theme)}
+            >
+              {name}
             </MenuItem>
-            {themes.map((name) => (
-              <MenuItem
-                key={name}
-                value={name}
-                style={getStyles(name, theme, theme)}
-              >
-                {name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl sx={{width: '100%', maxWidth: '287px'}}>
-          <Select
-            multiple
-            displayEmpty
-            value={format}
-            onChange={handleChangeFormat}
-            input={<OutlinedInput />}
-            renderValue={(selected) => {
-              if (selected.length === 0) {
-                return <em>Choose Format</em>;
-              }
-
-              return selected.join(', ');
-            }}
-            MenuProps={MenuProps}
-            inputProps={{ 'aria-label': 'Without label' }}
-          >
-            <MenuItem disabled value="">
-              <em>Choose Format</em>
+          ))}
+        </Select>
+      </FormControl>
+      <FormControl sx={{width: '100%', maxWidth: '287px'}}>
+        <Select
+          multiple
+          displayEmpty
+          value={format}
+          onChange={handleChangeFormat}
+          input={<OutlinedInput />}
+          renderValue={(selected) => {
+            if (selected.length === 0) {
+              return <em>{t('filters.chooseFormat')}</em>;
+            }
+  
+            return selected.join(', ');
+          }}
+          MenuProps={MenuProps}
+          inputProps={{ 'aria-label': 'Without label' }}
+        >
+          <MenuItem disabled value="">
+            <em>{t('filters.chooseFormat')}</em>
+          </MenuItem>
+          {formats.map((name) => (
+            <MenuItem
+              key={name}
+              value={name}
+              style={getStyles(name, theme, theme)}
+            >
+              {name}
             </MenuItem>
-            {formats.map((name) => (
-              <MenuItem
-                key={name}
-                value={name}
-                style={getStyles(name, theme, theme)}
-              >
-                {name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+          ))}
+        </Select>
+      </FormControl> 
 
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <div className={styles.date_container}>
-            <h2 className={styles.section_heading}>Date Interval</h2>
-            <div className={styles.input_container}>
-              <DatePicker
-                label="From"
-                value={dateFrom}
-                onChange={(e) => setDateFrom(e)}
-              />
-              <DatePicker
-                label="To"
-                value={dateTo}
-                onChange={(e) => setDateTo((e))}
-              />
-            </div>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <div className={styles.date_container}>
+          <h2 className={styles.section_heading}>{t('filters.dateInterval.title')}</h2>
+          <div className={styles.input_container}>
+            <DatePicker
+              label={t('filters.dateInterval.fromLabel')}
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e)}
+            />
+            <DatePicker
+              label={t('filters.dateInterval.toLabel')}
+              value={dateTo}
+              onChange={(e) => setDateTo((e))}
+            />
+          </div>
         </div>
-        </LocalizationProvider>
+      </LocalizationProvider>
 
-        <div className={styles.price_container}>
-          <h2 className={styles.section_heading}>Price Range</h2>
-          <Slider
-            getAriaLabel={() => 'Price range'}
-            value={value}
-            onChange={handleChangePrice}
-            valueLabelDisplay="auto"
-            getAriaValueText={valuetext}
-            min={0}
-            max={1000}
-            sx={{ color: '#1F1F1F'}}
-          />
-        </div>
-        <Button variant='contained' className={styles.apply_btn} onClick={handleApply}>Apply</Button>
-        <Button variant='outlined' className={styles.clear_btn} onClick={handleClear}>Clear</Button>
+      <div className={styles.price_container}>
+        <h2 className={styles.section_heading}>{t('filters.priceRange.title')}</h2>
+        <Slider
+          getAriaLabel={() => t('filters.priceRange.ariaLabel')}
+          value={value}
+          onChange={handleChangePrice}
+          valueLabelDisplay="auto"
+          getAriaValueText={valuetext}
+          min={0}
+          max={1000}
+          sx={{ color: '#1F1F1F'}}
+        />
+      </div>
+
+      <Button variant='contained' className={styles.apply_btn} onClick={handleApply}>{t('filters.applyBtn')}</Button>
+      <Button variant='outlined' className={styles.clear_btn} onClick={handleClear}>{t('filters.clearBtn')}</Button>
       </div>
     </div>
   )

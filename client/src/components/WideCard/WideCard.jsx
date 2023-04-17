@@ -6,7 +6,13 @@ import './WideCard.scss';
 import { dateOptions, timeOptions } from '../../data/variables';
 
 const WideCard = ({ poster, title, location, date, price, id, iso_currency }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const locales = {
+        "en": "en-US",
+        "ua": "uk-UK"
+    }
+
+    const currentLocale = locales[i18n.language];
     const parsedDate = new Date(date);
 
     let convertedPrice = `${t('wideCard.price')} ${price} ${iso_currency}`
@@ -30,14 +36,14 @@ const WideCard = ({ poster, title, location, date, price, id, iso_currency }) =>
                         </div>
                         <div className='time'>
                             <img src="/assets/clock_icon.png" alt="Time" />
-                            <span>{parsedDate.toLocaleString('uk-UK', timeOptions)}</span>
+                            <span>{parsedDate.toLocaleString(currentLocale, timeOptions)}</span>
                         </div>
                     </div>
                     <Link to={`/event/${id}`}>{t('wideCard.more')}</Link>
                 </div>
                 <div className="right">
                     <div className="date">
-                        <span>{parsedDate.toLocaleString('uk-UK', dateOptions).toUpperCase().slice(0, -3)}&nbsp;</span>
+                        <span>{parsedDate.toLocaleString(currentLocale, dateOptions)}&nbsp;</span>
                     </div>
                     <div className="price">
                         <b>{convertedPrice}</b>

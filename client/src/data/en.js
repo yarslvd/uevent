@@ -101,4 +101,177 @@ export const en = {
         free: 'Free',
         ticketsLeft: '{{count}} tickets left',
     },
+    // Main.jsx
+    homepage: {
+        popularEvents: {
+            title: 'Popular events',
+            moreLink: 'More'
+        },
+        nearestEvents: {
+            title: 'Upcoming events',
+            moreLink: 'More'
+        },
+        new: {
+            title: 'New events',
+            moreLink: 'More'
+        }
+    },
+
+    // CreateEventPage.jsx
+    createEvent: {
+        noImage: 'No Image',
+        details: {
+            title: 'Details',
+            promocodeLabel: 'Promocode',
+            percentageLabel: '%',
+            addButtonLabel: 'Add',
+            themeLabel: 'Theme',
+            formatLabel: 'Format',
+            visibilityLabel: 'Visitors visibility',
+            promocodeList: 'Promocode List',
+            visibleOption: 'Visible',
+            hiddenOption: 'Hidden'
+        },
+        eventDetails: {
+            aboutEvent: 'About Event'
+        },
+        eventPlace: {
+            title: 'Event Place',
+        },
+        previewArtist: {
+            heading: 'Preview Artist',
+            choosePerformer: 'Choose Performer'
+        },
+        eventInfo: {
+            eventName: 'Event name',
+            price: 'Price',
+            currency: 'Currency',
+            eventDate: 'Event date',
+            eventTime: 'Event time',
+            publishDate: 'Publish Date',
+            publishTime: 'Publish Time',
+            placeName: 'Place Name',
+            ticketsAmount: 'Tickets Amount',
+            saveToDrafts: 'Save to Drafts',
+            publish: 'Publish'
+        }
+    },
+    // Profile.jsx
+
+    profile: {
+        tabs: {
+            home: 'Home',
+            myTickets: 'My tickets',
+            company: 'Company'
+        },
+        home: {
+            favouritesTitle: "Favourites",
+            subscriptionsTitle: "Subscriptions",
+            unsubscribeButton: "Unsubscribe"
+        },
+        ticket: {
+            more: 'More',
+            amount: 'Amount',
+            noTickets: "You have no tickets ;("
+        },
+        organization: {
+            createNew: 'Create new organization',
+            events: 'Your Events',
+            newEvent: 'New Event',
+            edit: 'Edit',
+            "uploadButton": "Upload",
+            "nameLabel": "Organization Name",
+            "namePlaceholder": "Create name",
+            "emailLabel": "Organization Email",
+            "emailPlaceholder": "user@example.com",
+            "invalidEmailError": "Please, enter a valid email",
+            "descriptionLabel": "Description",
+            "descriptionPlaceholder": "Information about organization",
+            "update": "Update",
+            "save": "Save",
+            "create": "Create",
+            "heading": "Organization"
+        },
+        user: {
+            settings: 'Settings',
+            logout: 'Log out'
+        },
+        settings: {
+            "upload": "Upload",
+            "usernameLabel": "Username",
+            "updateUsernamePlaceholder": "Update username",
+            "fullNameLabel": "Full Name",
+            "changeFullNamePlaceholder": "Change full name",
+            "realNameErrorMessage": "Please, enter your real name",
+            emailLabel: 'Email',
+            emailPatternError: 'Please enter a valid email',
+            emailPlaceholder: 'user@example.com',
+            newPasswordLabel: 'New password',
+            newPasswordPlaceholder: 'Create password',
+            passwordPatternError: 'Password is not strong enough',
+            repeatPasswordLabel: 'Repeat new password',
+            repeatPasswordPlaceholder: 'Repeat password',
+            passwordMatchError: 'Your passwords do not match',
+            save:'Save'
+        }
+    },
+
+    // OrganizationPage.jsx
+    organization: {
+        "followBtn": "Follow",
+        "unfollowBtn": "Unfollow",
+        "orgEventsTitle": "Organization Events"
+    },
+
+    // EventPage.jsx
+    eventPage: {
+        eventInfo: {
+            title: "About the event",
+        },
+        modalWindow: {
+            paymentNotFound: "Payment has not been found",
+            paymentSuccessful: "Successful payment",
+            closeBtn: "Close",
+            visitors: "Visitors"
+        },
+        comments: {
+            title: 'Comments',
+            noComments: 'No comments yet',
+            placeholder: 'Your comment...',
+            publish: 'Publish'
+        },
+        organizerEvents: 'Organizer events',
+        more: 'Other events',
+        eventDetails: {
+            free: 'Free',
+            visitors: 'Going',
+            moreVisitors: 'more',
+            buy: 'Buy',
+            like: 'Like Event',
+            ticketsLeft: 'tickets left'
+        },
+    },
+    
+    // Filters.jsx
+    filters: {
+        title: 'Filters',
+        chooseTheme: 'Choose Theme',
+        chooseFormat: 'Choose Format',
+        dateInterval: {
+            title: 'Date Interval',
+            fromLabel: 'From',
+            toLabel: 'To',
+        },
+        priceRange: {
+            title: 'Price Range',
+            ariaLabel: 'Price range',
+        },
+        applyBtn: 'Apply',
+        clearBtn: 'Clear',
+    },
+
+    // SearchBarFull.jsx
+    searchBar: {
+        placeholder: "Search"
+    }
 };

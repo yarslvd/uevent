@@ -10,6 +10,7 @@ import { currencies, priceRegExp } from '../../data/variables';
 
 import styles from './EventInfoCreate.module.scss';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const EventInfoCreate = ({ register, control, setValue, eventInfo }) => {
     const [price, setPrice] = useState();
@@ -20,6 +21,7 @@ const EventInfoCreate = ({ register, control, setValue, eventInfo }) => {
     const [location, setLocation] = useState('');
     const [ticketAmount, setTicketAmount] = useState();
 
+    const {t} = useTranslation();
 
     const handlePriceChange = (e) => {
         if(!priceRegExp.test(e.target.value)) {
@@ -63,13 +65,13 @@ const EventInfoCreate = ({ register, control, setValue, eventInfo }) => {
         <div className={styles.container}>
             <div className={styles.inputs}>
                 <div>
-                    <input type="text" value={title}  className={styles.title} placeholder='НАЗВА ПОДІЇ' {...register('title', { onChange: (e)=>{setTitle(e.target.value);},required: !isEditEvent(), minLength: 5 })}/>
+                <input type="text" value={title} className={styles.title} placeholder={t('createEvent.eventInfo.eventName')} {...register('title', { onChange: (e)=>{setTitle(e.target.value);},required: !isEditEvent(), minLength: 5 })}/>
                 </div>
                 <div className={styles.money}>
                     <TextField
                         InputLabelProps={{shrink: price ? true : false}}
                         id="price"
-                        label="Price"
+                        label={t('createEvent.eventInfo.price')}
                         variant="outlined"
                         className={styles.price}
                         onChange={handlePriceChange}
@@ -82,7 +84,7 @@ const EventInfoCreate = ({ register, control, setValue, eventInfo }) => {
                     <TextField
                         id="select-currency"
                         select
-                        label="Currency"
+                        label={t('createEvent.eventInfo.currency')}
                         defaultValue={currency ? currency : "UAH"}
                         value={currency}
                         className={styles.currency}
@@ -116,7 +118,7 @@ const EventInfoCreate = ({ register, control, setValue, eventInfo }) => {
                                     {...field}
                                     inputRef={ref}
                                     required={!isEditEvent()}
-                                    label="Event Date"
+                                    label={t('createEvent.eventInfo.eventDate')}
                                     textField={(inputProps) => (
                                         <TextField
                                             {...inputProps}
@@ -140,7 +142,7 @@ const EventInfoCreate = ({ register, control, setValue, eventInfo }) => {
                                 <TimePicker
                                     {...field}
                                     inputRef={ref}
-                                    label="Event Time"
+                                    label={t('createEvent.eventInfo.eventTime')}
                                     ampm={false}
                                     textField={(inputProps) => (
                                         <TextField
@@ -173,7 +175,7 @@ const EventInfoCreate = ({ register, control, setValue, eventInfo }) => {
                             rules={{
                                 validate: {
                                     min: (date) => {
-                                        console.log("publish_date:", date);
+                                        console.log("publish_date:", date.toISOString());
                                         console.log("isFuture:", (date && isFuture(date)));
                                         console.log("isEdit:", (!isEditEvent() && !date));
                                         return (date && isFuture(date)) || (isEditEvent() && !date) || "Please, enter a future date";
@@ -186,7 +188,7 @@ const EventInfoCreate = ({ register, control, setValue, eventInfo }) => {
                                     {...field}
                                     inputRef={ref}
                                     required={!isEditEvent()}
-                                    label="Publish Date"
+                                    label={t('createEvent.eventInfo.publishDate')}
                                     textField={(inputProps) => (
                                         <TextField
                                             {...inputProps}
@@ -209,7 +211,7 @@ const EventInfoCreate = ({ register, control, setValue, eventInfo }) => {
                                 <TimePicker
                                     {...field}
                                     inputRef={ref}
-                                    label="Publish Time"
+                                    label={t('createEvent.eventInfo.publishTime')}
                                     ampm={false}
                                     textField={(inputProps) => (
                                         <TextField
@@ -238,7 +240,7 @@ const EventInfoCreate = ({ register, control, setValue, eventInfo }) => {
                     <TextField
                         id="location"
                         InputLabelProps={{shrink: location ? true : false}}
-                        label="Place name"
+                        label={t('createEvent.eventInfo.placeName')}
                         variant="outlined"
                         className={styles.price}
                         onChange={handlePriceChange}
@@ -255,7 +257,7 @@ const EventInfoCreate = ({ register, control, setValue, eventInfo }) => {
                     <TextField
                         id="tickets"
                         InputLabelProps={{shrink: ticketAmount ? true : false}}
-                        label="Tickets Amount"
+                        label={t('createEvent.eventInfo.ticketsAmount')}
                         variant="outlined"
                         className={styles.price}
                         onChange={handlePriceChange}
@@ -271,7 +273,7 @@ const EventInfoCreate = ({ register, control, setValue, eventInfo }) => {
                 </div>
             </div>
             <div className={styles.buttons}>
-                <Button variant='contained' className={styles.publishBtn} type="submit">Publish</Button>
+                <Button variant='contained' className={styles.publishBtn} type="submit">{t('createEvent.eventInfo.publish')}</Button>
             </div>
         </div>
     ) 

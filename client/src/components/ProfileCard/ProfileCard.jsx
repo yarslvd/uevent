@@ -6,10 +6,12 @@ import axios from "../../redux/axios";
 import SettingsModal from "../SettingsModal/SettingsModal";
 
 import styles from "./ProfileCard.module.scss";
+import { useTranslation } from "react-i18next";
 
 const ProfileCard = (userinfo) => {
     const navigate = useNavigate();
     const [modalOpen, setModalOpen] = useState(false);
+    const { t } = useTranslation();
 
     const handleClose = () => {
         setModalOpen(false);
@@ -30,8 +32,8 @@ const ProfileCard = (userinfo) => {
                     <span>@{userinfo.username}</span>
                 </div>
                 <div className={styles.buttons}>
-                    <Button variant='contained' className={styles.settingsBtn} onClick={() => setModalOpen(true)}>Settings</Button>
-                    <Button variant='outlined' className={styles.logoutBtn} onClick={handleLogout}>Log out</Button>
+                    <Button variant='contained' className={styles.settingsBtn} onClick={() => setModalOpen(true)}>{t('profile.user.settings')}</Button>
+                    <Button variant='outlined' className={styles.logoutBtn} onClick={handleLogout}>{t('profile.user.logout')}</Button>
                 </div>
             </div>
             <SettingsModal
