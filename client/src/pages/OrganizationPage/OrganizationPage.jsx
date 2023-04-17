@@ -76,12 +76,12 @@ const OrganizationPage = () => {
             <div className={styles.container}>
                 <div className={styles.header}>
                     <div className={styles.image}
-                         style={{backgroundImage: `url(${!isLoading && !isError && data.organizer.image})`}}></div>
+                        style={{backgroundImage: `url(${!isLoading && !isError && data.organizer.image})`}}></div>
                     <div className={styles.info}>
                         <div className={styles.content}>
                             <h3>{!isLoading && !isError && data.organizer.name}</h3>
                             <div className={styles.description}>
-                                <span>{!isLoading && !isError && data.organizer.description}</span>
+                                <p>{!isLoading && !isError && data.organizer.description}</p>
                             </div>
                             <div className={styles.email}>
                                 <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="EmailIcon">

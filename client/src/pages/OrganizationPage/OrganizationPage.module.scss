@@ -10,8 +10,9 @@
         margin-top: 36px;
     
         .image {
-            width: 350px;
+            max-width: 350px;
             height: 350px;
+            width: 100%;
             background-position: center;
             background-size: cover;
             border-radius: 38px;
@@ -54,6 +55,7 @@
                 padding: 10px 40px;
                 background-color: $base-dark-color;
                 border-radius: 10px;
+                align-self: self-start;
             }
     
             .left {

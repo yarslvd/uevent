@@ -29,7 +29,7 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
 
     const currentLocale = locales[i18n.language];
 
-    const [isLikeActive, setIsLikeActive] = useState(data ? true : false);
+    const [isLikeActive, setIsLikeActive] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalUsersOpen, setModalUsersOpen] = useState(false);
 
@@ -65,6 +65,12 @@ const EventInfo = ({ title, date, iso_currency, location, organizer_id, price, t
             deleteFavourite(event_id).unwrap();
         }
     }
+
+    useEffect(() => {
+        if(data?.favourite != null) {
+            setIsLikeActive(true);
+        }
+    }, [data]);
 
     return (
         <div className={styles.container}>

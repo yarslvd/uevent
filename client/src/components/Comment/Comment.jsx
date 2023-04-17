@@ -27,7 +27,7 @@ const Comment = ({ id, comment, user, setEditing, deleteComment }) => {
                 <>
                     <div className={styles.modalContainer}>
                         <div className={styles.modal}>
-                            <p>{t('deleteComment')}</p>
+                            <p>{t('comments.deleteComment')}</p>
                             <div className={styles.modalButtons}>
                                 <Button variant='contained' onClick={() => {deleteComment(id);handleClose()}}>{t('yes')}</Button>
                                 <Button variant='contained' onClick={() => handleClose()}>{t('no')}</Button>

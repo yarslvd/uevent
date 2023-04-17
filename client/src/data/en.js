@@ -250,6 +250,7 @@ export const en = {
             like: 'Like Event',
             ticketsLeft: 'tickets left'
         },
+        language: 'en'
     },
     
     // Filters.jsx
@@ -273,5 +274,9 @@ export const en = {
     // SearchBarFull.jsx
     searchBar: {
         placeholder: "Search"
+    },
+
+    comments: {
+        deleteComment: 'Delete this comment?'
     }
 };

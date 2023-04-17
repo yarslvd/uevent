@@ -251,6 +251,7 @@ export const ua = {
             like: 'Лайкнути',
             ticketsLeft: 'квитків залишилось'
         },
+        language: 'uk'
     },
 
     // Filters.jsx
@@ -274,5 +275,9 @@ export const ua = {
     // SearchBarFull.jsx
     searchBar: {
         placeholder: "Пошук"
+    },
+
+    comments: {
+        deleteComment: 'Видалити цей коментар?'
     }
 };

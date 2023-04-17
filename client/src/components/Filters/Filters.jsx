@@ -101,7 +101,7 @@ const Filters = ({setFilters}) => {
   const handleClear = () => {
     setTheme([]);
     setFormat([]);
-    setValue([0, 1000]);
+    setValue([0, 5000]);
     setDateFrom(null);
     setDateTo(null);
     setFilters({});
@@ -201,7 +201,7 @@ const Filters = ({setFilters}) => {
           valueLabelDisplay="auto"
           getAriaValueText={valuetext}
           min={0}
-          max={1000}
+          max={5000}
           sx={{ color: '#1F1F1F'}}
         />
       </div>

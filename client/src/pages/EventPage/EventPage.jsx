@@ -225,7 +225,7 @@ const EventPage = () => {
             <iframe
                 title='map'
                 style={{border: 0, borderRadius: '10px', marginTop: '6px'}}
-                src={`https://www.google.com/maps/embed/v1/place?key=${process.env.REACT_APP_GOOGLEMAPS_API_KEY}&q=${!isLoadingInfo && !errorInfo && dataInfo.event?.address}&language=en`}
+                src={`https://www.google.com/maps/embed/v1/place?key=${process.env.REACT_APP_GOOGLEMAPS_API_KEY}&q=${!isLoadingInfo && !errorInfo && dataInfo.event?.address}&language=${t('eventPage.language')}`}
                 width="100%"
                 height="450"
                 allowFullScreen=""

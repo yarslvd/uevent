@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useMediaQuery, Pagination } from '@mui/material';
 
 import Layout from '../../components/Layout/Layout';

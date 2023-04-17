@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 import './Carousel.scss';
 
@@ -23,6 +24,7 @@ const Carousel = ({ slides }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [direction, setDirection] = useState(0);
     const timeoutRef = useRef(null);
+    const navigate = useNavigate();
 
     const nextImg = () => {
         setDirection(1);
@@ -71,6 +73,7 @@ const Carousel = ({ slides }) => {
                     exit='exit'
                     style={{backgroundImage: `url(${slides[currentIndex].url})`}}
                     custom={direction}
+                    onClick={() => navigate(slides[currentIndex].link)}
                 >
                 </motion.div>
             </div>

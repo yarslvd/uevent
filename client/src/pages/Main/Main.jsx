@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useGetEventsQuery } from '../../redux/api/fetchEventsApi';
@@ -12,18 +11,18 @@ import Card from '../../components/Card/Card';
 import './Main.scss';
 
 const slides = [
-    { title: 'Jome', url: 'https://static.tumblr.com/wvzujvn/oF3r5yppc/lot2022.jpg' },
-    { title: 'Case', url: 'https://storage.concert.ua/JEC/4/Cr/63b56a0bc62b9/6301.png:31-eventpage-main_banner-desktop' },
-    { title: 'Jese', url: 'https://www.mancity.com/meta/media/cnnp0xms/wknd.png?width=1620' },
-    { title: 'Lola', url: 'https://storage.concert.ua/JWd/16/RN/6282001ee74da/752f.jpg:31-eventpage-main_banner-desktop' },
+    { title: 'Harry Styles', url: 'https://static.tumblr.com/wvzujvn/oF3r5yppc/lot2022.jpg', link: '/event/17' },
+    { title: 'DOROFEEVA', url: 'https://storage.concert.ua/JEC/4/Cr/63b56a0bc62b9/6301.png:31-eventpage-main_banner-desktop', link: '/event/18' },
+    { title: 'The Weeknd', url: 'https://www.mancity.com/meta/media/cnnp0xms/wknd.png?width=1620', link: '/event/5' },
+    { title: 'Stepab Giga', url: 'https://storage.concert.ua/JWd/16/RN/6282001ee74da/752f.jpg:31-eventpage-main_banner-desktop', link: '/event/1' },
 ];
 
-const newEvents = [
-    { title: 'Harry Styles', location: 'Палац студентів НТУ “ХПІ”', time: '16:00', date: '28 КВІ 2023', price: 400 ,image_url: 'https://media.architecturaldigest.com/photos/623e05e0b06d6c32457e4358/master/pass/FINAL%20%20PFHH-notextwlogo.jpg' },
-    { title: 'The Weeknd', location: 'Палац студентів НТУ “ХПІ”', time: '18:00', date: '29 БЕР 2023', price: 400 ,image_url: 'https://www.livenationentertainment.com/wp-content/uploads/2022/03/TR_NationalAsset_TheWeeknd_SG_1200x628.jpg' },
-    { title: 'Океан Ельзи. Світовий тур 2023', location: 'Стадіон Металіст', time: '18:00', date: '17 ЧЕР 2023', price: 550 ,image_url: 'https://vgorode.ua/img/article/11918/24_main-v1640936452.jpg' },
-    { title: 'Океан Ельзи. Світовий тур 2023', location: 'Стадіон Металіст', time: '18:00', date: '17 ЧЕР 2023', price: 550 ,image_url: 'https://vgorode.ua/img/article/11918/24_main-v1640936452.jpg' },
-];
+// const newEvents = [
+//     { title: 'Harry Styles', location: 'Палац студентів НТУ “ХПІ”', time: '16:00', date: '28 КВІ 2023', price: 400 ,image_url: 'https://media.architecturaldigest.com/photos/623e05e0b06d6c32457e4358/master/pass/FINAL%20%20PFHH-notextwlogo.jpg', link: '/event/17' },
+//     { title: 'The Weeknd', location: 'Палац студентів НТУ “ХПІ”', time: '18:00', date: '29 БЕР 2023', price: 400 ,image_url: 'https://www.livenationentertainment.com/wp-content/uploads/2022/03/TR_NationalAsset_TheWeeknd_SG_1200x628.jpg' },
+//     { title: 'Океан Ельзи. Світовий тур 2023', location: 'Стадіон Металіст', time: '18:00', date: '17 ЧЕР 2023', price: 550 ,image_url: 'https://vgorode.ua/img/article/11918/24_main-v1640936452.jpg' },
+//     { title: 'Океан Ельзи. Світовий тур 2023', location: 'Стадіон Металіст', time: '18:00', date: '17 ЧЕР 2023', price: 550 ,image_url: 'https://vgorode.ua/img/article/11918/24_main-v1640936452.jpg' },
+// ];
 
 const Main = () => {
     const { t } = useTranslation();
