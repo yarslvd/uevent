@@ -10,7 +10,7 @@ const authAxios = axios.create({
       "Access-Control-Allow-Headers": "*",
       "Content-Type": "application/json",
     },
-    credentials: "include",
+    credentials: "same-origin",
     withCredentials: true,
   });
   
