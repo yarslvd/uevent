@@ -3,7 +3,7 @@ import axios from "../axios";
 import Cookies from "js-cookie";
 
 const authAxios = axios.create({
-    baseURL: "http://localhost:4000",
+    baseURL: process.env.REACT_APP_BASE_URL,
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "*",

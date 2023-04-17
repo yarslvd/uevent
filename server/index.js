@@ -4,16 +4,36 @@ var cors = require('cors')
 const path = require('path');
 const cookieParser = require("cookie-parser")
 const bodyParser = require('body-parser');
+const { mkDirByPathSync } = require('./utils/mk-dir');
+const { parseWhitelist } = require('./utils/cors');
 
-var whitelist = ['http://localhost:3000', '192.168.0.108:3000'];
+const whitelist = parseWhitelist(process.env.CORS_ORIGINS);
 
 var corsOptions = {
-  origin: whitelist,
+  origin: function (origin, callback) {
+    if (!origin || whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      console.log({origin});
+      callback(new Error("Not allowed by CORS " + origin))
+    }
+  },
   credentials: true,
   optionsSuccessStatus: 200
 }
 
+// {
+//   origin: whitelist,
+//   credentials: true,
+//   optionsSuccessStatus: 200
+//}
+
+mkDirByPathSync("./public/avatars", {isRelativeToScript: true});
+mkDirByPathSync("./public/organizers", {isRelativeToScript: true});
+mkDirByPathSync("./public/posters", {isRelativeToScript: true});
+
 const app = express();
+
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname,'/')));

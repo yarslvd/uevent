@@ -10,6 +10,6 @@ COPY docker/package.json ./package.json
 COPY docker/package-lock.json ./package-lock.json
 
 RUN npm install
-EXPOSE 3000
+EXPOSE 80
 
 CMD [ "npm", "run", "start" ]
