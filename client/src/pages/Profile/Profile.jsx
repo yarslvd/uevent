@@ -63,7 +63,7 @@ const Profile = () => {
     const { data: dataSubscriptions, isLoading: isLoadingSubscriptions, isError: isErrorSubscriptions, refetch: refetchSubscriptions } = useGetProfileSubscriptionsQuery(userInfo?.id, 1000, 0);
     const { data: dataTickets, isLoading: isLoadingTickets, isError: isErrorTickets, refetch: refetchTickets } = useGetTicketsQuery(auth && { user_id: +userInfo?.id });
     const { data: dataEvents, isLoading: isLoadingEvents, isError: isErrorEvents, refetch: refetchEvents } = useGetEventsQuery({ limit: 1000, id: userInfo?.organizers && userInfo.organizers[0]?.id });
-
+    console.log(dataTickets);
     const [deleteFavourite] = useDeleteFavouriteMutation();
     const [deleteSubscription] = useDeleteSubscriptionMutation();
 
@@ -180,7 +180,7 @@ const Profile = () => {
                     </TabPanel>
                     <TabPanel value={value} index={1}>
                         <div className={styles.ticketsContainer}>
-                            {!isLoadingTickets && !isErrorTickets && dataTickets.tickets.count !== 0 ? [...new Set(dataTickets.tickets.map(el => {
+                            {!isLoadingTickets && !isErrorTickets && dataTickets.tickets.length > 0  ? [...new Set(dataTickets.tickets.map(el => {
                                 const {id, payment_id, can_show, ...rest} = el;  
                                 const {ticket_amount, ...restEvent} = el.event;
                                 rest.event = restEvent;
