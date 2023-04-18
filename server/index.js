@@ -39,6 +39,7 @@ app.use(cors(corsOptions));
 app.use(express.static(path.join(__dirname,'/')));
 app.use(express.json());
 app.use(cookieParser({
+  sameSite: 'none',
   httpOnly: true,
   secure: true
 }));
