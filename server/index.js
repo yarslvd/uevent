@@ -7,9 +7,6 @@ const bodyParser = require('body-parser');
 const { mkDirByPathSync } = require('./utils/mk-dir');
 const { parseWhitelist } = require('./utils/cors');
 
-const https = require("https");
-const fs = require("fs");
-
 const whitelist = parseWhitelist(process.env.CORS_ORIGINS);
 
 var corsOptions = {
@@ -72,22 +69,6 @@ app.use("/api/users", usersRouter);
 app.use(admin.options.rootPath, AdminJSRouter());
 // app.use(bodyParser());
 
-// app.listen(process.env.SERVER_PORT, () => {
-    // console.log(`Server running at http://localhost:${process.env.SERVER_PORT}/`);
-// });
-
-// Create a NodeJS HTTPS listener on port 4000 that points to the Express app
-// Use a callback function to tell when the server is created.
-https
-  .createServer(
-		// Provide the private and public key to the server by reading each
-		// file's content with the readFileSync() method.
-    {
-      key: fs.readFileSync("key.pem"),
-      cert: fs.readFileSync("cert.pem"),
-    },
-    app
-  )
-  .listen(process.env.SERVER_PORT, ()=>{
+app.listen(process.env.SERVER_PORT, () => {
     console.log(`Server running at http://localhost:${process.env.SERVER_PORT}/`);
-  });
+});
