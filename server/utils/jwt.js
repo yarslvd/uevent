@@ -74,8 +74,8 @@ async function verifyToken(access_token, refresh_token, res) {
         }
 
         //kostyl not to use it in normal project)))
-        res.cookie("access_token", accessToken, {httpOnly: true, sameSite: 'none'});
-        res.cookie("refresh_token", refreshToken, {httpOnly: true, sameSite: 'none'});
+        res.cookie("access_token", accessToken, {httpOnly: true, secure: true, sameSite: 'none'});
+        res.cookie("refresh_token", refreshToken, {httpOnly: true, secure: true, sameSite: 'none'});
         decodedAccess.decoded = decodedRefresh.decoded
     }
 
