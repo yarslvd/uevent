@@ -41,7 +41,7 @@ app.use(express.json());
 app.use(cookieParser({
   sameSite: 'none',
   httpOnly: true,
-  secure: true
+  secure: false
 }));
 
 const authRouter = require('./routes/auth-routes');
