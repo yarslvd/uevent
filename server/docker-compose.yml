@@ -1,15 +1,5 @@
 version: '3.0'
 services:
-  uevent-api:
-    image: kevandee/uevent-api:0.9.0
-    restart: always
-    depends_on:
-      db:
-        condition: service_healthy
-    env_file:
-      - '.env'
-    ports:
-      - '4000:4000'
   db:
     image: postgis/postgis:latest
     restart: always
@@ -26,14 +16,5 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  webclient:
-    image: kevandee/uevent-web-client:0.9.0
-    restart: always
-    env_file:
-      - '../client/.env'
-    depends_on: 
-      - uevent-api
-    ports:
-      - '3000:3000'
 volumes:
   pgdata:

@@ -207,8 +207,8 @@ const login = async (req, res) => {
 
         res.header("Authorization", `Bearer ${refreshToken}`);
 
-        res.cookie("access_token", accessToken, {httpOnly: true });
-        res.cookie("refresh_token", refreshToken, {httpOnly: true });
+        res.cookie("access_token", accessToken);
+        res.cookie("refresh_token", refreshToken);
 
         return res.status(StatusCodes.OK).json ({
             error : null,
@@ -276,8 +276,8 @@ const refresh = async (req, res) => {
 
         res.header("Authorization", `Bearer ${refreshToken}`);
 
-        res.cookie("access_token", accessToken, {httpOnly: true });
-        res.cookie("refresh_token", refreshToken, {httpOnly: true });
+        res.cookie("access_token", accessToken);
+        res.cookie("refresh_token", refreshToken);
 
         return res.status(StatusCodes.OK).json ({
             error : null,

@@ -9,7 +9,7 @@ const instance = axios.create({
     "Access-Control-Allow-Headers": "*",
     "Content-Type": "application/json",
   },
-  credentials: "same-origin",
+  credentials: "include",
   withCredentials: true,
 });
 

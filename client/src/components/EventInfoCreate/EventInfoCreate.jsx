@@ -175,7 +175,6 @@ const EventInfoCreate = ({ register, control, setValue, eventInfo }) => {
                             rules={{
                                 validate: {
                                     min: (date) => {
-                                        console.log("publish_date:", date.toISOString());
                                         console.log("isFuture:", (date && isFuture(date)));
                                         console.log("isEdit:", (!isEditEvent() && !date));
                                         return (date && isFuture(date)) || (isEditEvent() && !date) || "Please, enter a future date";

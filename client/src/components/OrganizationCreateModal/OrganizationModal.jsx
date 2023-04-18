@@ -54,7 +54,7 @@ const OrganizationModal = ({ open, handleClose, organizer }) => {
             if(avatar) {
                 const formData = new FormData();
                 formData.append('avatar', avatar);
-                await uploadAvatar({file: formData, id: res.data.organizer.id});
+                await uploadAvatar({file: formData, id: res?.data?.organizer?.id || organizer?.id});
             }
             window.location.replace(window.location.href + '?tab=2');
         }

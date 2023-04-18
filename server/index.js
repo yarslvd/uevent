@@ -22,6 +22,7 @@ var corsOptions = {
   optionsSuccessStatus: 200
 }
 
+
 // {
 //   origin: whitelist,
 //   credentials: true,
@@ -35,10 +36,12 @@ mkDirByPathSync("./public/posters", {isRelativeToScript: true});
 const app = express();
 
 app.use(cors(corsOptions));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname,'/')));
 app.use(express.json());
-app.use(bodyParser());
+app.use(cookieParser({
+  httpOnly: true,
+  secure: true
+}));
 
 const authRouter = require('./routes/auth-routes');
 const organizersRouter = require('./routes/organizers-routes');
@@ -50,6 +53,7 @@ const subscriptionsRouter = require('./routes/subscriptions-routes');
 const favouritesRouter = require('./routes/favourites-routes');
 const paymentsRouter = require('./routes/payments-routes');
 const usersRouter = require('./routes/users-routes');
+const { AdminJSRouter, admin } = require('./utils/admin-panel');
 
 app.use("/api/auth", authRouter);
 app.use("/api/organizers", organizersRouter);
@@ -61,6 +65,8 @@ app.use("/api/subscriptions", subscriptionsRouter);
 app.use("/api/favourites", favouritesRouter);
 app.use("/api/payments", paymentsRouter);
 app.use("/api/users", usersRouter);
+app.use(admin.options.rootPath, AdminJSRouter());
+// app.use(bodyParser());
 
 app.listen(process.env.SERVER_PORT, () => {
     console.log(`Server running at http://localhost:${process.env.SERVER_PORT}/`);
