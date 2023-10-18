@@ -28,9 +28,9 @@ var corsOptions = {
 //   optionsSuccessStatus: 200
 //}
 
-mkDirByPathSync("./public/avatars", {isRelativeToScript: true});
-mkDirByPathSync("./public/organizers", {isRelativeToScript: true});
-mkDirByPathSync("./public/posters", {isRelativeToScript: true});
+// mkDirByPathSync("./public/avatars", {isRelativeToScript: true});
+// mkDirByPathSync("./public/organizers", {isRelativeToScript: true});
+// mkDirByPathSync("./public/posters", {isRelativeToScript: true});
 
 const app = express();
 
