@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link  } from 'react-router-dom';
 import { Container, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import Menu from '../Menu/Menu';
 import SearchBarFull from '../SearchBarFull/SearchBarFull';
 import ModalWindow from '../ModalWindow/ModalWindow';
-import { selectIsAuthMe, selectIsAuth } from '../../redux/slices/authSlice';
+import { selectIsAuthMe } from '../../redux/slices/authSlice';
 
 import './Header.scss';
 

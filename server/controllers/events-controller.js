@@ -211,6 +211,7 @@ const getAll = async (req, res) => {
         let url = `${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`
         let path = req.originalUrl.split('?')[0] + createUrlParams(req.query)
         const events = await processPagination(url, path, db.events, limit, page, parameters);
+        console.log(events);
 
         res.json({
             events
